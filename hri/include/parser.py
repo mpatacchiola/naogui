@@ -1,0 +1,75 @@
+#!/usr/bin/env python
+
+from xml.dom import minidom
+import os
+
+class Parser(object):
+
+    def __init__(self):
+        """
+        Class initialization
+        """
+        self._experiment_loaded = False
+
+        self._number_list = list() #list of the trial number
+        self._gaze_list = list() #list for gaze/non_gaze
+        self._pointing_list = list() #list for pointing/non_pointing
+        self._mp3_list = list() #name of the mp3 file
+        self._person_moltfact_list = list() #moltiplication factor for the person
+        self._robot_moltfact_list = list() #moltiplication factor for the robot
+        self._reward_list = list() #reward given by the robot
+
+   
+    def LoadFile(self, filePath):
+        print(filePath)
+        if os.path.isfile(filePath):
+            self._path = filePath
+            self._doc = minidom.parse(filePath)
+            print("PARSER: the XML file was correctly loaded.")
+            return True
+        else:
+            print("PARSER: Error the XML file does not exist, please check if the path is correct.")
+            return False
+
+    def parse_experiment_list(self):
+       	items = self._doc.getElementsByTagName("trial")
+        counter = 0
+        print("PARSER: Experiment list, downloading settigs:")
+	for item in items:
+		returned = item.getElementsByTagName("number")[0]
+		self._number_list.append(returned.firstChild.data)
+                print("number ........ %s" %returned.firstChild.data)
+		returned = item.getElementsByTagName("gaze")[0]
+		self._gaze_list.append(returned.firstChild.data)
+                print("gaze ........ %s" %returned.firstChild.data)
+		returned = item.getElementsByTagName("pointing")[0]
+		self._pointing_list.append(returned.firstChild.data)
+                print("pointing ........ %s" %returned.firstChild.data)
+		returned = item.getElementsByTagName("mp3")[0]
+		self._mp3_list.append(returned.firstChild.data)
+                print("mp3 ........ %s" %returned.firstChild.data)
+		returned = item.getElementsByTagName("pmf")[0]
+		self._person_moltfact_list.append(returned.firstChild.data)
+                print("pmf ........ %s" %returned.firstChild.data)
+		returned = item.getElementsByTagName("rmf")[0]
+		self._robot_moltfact_list.append(returned.firstChild.data)
+                print("rmf ........ %s" %returned.firstChild.data)
+		returned = item.getElementsByTagName("reward")[0]
+		self._reward_list.append(returned.firstChild.data)
+                print("reward ........ %s" %returned.firstChild.data)
+                print("")
+                counter = counter + 1
+        self._experiment_loaded = True
+        print("PARSER: Experiment list, trials loaded ........ %s" %counter)
+
+    def clear_lists(self):
+        print("PARSER: Clearing the objects lists.")
+        del self._number_list[:]
+        del self._gaze_list[:]
+        del self._pointing_list[:]
+        del self._mp3_list[:]
+        del self._person_moltfact_list[:]
+        del self._robot_moltfact_list[:]
+        del self._reward_list[:]
+        self._experiment_loaded = False
+

@@ -1,0 +1,47 @@
+<list1>
+	<trial>
+		<number>1</number>
+		<gaze>True</gaze>
+		<pointing>False</pointing>
+		<mp3>/home/massimiliano/Desktop/nao idm/mp3/test_five_sec.mp3</mp3>
+		<pmf>0.3</pmf>
+		<rmf>0.5</rmf>
+		<reward>4</reward>
+	</trial>
+	<trial>
+		<number>2</number>
+		<gaze>True</gaze>
+		<pointing>False</pointing>
+		<mp3>/home/massimiliano/Desktop/nao idm/mp3/test_five_sec.mp3</mp3>
+		<pmf>0.3</pmf>
+		<rmf>0.5</rmf>
+		<reward>4</reward>
+	</trial>
+	<trial>
+		<number>3</number>
+		<gaze>True</gaze>
+		<pointing>False</pointing>
+		<mp3>/home/massimiliano/Desktop/nao idm/mp3/test_five_sec.mp3</mp3>
+		<pmf>0.3</pmf>
+		<rmf>0.5</rmf>
+		<reward>4</reward>
+	</trial>
+	<trial>
+		<number>4</number>
+		<gaze>True</gaze>
+		<pointing>False</pointing>
+		<mp3>/home/massimiliano/Desktop/nao idm/mp3/test_five_sec.mp3</mp3>
+		<pmf>0.3</pmf>
+		<rmf>0.5</rmf>
+		<reward>4</reward>
+	</trial>
+	<trial>
+		<number>5</number>
+		<gaze>True</gaze>
+		<pointing>False</pointing>
+		<mp3>/home/massimiliano/Desktop/nao idm/mp3/test_five_sec.mp3</mp3>
+		<pmf>0.3</pmf>
+		<rmf>0.5</rmf>
+		<reward>4</reward>
+	</trial>
+</list1>
