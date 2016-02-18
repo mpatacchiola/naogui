@@ -21,14 +21,18 @@ import sys
 import os
 import time
 
+#python -m pip install pyaudio
+#sudo apt-get install python-pyaudio python3-pyaudio
+import pyaudio
+
 #Importing my custom libraries
 sys.path.insert(1, '../include')
 sys.path.insert(1, "../include/pynaoqi-python2.7-2.1.3.3-linux64") #import this module for the nao.py module
+
 import design
 import parser
 import nao
 import logbook
-
 
 
 class WorkerThread(QThread):
@@ -54,6 +58,7 @@ class WorkerThread(QThread):
     self._start_pressed = False
 
 
+
   def run(self):
     #Init the State machine 
     self.emit(self.enable_signal) #GUI enabled
@@ -70,36 +75,35 @@ class WorkerThread(QThread):
             if self._robot_connected==True and self._xml_uploaded==True and self._start_pressed==True:
                 self.STATE_MACHINE = 1 #switching to next state
                 self.emit(self.disable_signal) #GUI disabled
+                self.logger = logbook.Logbook()
 
         if self.STATE_MACHINE == 1:
-            print "[1] Robot Talking + Logbook Init"
-            self.logger = logbook.Logbook()
+            print "[1] Robot Talking + Logbook Init"           
             time.sleep(5)
             self.STATE_MACHINE = 2
  
         if self.STATE_MACHINE == 2:
             print "[2] Robot Talking + Looking/Non-Looking"
             time.sleep(5)
-
+            #TODO play mp3 file and look
             #when mp3 file finish          
             self.timer.elapsed() #sart timer for next state
             self.STATE_MACHINE = 3 #next state
 
         if self.STATE_MACHINE == 3:
-            print "[3] Waiting for the subject answer..."
-            #GUI enbled
-            self.emit(self.enable_signal)
+            print "[3] Waiting for the subject answer..."           
+            self.emit(self.enable_signal) #GUI enbled
             time.sleep(5)
-
+            #TODO catch the subject answer
             #when subject give the answer
             time_elapsed = self.timer.elapsed() #record the time
             print "[3] TIME: " + str(time_elapsed)
             self.STATE_MACHINE = 4 #next state
      
         if self.STATE_MACHINE == 4:
-            print "[4] Robot Talking + Pointing/Non-Pointing"
-            #GUI disabled
-            self.emit(self.disable_signal)
+            print "[4] Pointing/Non-Pointing"           
+            self.emit(self.disable_signal) #GUI disabled
+            #TODO Give the reward and move/not-move the robot
             time.sleep(5)             
             self.STATE_MACHINE = 5 #next state
 
@@ -110,7 +114,6 @@ class WorkerThread(QThread):
             self.STATE_MACHINE = 2 #cycling to state 2
 
   def start_experiment(self):
-    print "START Pressed"
     self._start_pressed = True
 
   def confirm(self):
@@ -186,19 +189,6 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def start_experiment(self):
         self.emit(self.start_signal)
 
-    def browse_folder(self):
-        selected_file = QtGui.QFileDialog.getOpenFileName(self, "Select a configuration file", "","XML files(*.xml)")
-
-        if selected_file: # if user didn't pick a directory don't continue
-            self.textEditXML.setText(selected_file) # self.listWidget.addItem(selected_file)  # add file to the listWidget
-            self.emit(self.xml_path_signal, selected_file)
-        else:
-            msgBox = QtGui.QMessageBox()
-            msgBox.setIcon(QtGui.QMessageBox.Warning)
-            msgBox.setWindowTitle("No file selected")
-            msgBox.setText("ATTENTION: You did not select any XML file.");
-            msgBox.exec_();
-
     def confirm_pressed(self):
         self.emit(self.confirm_signal)
 
@@ -224,6 +214,20 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.horizontalSlider.setEnabled(True)
         self.btnConfirm.setEnabled(True)
 
+
+    def browse_folder(self):
+        selected_file = QtGui.QFileDialog.getOpenFileName(self, "Select a configuration file", "","XML files(*.xml)")
+
+        if selected_file: # if user didn't pick a directory don't continue
+            self.textEditXML.setText(selected_file) # self.listWidget.addItem(selected_file)  # add file to the listWidget
+            self.emit(self.xml_path_signal, selected_file)
+        else:
+            msgBox = QtGui.QMessageBox()
+            msgBox.setIcon(QtGui.QMessageBox.Warning)
+            msgBox.setWindowTitle("No file selected")
+            msgBox.setText("ATTENTION: You did not select any XML file.");
+            msgBox.exec_();
+
     def no_robot_error(self):
             msgBox = QtGui.QMessageBox()
             msgBox.setIcon(QtGui.QMessageBox.Critical)
@@ -233,7 +237,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
             self.btnWakeUp.setEnabled(False)
             self.btnRest.setEnabled(False)
 
-    def yes_robot_error(self):
+    def yes_robot_confirmation(self):
             msgBox = QtGui.QMessageBox()
             msgBox.setIcon(QtGui.QMessageBox.Information)
             msgBox.setWindowTitle("Well Done!")
@@ -249,7 +253,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
             msgBox.setText("ERROR: It was not possible to read the XML file. \nFollow these tips and try to select again. \n \n1- Verify if you can open correctly the file with a text editor (es. notepad). \n2- Once opened the file, check if for each open bracket <trial> there is a closed bracket </trial>. \n");
             msgBox.exec_();
 
-    def good_xml_gui(self):
+    def good_xml_confirmation(self):
             msgBox = QtGui.QMessageBox()
             msgBox.setIcon(QtGui.QMessageBox.Information)
             msgBox.setWindowTitle("Very Good!")
@@ -266,7 +270,7 @@ def main():
     thread = WorkerThread()
 
     #Connecting: form > thread
-    thread.connect(form, form.start_signal, thread.start)
+    thread.connect(form, form.start_signal, thread.start_experiment)
     thread.connect(form, form.xml_path_signal, thread.xml) #sending XML path
     thread.connect(form, form.confirm_signal, thread.confirm)
     thread.connect(form, form.ip_signal, thread.ip)
@@ -276,12 +280,21 @@ def main():
     form.connect(thread, thread.disable_signal, form.disable_gui)
     form.connect(thread, thread.enable_signal, form.enable_gui)
     form.connect(thread, thread.no_robot_signal, form.no_robot_error)
-    form.connect(thread, thread.yes_robot_signal, form.yes_robot_error)
+    form.connect(thread, thread.yes_robot_signal, form.yes_robot_confirmation)
     form.connect(thread, thread.bad_xml_signal, form.bad_xml_error)
-    form.connect(thread, thread.good_xml_signal, form.good_xml_gui)
+    form.connect(thread, thread.good_xml_signal, form.good_xml_confirmation)
 
     #Starting thread
     thread.start()
+
+
+    p = pyaudio.PyAudio()
+
+    stream = p.open(
+    format = p.get_format_from_width(wf.getsampwidth()),
+    channels = wf.getnchannels(),
+    rate = wf.getframerate(),
+    output = True)
 
     #Show the form and execute the app
     form.show()  
