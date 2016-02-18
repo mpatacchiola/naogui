@@ -21,36 +21,97 @@ import sys
 import os
 import time
 
-#sys.path.append('../include')
+#Importing my custom libraries
 sys.path.insert(1, '../include')
 sys.path.insert(1, "../include/pynaoqi-python2.7-2.1.3.3-linux64") #import this module for the nao.py module
 import design
 import parser
 import nao
+import logbook
 
 
 
 class WorkerThread(QThread):
   def __init__(self):
     QThread.__init__(self)
+
+    #Signal variables
     self.disable_signal = SIGNAL("disable_signal")
     self.enable_signal = SIGNAL("enable_signal")
     self.no_robot_signal = SIGNAL("no_robot_signal")
     self.yes_robot_signal = SIGNAL("yes_robot_signal")
     self.bad_xml_signal = SIGNAL("bad_xml_signal")
     self.good_xml_signal = SIGNAL("good_xml_signal")
+
+    #Misc variables
     self.myParser = parser.Parser()
     self.timer = QElapsedTimer()
     self.STATE_MACHINE = 0
 
+    #Status variables
+    self._robot_connected = False
+    self._xml_uploaded = False
+    self._start_pressed = False
+
+
   def run(self):
+    #Init the State machine 
+    self.emit(self.enable_signal) #GUI enabled
+    self.timer.start()
+    self.STATE_MACHINE = 0
+
     while True:
-        time.sleep(5)
-        print "cycling..."
-        self.emit(self.disable_signal)       
-        time.sleep(5)
-        self.emit(self.enable_signal)
-        self.timer.start()
+
+        if self.STATE_MACHINE == 0:
+            current_time = time.strftime("%H:%M:%S", time.gmtime())
+            status = "robot_coonnected = " + str(self._robot_connected) + "\n" + "xml_uploaded = " + str(self._xml_uploaded) + "\n" + "start_pressed = " + str(self._start_pressed) + "\n"
+            print "[0] " + current_time + " Waiting... \n" + status
+            time.sleep(3)
+            if self._robot_connected==True and self._xml_uploaded==True and self._start_pressed==True:
+                self.STATE_MACHINE = 1 #switching to next state
+                self.emit(self.disable_signal) #GUI disabled
+
+        if self.STATE_MACHINE == 1:
+            print "[1] Robot Talking + Logbook Init"
+            self.logger = logbook.Logbook()
+            time.sleep(5)
+            self.STATE_MACHINE = 2
+ 
+        if self.STATE_MACHINE == 2:
+            print "[2] Robot Talking + Looking/Non-Looking"
+            time.sleep(5)
+
+            #when mp3 file finish          
+            self.timer.elapsed() #sart timer for next state
+            self.STATE_MACHINE = 3 #next state
+
+        if self.STATE_MACHINE == 3:
+            print "[3] Waiting for the subject answer..."
+            #GUI enbled
+            self.emit(self.enable_signal)
+            time.sleep(5)
+
+            #when subject give the answer
+            time_elapsed = self.timer.elapsed() #record the time
+            print "[3] TIME: " + str(time_elapsed)
+            self.STATE_MACHINE = 4 #next state
+     
+        if self.STATE_MACHINE == 4:
+            print "[4] Robot Talking + Pointing/Non-Pointing"
+            #GUI disabled
+            self.emit(self.disable_signal)
+            time.sleep(5)             
+            self.STATE_MACHINE = 5 #next state
+
+        if self.STATE_MACHINE == 5:
+            print "[5] Saving the trial in the logbook"
+            time.sleep(5)
+            self.logger.AddLine(1,2,3,4,5,6,7,8,9)
+            self.STATE_MACHINE = 2 #cycling to state 2
+
+  def start_experiment(self):
+    print "START Pressed"
+    self._start_pressed = True
 
   def confirm(self):
     print "CONFIRMED!"
@@ -62,24 +123,29 @@ class WorkerThread(QThread):
     try:
         self.myPuppet = nao.Puppet(ip_string, port_string, True)
         self.emit(self.yes_robot_signal)
+        self._robot_connected=True
     except Exception,e:
         print "\nERROR: Impossible to find the robot!\n"
         print "Error was: ", e
         self.emit(self.no_robot_signal)
+        self._robot_connected=False
 
   def xml(self, path):
     print("Looking for external files... ")
     if not os.path.isfile(str(path)):
             print("\nERROR: I cannot find the XML file. The programm will be stopped!\n")
+            self._xml_uploaded = False
             return
     print("Initializing XML Parser... ")
     try:
         self.myParser.LoadFile(str(path))
         self.myParser.parse_experiment_list()
         self.emit(self.good_xml_signal)
+        self._xml_uploaded = True
     except:
         self.emit(self.bad_xml_signal)
         print("\nERROR: Impossible to read the XML file!\n")
+        self._xml_uploaded = False
 
 
   def wake(self, state):
@@ -101,22 +167,24 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.setupUi(self)
 
         self.btnBrowse.clicked.connect(self.browse_folder)  # When the button is pressed execute browse_folder function
-        self.btnStartExperiment.clicked.connect(lambda: self.start_experiment(1))
+        #self.btnStartExperiment.clicked.connect(lambda: self.start_experiment(1))
+        self.btnStartExperiment.clicked.connect(self.start_experiment)
         self.btnConfirm.clicked.connect(self.confirm_pressed)
         self.btnConnectToNao.clicked.connect(self.connect_pressed)
         self.btnWakeUp.clicked.connect(self.wake_up_pressed)
         self.btnRest.clicked.connect(self.rest_pressed)
 
         #Signal to be sent to Thread
+        self.start_signal = SIGNAL("start_signal")
         self.confirm_signal = SIGNAL("confirm_signal")
         self.xml_path_signal = SIGNAL("xml_path_signal")
         self.ip_signal = SIGNAL("ip_signal")
         self.wake_up_signal = SIGNAL("wake_up_signal")
 
         self.showMaximized()
-        
-    def start_experiment(self, n):
-        print "N: " + str(n)
+
+    def start_experiment(self):
+        self.emit(self.start_signal)
 
     def browse_folder(self):
         selected_file = QtGui.QFileDialog.getOpenFileName(self, "Select a configuration file", "","XML files(*.xml)")
@@ -198,6 +266,7 @@ def main():
     thread = WorkerThread()
 
     #Connecting: form > thread
+    thread.connect(form, form.start_signal, thread.start)
     thread.connect(form, form.xml_path_signal, thread.xml) #sending XML path
     thread.connect(form, form.confirm_signal, thread.confirm)
     thread.connect(form, form.ip_signal, thread.ip)
