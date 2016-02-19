@@ -69,7 +69,7 @@ class Puppet(object):
 	self._al_motion_proxy.wakeUp()
 	#self._al_motion_proxy.setAngles("HeadYaw", 0.0, HEAD_SPEED)
 	#self._al_motion_proxy.setAngles("HeadPitch", 0.0, HEAD_SPEED)
-        self._posture_proxy.goToPosture("StandInit", 1)
+        self._posture_proxy.goToPosture("Stand", 1)
 
     def rest(self):
         # the robot rest
@@ -80,16 +80,20 @@ class Puppet(object):
 	#subprocess.Popen(["play","-q",filePath]) #using this method for the moment
         print("SAY: Neither acapela nor mp3 player have been implemented... ")
 
-    def look_up(self):
+    def right_arm_pointing(self, state):
         """
-        Move the head looking UP
+        Move the rigth arm
         """       	
- 	self._al_motion_proxy.setAngles("HeadPitch", HEAD_LOOK_UP, HEAD_SPEED)
+        if state == True:
+ 	     self._al_motion_proxy.setAngles("RShoulderPitch", 1.0, 0.5) #1.0 radians and 0.5 speed
+        elif state == False:
+  	     self._al_motion_proxy.setAngles("RShoulderPitch", 1.4, 0.5) #1.0 radians and 0.5 speed            
 
-
-    def look_down(self, ANGLE, HEAD_SPEED):
+    def look_to(self, ANGLE, HEAD_SPEED):
         """
-        Move the head looking DOWN
+        Move the head looking to
+        maximum angles: 29 / -38 (-2 +2 radians)
+        maximum speed 1.0
         """       	
  	self._al_motion_proxy.setAngles("HeadPitch", ANGLE, HEAD_SPEED)
 

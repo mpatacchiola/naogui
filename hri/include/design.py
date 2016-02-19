@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '../include/mainwindow.ui'
 #
-# Created: Thu Feb 18 17:36:55 2016
+# Created: Fri Feb 19 16:22:21 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(718, 503)
+        MainWindow.resize(771, 517)
         self.centralWidget = QtGui.QWidget(MainWindow)
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
         self.horizontalLayout = QtGui.QHBoxLayout(self.centralWidget)
@@ -37,24 +37,25 @@ class Ui_MainWindow(object):
         self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
         self.tab = QtGui.QWidget()
         self.tab.setObjectName(_fromUtf8("tab"))
-        self.lcdNumber = QtGui.QLCDNumber(self.tab)
-        self.lcdNumber.setGeometry(QtCore.QRect(380, 0, 161, 81))
+        self.lcdNumberGiven = QtGui.QLCDNumber(self.tab)
+        self.lcdNumberGiven.setGeometry(QtCore.QRect(620, 150, 101, 41))
         font = QtGui.QFont()
         font.setPointSize(15)
         font.setBold(True)
         font.setWeight(75)
-        self.lcdNumber.setFont(font)
-        self.lcdNumber.setObjectName(_fromUtf8("lcdNumber"))
-        self.lcdNumber_2 = QtGui.QLCDNumber(self.tab)
-        self.lcdNumber_2.setGeometry(QtCore.QRect(370, 300, 171, 81))
+        self.lcdNumberGiven.setFont(font)
+        self.lcdNumberGiven.setObjectName(_fromUtf8("lcdNumberGiven"))
+        self.lcdNumberTresure = QtGui.QLCDNumber(self.tab)
+        self.lcdNumberTresure.setGeometry(QtCore.QRect(370, 300, 171, 81))
         font = QtGui.QFont()
         font.setPointSize(15)
         font.setBold(True)
         font.setWeight(75)
-        self.lcdNumber_2.setFont(font)
-        self.lcdNumber_2.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.lcdNumber_2.setAutoFillBackground(False)
-        self.lcdNumber_2.setObjectName(_fromUtf8("lcdNumber_2"))
+        self.lcdNumberTresure.setFont(font)
+        self.lcdNumberTresure.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.lcdNumberTresure.setAutoFillBackground(False)
+        self.lcdNumberTresure.setProperty("intValue", 10)
+        self.lcdNumberTresure.setObjectName(_fromUtf8("lcdNumberTresure"))
         self.btnConfirm = QtGui.QPushButton(self.tab)
         self.btnConfirm.setGeometry(QtCore.QRect(500, 130, 91, 91))
         self.btnConfirm.setObjectName(_fromUtf8("btnConfirm"))
@@ -120,7 +121,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addLayout(self.verticalLayout)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtGui.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 718, 25))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 771, 25))
         self.menuBar.setObjectName(_fromUtf8("menuBar"))
         MainWindow.setMenuBar(self.menuBar)
         self.mainToolBar = QtGui.QToolBar(MainWindow)
@@ -131,7 +132,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusBar)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>718</width>
-    <height>503</height>
+    <width>771</width>
+    <height>517</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,19 +20,19 @@
       <item>
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="title">
           <string>Exp</string>
          </attribute>
-         <widget class="QLCDNumber" name="lcdNumber">
+         <widget class="QLCDNumber" name="lcdNumberGiven">
           <property name="geometry">
            <rect>
-            <x>380</x>
-            <y>0</y>
-            <width>161</width>
-            <height>81</height>
+            <x>620</x>
+            <y>150</y>
+            <width>101</width>
+            <height>41</height>
            </rect>
           </property>
           <property name="font">
@@ -43,7 +43,7 @@
            </font>
           </property>
          </widget>
-         <widget class="QLCDNumber" name="lcdNumber_2">
+         <widget class="QLCDNumber" name="lcdNumberTresure">
           <property name="geometry">
            <rect>
             <x>370</x>
@@ -64,6 +64,9 @@
           </property>
           <property name="autoFillBackground">
            <bool>false</bool>
+          </property>
+          <property name="intValue" stdset="0">
+           <number>10</number>
           </property>
          </widget>
          <widget class="QPushButton" name="btnConfirm">
@@ -315,7 +318,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>718</width>
+     <width>771</width>
      <height>25</height>
     </rect>
    </property>

@@ -19,7 +19,7 @@ class Parser(object):
         self._robot_moltfact_list = list() #moltiplication factor for the robot
         self._reward_list = list() #reward given by the robot
 
-        self._size = 0
+       self._size = 0
 
    
     def LoadFile(self, filePath):
@@ -63,7 +63,6 @@ class Parser(object):
                 counter = counter + 1
         self._experiment_loaded = True
         print("PARSER: Experiment list, trials loaded ........ %s" %counter)
-        self._size = counter
 
     def clear_lists(self):
         print("PARSER: Clearing the objects lists.")

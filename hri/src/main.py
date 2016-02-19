@@ -23,12 +23,11 @@ import time
 
 #python -m pip install pyaudio
 #sudo apt-get install python-pyaudio python3-pyaudio
-import pyaudio
+import subprocess
 
 #Importing my custom libraries
 sys.path.insert(1, '../include')
 sys.path.insert(1, "../include/pynaoqi-python2.7-2.1.3.3-linux64") #import this module for the nao.py module
-
 import design
 import parser
 import nao
@@ -56,8 +55,12 @@ class WorkerThread(QThread):
     self._robot_connected = False
     self._xml_uploaded = False
     self._start_pressed = False
+    self._confirm_pressed = False
 
-
+   #Logbook variables
+    self._log_timer = 0
+    self._log_trial = 0
+    self._log_pinv = 0
 
   def run(self):
     #Init the State machine 
@@ -67,6 +70,8 @@ class WorkerThread(QThread):
 
     while True:
 
+        time.sleep(0.05) #50 msec sleep to evitate block
+
         if self.STATE_MACHINE == 0:
             current_time = time.strftime("%H:%M:%S", time.gmtime())
             status = "robot_coonnected = " + str(self._robot_connected) + "\n" + "xml_uploaded = " + str(self._xml_uploaded) + "\n" + "start_pressed = " + str(self._start_pressed) + "\n"
@@ -75,50 +80,93 @@ class WorkerThread(QThread):
             if self._robot_connected==True and self._xml_uploaded==True and self._start_pressed==True:
                 self.STATE_MACHINE = 1 #switching to next state
                 self.emit(self.disable_signal) #GUI disabled
-                self.logger = logbook.Logbook()
+                self.logger = logbook.Logbook() #Logbook Init
 
         if self.STATE_MACHINE == 1:
-            print "[1] Robot Talking + Logbook Init"           
+            #TODO look or not also here, play different mp3 files with different voices
+            print "[1] Robot Hello"          
+            subprocess.Popen(["play","-q", "wave.mp3"])
             time.sleep(5)
             self.STATE_MACHINE = 2
  
+        #STATE-2 robot look or not and talk
         if self.STATE_MACHINE == 2:
-            print "[2] Robot Talking + Looking/Non-Looking"
-            time.sleep(5)
-            #TODO play mp3 file and look
-            #when mp3 file finish          
-            self.timer.elapsed() #sart timer for next state
-            self.STATE_MACHINE = 3 #next state
+            print "[2] Robot Talking + Looking/Non-Looking"            
+            self.myPuppet.look_to(1, 0.5)
+            if self.myParser._gaze_list[self._log_trial] == "True":
+              print "[2] looking == True"
+              self.myPuppet.look_to(1, 0.5) #angle(radians) + speed
+            elif self.myParser._gaze_list[self._log_trial] == "False":
+              print "[2] looking == False"
+              self.myPuppet.look_to(0, 0.5) #angle(radians) + speed
 
-        if self.STATE_MACHINE == 3:
-            print "[3] Waiting for the subject answer..."           
-            self.emit(self.enable_signal) #GUI enbled
-            time.sleep(5)
-            #TODO catch the subject answer
-            #when subject give the answer
-            time_elapsed = self.timer.elapsed() #record the time
-            print "[3] TIME: " + str(time_elapsed)
-            self.STATE_MACHINE = 4 #next state
-     
+            #TODO play mp3 file
+            print "[2] bla bla bla ..."
+            time.sleep(5) #sleep as long as the mp3 file
+            #when mp3 file finish          
+            self.STATE_MACHINE = 3 #next state
+            self.timer.restart() #RESET here the timer
+            print "[3] Waiting for the subject answer..." #going to state 3
+
+        #STATE-3 waiting for the subject investment
+        if self.STATE_MACHINE == 3:                      
+            self.emit(self.enable_signal) #GUI enbled                      
+            if self._confirm_pressed == True:   #when subject give the answer
+                self._log_timer = self.timer.elapsed() #record the time
+                print "[3] TIME: " + str(self._log_timer)
+                print "[3] INVESTMENT: " + str(self._log_pinv)
+                self._confirm_pressed = False #reset the variable state
+                self.STATE_MACHINE = 4 #next state
+                #TODO catch the subject investment, multiply it by the factor and show it in lcdNumberGiven
+
+        #STATE-4 Pointing or not and gives the reward
         if self.STATE_MACHINE == 4:
             print "[4] Pointing/Non-Pointing"           
-            self.emit(self.disable_signal) #GUI disabled
-            #TODO Give the reward and move/not-move the robot
-            time.sleep(5)             
+            self.emit(self.disable_signal) #GUI disabled              
+            if self.myParser._pointing_list[self._log_trial] == "True":
+              print "[4] pointing == True"
+              self.myPuppet.right_arm_pointing(True)
+            elif self.myParser._pointing_list[self._log_trial] == "False":
+              print "[4] pointing == False"
+              self.myPuppet.right_arm_pointing(False)
+
+            #TODO update the lcdNumberTresure and the lcdNumberGiven
+
+            time.sleep(2)  
+            self.myPuppet.right_arm_pointing(False) #reset the arm position
+            time.sleep(2)
             self.STATE_MACHINE = 5 #next state
 
+        #STATE-5 Saving in the logbook
         if self.STATE_MACHINE == 5:
             print "[5] Saving the trial in the logbook"
-            time.sleep(5)
+            #TODO save the correct informations
             self.logger.AddLine(1,2,3,4,5,6,7,8,9)
-            self.STATE_MACHINE = 2 #cycling to state 2
+            time.sleep(5)
+
+            if self._log_trial+1 != self.myParser._size:
+                self.STATE_MACHINE = 2 #cycling to state 2
+                self._log_trial = self._log_trial + 1
+            elif self._log_trial+1 == self.myParser._size:
+                self.STATE_MACHINE = 6 #experiment finished               
+
+        #STATE-6 Final state is called to shutdown the robot
+        if self.STATE_MACHINE == 6:
+            print "[6] The experiment is finished"
+            self._xml_uploaded = False #reset status variable
+            self._start_pressed = False
+            self._log_trial = 0
+            self.STATE_MACHINE = 0 #cycling to state 0
+            subprocess.Popen(["play","-q", "bye.mp3"])
+            time.sleep(5)
+
 
   def start_experiment(self):
     self._start_pressed = True
 
-  def confirm(self):
-    print "CONFIRMED!"
-    print "TIME: " + str(self.timer.elapsed())
+  def confirm(self, investment):
+    self._confirm_pressed = True
+    self._log_pinv = investment
 
   def ip(self, ip_string, port_string):
     print "IP: " + str(ip_string) 
@@ -190,7 +238,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.emit(self.start_signal)
 
     def confirm_pressed(self):
-        self.emit(self.confirm_signal)
+        self.emit(self.confirm_signal, self.horizontalSlider.sliderPosition())
 
     def connect_pressed(self):
         ip_string = str(self.lineEditNaoIP.text())
@@ -216,7 +264,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
 
     def browse_folder(self):
-        selected_file = QtGui.QFileDialog.getOpenFileName(self, "Select a configuration file", "","XML files(*.xml)")
+        selected_file = QtGui.QFileDialog.getOpenFileName(self, "Select a configuration file", "../etc/xml","XML files(*.xml)")
 
         if selected_file: # if user didn't pick a directory don't continue
             self.textEditXML.setText(selected_file) # self.listWidget.addItem(selected_file)  # add file to the listWidget
