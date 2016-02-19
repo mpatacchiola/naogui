@@ -17,13 +17,14 @@ class Logbook(object):
         self._rmult = 0.0
         self._gaze = False
         self._pointing = False
-        self._mp3 = ""
         self._timer = 0
+        self._mp3 = ""
+
 
         #create the file
         open(self._id + ".csv", 'a').close()
 
-    def AddLine(self, trial, pinv, rinv, pmult, rmult, gaze, pointing, mp3, timer):
+    def AddLine(self, trial, pinv, rinv, pmult, rmult, gaze, pointing, timer, mp3 ):
         try:
             self._trial = trial
             self._pinv = pinv
@@ -37,7 +38,7 @@ class Logbook(object):
 
             path_to_file = self._id + ".csv"
             with open(path_to_file, "a") as f:
-                f.write( str(trial) + "," + str(pinv) + "," +  str(rinv) + "," + str(pmult) + "," + str(pinv) + "," + str(pmult) + "," + str(rmult) + "," + str(gaze) + "," + str(pointing) + "," + str(mp3) + "," + str(timer) + '\n')
+                f.write( str(trial) + "," + str(pinv) + "," +  str(rinv) + "," + str(pmult) + "," + str(pinv) + "," + str(pmult) + "," + str(rmult) + "," + str(gaze) + "," + str(pointing) + "," + str(timer) + "," + str(mp3) + '\n')
                 f.close()
         except:
             # log exception

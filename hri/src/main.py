@@ -62,8 +62,11 @@ class WorkerThread(QThread):
     self._log_trial = 0
     self._log_pinv = 0
     self._log_rinv = 0
+    self._log_pmult = 0
+    self._log_rmult = 0
     self._log_gaze = 0
     self._log_pointing = 0
+    self._log_mp3 = ""
 
   def run(self):
     #Init the State machine 
@@ -76,14 +79,15 @@ class WorkerThread(QThread):
         time.sleep(0.05) #50 msec sleep to evitate block
 
         if self.STATE_MACHINE == 0:
-            current_time = time.strftime("%H:%M:%S", time.gmtime())
-            status = "robot_coonnected = " + str(self._robot_connected) + "\n" + "xml_uploaded = " + str(self._xml_uploaded) + "\n" + "start_pressed = " + str(self._start_pressed) + "\n"
-            print "[0] " + current_time + " Waiting... \n" + status
-            time.sleep(3)
             if self._robot_connected==True and self._xml_uploaded==True and self._start_pressed==True:
                 self.STATE_MACHINE = 1 #switching to next state
                 self.emit(self.disable_signal) #GUI disabled
                 self.logger = logbook.Logbook() #Logbook Init
+            else:
+                current_time = time.strftime("%H:%M:%S", time.gmtime())
+                status = "robot_coonnected = " + str(self._robot_connected) + "\n" + "xml_uploaded = " + str(self._xml_uploaded) + "\n" + "start_pressed = " + str(self._start_pressed) + "\n"
+                print "[0] " + current_time + " Waiting... \n" + status
+                time.sleep(3)
 
         if self.STATE_MACHINE == 1:
             #TODO look or not also here, play different mp3 files with different voices
@@ -99,15 +103,15 @@ class WorkerThread(QThread):
             if self.myParser._gaze_list[self._log_trial] == "True":
               print "[2] looking == True"
               self._log_gaze = 1
-              self.myPuppet.look_to(1, 0.5) #angle(radians) + speed
+              self.myPuppet.look_to(0, 0.5) #angle(radians) + speed
             elif self.myParser._gaze_list[self._log_trial] == "False":
               print "[2] looking == False"
               self._log_gaze = 0
-              self.myPuppet.look_to(0, 0.5) #angle(radians) + speed
+              self.myPuppet.look_to(1, 0.5) #angle(radians) + speed
 
             #TODO play mp3 file
             print "[2] bla bla bla ..."
-            time.sleep(5) #sleep as long as the mp3 file
+            time.sleep(3) #sleep as long as the mp3 file
             #when mp3 file finish          
             self.STATE_MACHINE = 3 #next state
             self.timer.restart() #RESET here the timer
@@ -121,13 +125,14 @@ class WorkerThread(QThread):
                 print "[3] TIME: " + str(self._log_timer)
                 print "[3] INVESTMENT: " + str(self._log_pinv)
                 self._confirm_pressed = False #reset the variable state
+                self.emit(self.disable_signal) #GUI disabled
                 self.STATE_MACHINE = 4 #next state
+                time.sleep(2) #Sleep to evitate fast movements of the robot just after the answer
                 #TODO catch the subject investment, multiply it by the factor and show it in lcdNumberGiven
 
         #STATE-4 Pointing or not and gives the reward
         if self.STATE_MACHINE == 4:
-            print "[4] Pointing/Non-Pointing"           
-            self.emit(self.disable_signal) #GUI disabled              
+            print "[4] Pointing/Non-Pointing"                         
             if self.myParser._pointing_list[self._log_trial] == "True":
               print "[4] pointing == True"
               self._log_pointing = 1
@@ -148,8 +153,10 @@ class WorkerThread(QThread):
         if self.STATE_MACHINE == 5:
             print "[5] Saving the trial in the logbook"
             #TODO save the correct informations
-            self.logger.AddLine(self._log_trial+1, 2,3,4,5, self._log_gaze, self._log_pointing, 8, self._log_timer)
-            time.sleep(5)
+            self.logger.AddLine(self._log_trial+1, self._log_pinv, self._log_rinv, self._log_pmult, self._log_rmult, self._log_gaze, self._log_pointing, self._log_timer, self._log_mp3)
+            print "[3] " + str(self._log_trial+1) + "," + str(self._log_pinv) + "," + str(self._log_rinv) + "," + str(self._log_pmult) + "," + str(self._log_rmult) + "," + str(self._log_gaze) + "," + str(self._log_pointing) + "," + str(self._log_timer)+ "," + str(self._log_mp3)
+
+            time.sleep(2)
 
             if self._log_trial+1 != self.myParser._size:
                 self.STATE_MACHINE = 2 #cycling to state 2
