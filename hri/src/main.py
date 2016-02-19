@@ -78,6 +78,7 @@ class WorkerThread(QThread):
 
         time.sleep(0.05) #50 msec sleep to evitate block
 
+        #STATE-0 init
         if self.STATE_MACHINE == 0:
             if self._robot_connected==True and self._xml_uploaded==True and self._start_pressed==True:
                 self.STATE_MACHINE = 1 #switching to next state
@@ -89,6 +90,7 @@ class WorkerThread(QThread):
                 print "[0] " + current_time + " Waiting... \n" + status
                 time.sleep(3)
 
+        #STATE-1 Hello!
         if self.STATE_MACHINE == 1:
             #TODO look or not also here, play different mp3 files with different voices
             print "[1] Robot Hello"          
@@ -111,7 +113,7 @@ class WorkerThread(QThread):
 
             #TODO play mp3 file
             print "[2] bla bla bla ..."
-            time.sleep(3) #sleep as long as the mp3 file
+            time.sleep(4) #sleep as long as the mp3 file
             #when mp3 file finish          
             self.STATE_MACHINE = 3 #next state
             self.timer.restart() #RESET here the timer
@@ -171,7 +173,7 @@ class WorkerThread(QThread):
             self._start_pressed = False
             self._log_trial = 0
             self.STATE_MACHINE = 0 #cycling to state 0
-            subprocess.Popen(["play","-q", "bye.mp3"])
+            subprocess.Popen(["play","-q", "bye.wav"])
             time.sleep(5)
 
 

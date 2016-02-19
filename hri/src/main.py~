@@ -89,6 +89,7 @@ class WorkerThread(QThread):
                 print "[0] " + current_time + " Waiting... \n" + status
                 time.sleep(3)
 
+        #STATE-1 robot look or not and talk
         if self.STATE_MACHINE == 1:
             #TODO look or not also here, play different mp3 files with different voices
             print "[1] Robot Hello"          
@@ -111,7 +112,7 @@ class WorkerThread(QThread):
 
             #TODO play mp3 file
             print "[2] bla bla bla ..."
-            time.sleep(3) #sleep as long as the mp3 file
+            time.sleep(4) #sleep as long as the mp3 file
             #when mp3 file finish          
             self.STATE_MACHINE = 3 #next state
             self.timer.restart() #RESET here the timer
@@ -125,14 +126,14 @@ class WorkerThread(QThread):
                 print "[3] TIME: " + str(self._log_timer)
                 print "[3] INVESTMENT: " + str(self._log_pinv)
                 self._confirm_pressed = False #reset the variable state
+                self.emit(self.disable_signal) #GUI disabled
                 self.STATE_MACHINE = 4 #next state
                 time.sleep(2) #Sleep to evitate fast movements of the robot just after the answer
                 #TODO catch the subject investment, multiply it by the factor and show it in lcdNumberGiven
 
         #STATE-4 Pointing or not and gives the reward
         if self.STATE_MACHINE == 4:
-            print "[4] Pointing/Non-Pointing"           
-            self.emit(self.disable_signal) #GUI disabled              
+            print "[4] Pointing/Non-Pointing"                         
             if self.myParser._pointing_list[self._log_trial] == "True":
               print "[4] pointing == True"
               self._log_pointing = 1
@@ -171,7 +172,7 @@ class WorkerThread(QThread):
             self._start_pressed = False
             self._log_trial = 0
             self.STATE_MACHINE = 0 #cycling to state 0
-            subprocess.Popen(["play","-q", "bye.mp3"])
+            subprocess.Popen(["play","-q", "bye.wav"])
             time.sleep(5)
 
 
