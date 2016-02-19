@@ -61,6 +61,9 @@ class WorkerThread(QThread):
     self._log_timer = 0
     self._log_trial = 0
     self._log_pinv = 0
+    self._log_rinv = 0
+    self._log_gaze = 0
+    self._log_pointing = 0
 
   def run(self):
     #Init the State machine 
@@ -95,9 +98,11 @@ class WorkerThread(QThread):
             self.myPuppet.look_to(1, 0.5)
             if self.myParser._gaze_list[self._log_trial] == "True":
               print "[2] looking == True"
+              self._log_gaze = 1
               self.myPuppet.look_to(1, 0.5) #angle(radians) + speed
             elif self.myParser._gaze_list[self._log_trial] == "False":
               print "[2] looking == False"
+              self._log_gaze = 0
               self.myPuppet.look_to(0, 0.5) #angle(radians) + speed
 
             #TODO play mp3 file
@@ -125,9 +130,11 @@ class WorkerThread(QThread):
             self.emit(self.disable_signal) #GUI disabled              
             if self.myParser._pointing_list[self._log_trial] == "True":
               print "[4] pointing == True"
+              self._log_pointing = 1
               self.myPuppet.right_arm_pointing(True)
             elif self.myParser._pointing_list[self._log_trial] == "False":
               print "[4] pointing == False"
+              self._log_pointing = 0
               self.myPuppet.right_arm_pointing(False)
 
             #TODO update the lcdNumberTresure and the lcdNumberGiven
@@ -141,7 +148,7 @@ class WorkerThread(QThread):
         if self.STATE_MACHINE == 5:
             print "[5] Saving the trial in the logbook"
             #TODO save the correct informations
-            self.logger.AddLine(1,2,3,4,5,6,7,8,9)
+            self.logger.AddLine(self._log_trial+1, 2,3,4,5, self._log_gaze, self._log_pointing, 8, self._log_timer)
             time.sleep(5)
 
             if self._log_trial+1 != self.myParser._size:

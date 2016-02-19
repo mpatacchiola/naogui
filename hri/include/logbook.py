@@ -25,13 +25,23 @@ class Logbook(object):
 
     def AddLine(self, trial, pinv, rinv, pmult, rmult, gaze, pointing, mp3, timer):
         try:
+            self._trial = trial
+            self._pinv = pinv
+            self._rinv = rinv
+            self._pmult = pmult
+            self._rmult = rmult
+            self._gaze = gaze
+            self._pointing = pointing
+            self._mp3 = mp3
+            self._timer = timer
+
             path_to_file = self._id + ".csv"
-            with open(path_to_file, "w+") as f:
-                f.write(str(self._trial) + "," + str(self._pinv) + "," + '\n')
+            with open(path_to_file, "a") as f:
+                f.write( str(trial) + "," + str(pinv) + "," +  str(rinv) + "," + str(pmult) + "," + str(pinv) + "," + str(pmult) + "," + str(rmult) + "," + str(gaze) + "," + str(pointing) + "," + str(mp3) + "," + str(timer) + '\n')
                 f.close()
         except:
             # log exception
-            print("LOGBOOK: execpion adding a line to the file.")
+            print("* LOGBOOK: execpion adding a line to the file.")
                
           
     def SaveFile(self, filePath):
