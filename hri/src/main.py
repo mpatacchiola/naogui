@@ -93,10 +93,23 @@ class WorkerThread(QThread):
         #STATE-1 Hello!
         if self.STATE_MACHINE == 1:
             #TODO look or not also here, play different mp3 files with different voices
-            print "[1] Robot Hello"          
-            subprocess.Popen(["play","-q", "wave.mp3"])
+            print "[1] Robot Hello"
+            if self.myParser._gaze_list[self._log_trial] == "True":
+              print "[1] looking == True"
+              self._log_gaze = 1
+              self.myPuppet.look_to(0, 0.5) #angle(radians) + speed
+            elif self.myParser._gaze_list[self._log_trial] == "False":
+              print "[1] looking == False"
+              self._log_gaze = 0
+              self.myPuppet.look_to(1, 0.5) #angle(radians) + speed 
+            time.sleep(2)
+            mp3_path = self.myParser._mp3_list[self._log_trial]
+            mp3_path = "../share/mp3/" + mp3_path
+            subprocess.Popen(["play","-q", mp3_path])
             time.sleep(5)
             self.STATE_MACHINE = 2
+            #From here we skip the first item in the list (hello)
+            self._log_trial = self._log_trial + 1 
  
         #STATE-2 robot look or not and talk
         if self.STATE_MACHINE == 2:
@@ -111,8 +124,10 @@ class WorkerThread(QThread):
               self._log_gaze = 0
               self.myPuppet.look_to(1, 0.5) #angle(radians) + speed
 
-            #TODO play mp3 file
             print "[2] bla bla bla ..."
+            mp3_path = self.myParser._mp3_list[self._log_trial]
+            mp3_path = "../share/mp3/" + mp3_path
+            subprocess.Popen(["play","-q", mp3_path])
             time.sleep(4) #sleep as long as the mp3 file
             #when mp3 file finish          
             self.STATE_MACHINE = 3 #next state
