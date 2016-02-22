@@ -63,14 +63,14 @@ class Parser(object):
 		returned = item.getElementsByTagName("reward")[0]
 		self._reward_list.append(returned.firstChild.data)
                 print("reward ........ %s" %returned.firstChild.data)
-               
-		returned = item.getElementsByTagName("mp3")[0]
-		self._mp3_list.append(returned.firstChild.data)
-                print("mp3 ........ %s" %returned.firstChild.data)
 
 		returned = item.getElementsByTagName("mp3t")[0]
 		self._mp3t_list.append(returned.firstChild.data)
                 print("mp3t ........ %s" %returned.firstChild.data)
+               
+		returned = item.getElementsByTagName("mp3")[0]
+		self._mp3_list.append(returned.firstChild.data)
+                print("mp3 ........ %s" %returned.firstChild.data)
 
                 print("")
                 counter = counter + 1

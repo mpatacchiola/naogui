@@ -17,7 +17,6 @@ class Parser(object):
 
         self._pmf_list = list() #moltiplication factor for the person
         self._rmf_list = list() #moltiplication factor for the robot
-        self._reward_list = list() #reward given by the robot
         self._mp3_list = list() #reward given by the robot
         self._mp3t_list = list() #name of the mp3 file
 
@@ -60,10 +59,6 @@ class Parser(object):
 		self._rmf_list.append(returned.firstChild.data)
                 print("rmf ........ %s" %returned.firstChild.data)
 
-		returned = item.getElementsByTagName("reward")[0]
-		self._reward_list.append(returned.firstChild.data)
-                print("reward ........ %s" %returned.firstChild.data)
-
 		returned = item.getElementsByTagName("mp3t")[0]
 		self._mp3t_list.append(returned.firstChild.data)
                 print("mp3t ........ %s" %returned.firstChild.data)
@@ -87,6 +82,5 @@ class Parser(object):
         del self._mp3_list[:]
         del self._person_moltfact_list[:]
         del self._robot_moltfact_list[:]
-        del self._reward_list[:]
         self._experiment_loaded = False
 

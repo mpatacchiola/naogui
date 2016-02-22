@@ -45,6 +45,7 @@ class WorkerThread(QThread):
     self.yes_robot_signal = SIGNAL("yes_robot_signal")
     self.bad_xml_signal = SIGNAL("bad_xml_signal")
     self.good_xml_signal = SIGNAL("good_xml_signal")
+    self.update_lcd_signal = SIGNAL("update_lcd_signal")
 
     #Misc variables
     self.myParser = parser.Parser()
@@ -60,6 +61,7 @@ class WorkerThread(QThread):
    #Logbook variables
     self._log_timer = 0
     self._log_trial = 0
+    self._log_ptresure = 10
     self._log_pinv = 0
     self._log_rinv = 0
     self._log_pmult = 0
@@ -93,6 +95,8 @@ class WorkerThread(QThread):
         #STATE-1 Hello!
         if self.STATE_MACHINE == 1:
             print "[1] Robot Hello"
+            #Reset thr investment values
+            self.emit(self.update_lcd_signal, self._log_ptresure, self._log_rinv) #GUI lcd reset
             if self.myParser._gaze_list[self._log_trial] == "True":
               print "[1] looking == True"
               self._log_gaze = "True"
@@ -105,13 +109,16 @@ class WorkerThread(QThread):
             self._log_mp3 = self.myParser._mp3_list[self._log_trial]
             mp3_path = "../share/mp3/" + self._log_mp3
             subprocess.Popen(["play","-q", mp3_path])
-            time.sleep(8)
-            self.STATE_MACHINE = 5
+            time.sleep(6)
+            self.STATE_MACHINE = 5 #Jumping to state 5
             #From here we skip the first item in the list (hello)
             #self._log_trial = self._log_trial + 1 
  
         #STATE-2 robot look or not and talk
         if self.STATE_MACHINE == 2:
+            #Updating the multiplication values
+            self._log_pmult = float(self.myParser._pmf_list[self._log_trial])
+            self._log_rmult = float(self.myParser._rmf_list[self._log_trial])       
             print "[2] Robot Talking + Looking/Non-Looking"            
             self.myPuppet.look_to(1, 0.5)
             if self.myParser._gaze_list[self._log_trial] == "True":
@@ -142,9 +149,12 @@ class WorkerThread(QThread):
                 print "[3] INVESTMENT: " + str(self._log_pinv)
                 self._confirm_pressed = False #reset the variable state
                 self.emit(self.disable_signal) #GUI disabled
+                #Updating the investment values
+                #self._log_ptresure = self._log_ptresure - self._log_pinv
+                self._log_ptresure = float(self._log_ptresure) - float(self._log_pinv)
+                self.emit(self.update_lcd_signal, self._log_ptresure, self._log_pinv) #GUI lcd updated
                 self.STATE_MACHINE = 4 #next state
                 time.sleep(2) #Sleep to evitate fast movements of the robot just after the answer
-                #TODO catch the subject investment, multiply it by the pmf and show it in lcdNumberGiven
 
         #STATE-4 Pointing or not and gives the reward
         if self.STATE_MACHINE == 4:
@@ -157,10 +167,12 @@ class WorkerThread(QThread):
               print "[4] pointing == False"
               self._log_pointing = "False"
               self.myPuppet.right_arm_pointing(False)
-            #TODO take the value multiplied of the participant and multiply it by the rmf (this is the value that the robot will give back)
-            #TODO update the lcdNumberTresure and the lcdNumberGiven
-
-            time.sleep(2)  
+            time.sleep(2) 
+            #Updating the investment values           
+            self._log_rinv = float(self._log_pinv) * float(self._log_rmult)
+            self._log_ptresure = self._log_ptresure + self._log_rinv
+            self.emit(self.update_lcd_signal, self._log_ptresure, self._log_rinv) #GUI lcd updated
+            time.sleep(2)
             self.myPuppet.right_arm_pointing(False) #reset the arm position
             time.sleep(2)
             self.STATE_MACHINE = 5 #next state
@@ -172,7 +184,7 @@ class WorkerThread(QThread):
             self.logger.AddLine(self._log_trial+1, self._log_pinv, self._log_rinv, self._log_pmult, self._log_rmult, self._log_gaze, self._log_pointing, self._log_timer, self._log_mp3)
             print "[3] " + str(self._log_trial+1) + "," + str(self._log_pinv) + "," + str(self._log_rinv) + "," + str(self._log_pmult) + "," + str(self._log_rmult) + "," + str(self._log_gaze) + "," + str(self._log_pointing) + "," + str(self._log_timer)+ "," + str(self._log_mp3)
 
-            time.sleep(2)
+            time.sleep(1)
 
             if self._log_trial+1 != self.myParser._size:
                 self.STATE_MACHINE = 2 #cycling to state 2
@@ -196,7 +208,8 @@ class WorkerThread(QThread):
 
   def confirm(self, investment):
     self._confirm_pressed = True
-    self._log_pinv = investment
+    self._log_pinv = float(investment) * float(self._log_pmult)
+    #self._log_ptresure = float(self._log_ptresure) + float(self._log_pinv)
 
   def ip(self, ip_string, port_string):
     print "IP: " + str(ip_string) 
@@ -292,6 +305,9 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.horizontalSlider.setEnabled(True)
         self.btnConfirm.setEnabled(True)
 
+    def update_lcd(self, ptreasure, rinv):
+        self.lcdNumberTresure.display(float(ptreasure))
+        self.lcdNumberGiven.display(float(rinv))
 
     def browse_folder(self):
         selected_file = QtGui.QFileDialog.getOpenFileName(self, "Select a configuration file", "../etc/xml","XML files(*.xml)")
@@ -361,6 +377,7 @@ def main():
     form.connect(thread, thread.yes_robot_signal, form.yes_robot_confirmation)
     form.connect(thread, thread.bad_xml_signal, form.bad_xml_error)
     form.connect(thread, thread.good_xml_signal, form.good_xml_confirmation)
+    form.connect(thread, thread.update_lcd_signal, form.update_lcd)
 
     #Starting thread
     thread.start()
