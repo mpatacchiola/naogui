@@ -64,8 +64,8 @@ class WorkerThread(QThread):
     self._log_rinv = 0
     self._log_pmult = 0
     self._log_rmult = 0
-    self._log_gaze = 0
-    self._log_pointing = 0
+    self._log_gaze = False
+    self._log_pointing = False
     self._log_mp3 = ""
 
   def run(self):
@@ -92,24 +92,23 @@ class WorkerThread(QThread):
 
         #STATE-1 Hello!
         if self.STATE_MACHINE == 1:
-            #TODO look or not also here, play different mp3 files with different voices
             print "[1] Robot Hello"
             if self.myParser._gaze_list[self._log_trial] == "True":
               print "[1] looking == True"
-              self._log_gaze = 1
+              self._log_gaze = "True"
               self.myPuppet.look_to(0, 0.5) #angle(radians) + speed
             elif self.myParser._gaze_list[self._log_trial] == "False":
               print "[1] looking == False"
-              self._log_gaze = 0
+              self._log_gaze = "False"
               self.myPuppet.look_to(1, 0.5) #angle(radians) + speed 
-        
-            mp3_path = self.myParser._mp3_list[self._log_trial]
-            mp3_path = "../share/mp3/" + mp3_path
+            time.sleep(2)
+            self._log_mp3 = self.myParser._mp3_list[self._log_trial]
+            mp3_path = "../share/mp3/" + self._log_mp3
             subprocess.Popen(["play","-q", mp3_path])
-            time.sleep(5)
-            self.STATE_MACHINE = 2
+            time.sleep(8)
+            self.STATE_MACHINE = 5
             #From here we skip the first item in the list (hello)
-            self._log_trial = self._log_trial + 1 
+            #self._log_trial = self._log_trial + 1 
  
         #STATE-2 robot look or not and talk
         if self.STATE_MACHINE == 2:
@@ -117,16 +116,16 @@ class WorkerThread(QThread):
             self.myPuppet.look_to(1, 0.5)
             if self.myParser._gaze_list[self._log_trial] == "True":
               print "[2] looking == True"
-              self._log_gaze = 1
+              self._log_gaze = "True"
               self.myPuppet.look_to(0, 0.5) #angle(radians) + speed
             elif self.myParser._gaze_list[self._log_trial] == "False":
               print "[2] looking == False"
-              self._log_gaze = 0
+              self._log_gaze = "False"
               self.myPuppet.look_to(1, 0.5) #angle(radians) + speed
 
             print "[2] bla bla bla ..."
-            mp3_path = self.myParser._mp3_list[self._log_trial]
-            mp3_path = "../share/mp3/" + mp3_path
+            self._log_mp3 = self.myParser._mp3_list[self._log_trial]
+            mp3_path = "../share/mp3/" + self._log_mp3
             subprocess.Popen(["play","-q", mp3_path])
             time.sleep(4) #sleep as long as the mp3 file
             #when mp3 file finish          
@@ -145,20 +144,20 @@ class WorkerThread(QThread):
                 self.emit(self.disable_signal) #GUI disabled
                 self.STATE_MACHINE = 4 #next state
                 time.sleep(2) #Sleep to evitate fast movements of the robot just after the answer
-                #TODO catch the subject investment, multiply it by the factor and show it in lcdNumberGiven
+                #TODO catch the subject investment, multiply it by the pmf and show it in lcdNumberGiven
 
         #STATE-4 Pointing or not and gives the reward
         if self.STATE_MACHINE == 4:
             print "[4] Pointing/Non-Pointing"                         
             if self.myParser._pointing_list[self._log_trial] == "True":
               print "[4] pointing == True"
-              self._log_pointing = 1
+              self._log_pointing = "True"
               self.myPuppet.right_arm_pointing(True)
             elif self.myParser._pointing_list[self._log_trial] == "False":
               print "[4] pointing == False"
-              self._log_pointing = 0
+              self._log_pointing = "False"
               self.myPuppet.right_arm_pointing(False)
-
+            #TODO take the value multiplied of the participant and multiply it by the rmf (this is the value that the robot will give back)
             #TODO update the lcdNumberTresure and the lcdNumberGiven
 
             time.sleep(2)  
@@ -188,7 +187,7 @@ class WorkerThread(QThread):
             self._start_pressed = False
             self._log_trial = 0
             self.STATE_MACHINE = 0 #cycling to state 0
-            subprocess.Popen(["play","-q", "bye.wav"])
+            #subprocess.Popen(["play","-q", "bye.wav"])
             time.sleep(5)
 
 
