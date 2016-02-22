@@ -150,8 +150,7 @@ class WorkerThread(QThread):
                 self._confirm_pressed = False #reset the variable state
                 self.emit(self.disable_signal) #GUI disabled
                 #Updating the investment values
-                #self._log_ptresure = self._log_ptresure - self._log_pinv
-                self._log_ptresure = float(self._log_ptresure) - float(self._log_pinv)
+                #self._log_ptresure = float(self._log_ptresure) - float(self._log_pinv) #TODO I should subtract this value or not?
                 self.emit(self.update_lcd_signal, self._log_ptresure, self._log_pinv) #GUI lcd updated
                 self.STATE_MACHINE = 4 #next state
                 time.sleep(2) #Sleep to evitate fast movements of the robot just after the answer
@@ -167,12 +166,12 @@ class WorkerThread(QThread):
               print "[4] pointing == False"
               self._log_pointing = "False"
               self.myPuppet.right_arm_pointing(False)
-            time.sleep(2) 
+            time.sleep(1) 
             #Updating the investment values           
             self._log_rinv = float(self._log_pinv) * float(self._log_rmult)
             self._log_ptresure = self._log_ptresure + self._log_rinv
             self.emit(self.update_lcd_signal, self._log_ptresure, self._log_rinv) #GUI lcd updated
-            time.sleep(2)
+            time.sleep(1)
             self.myPuppet.right_arm_pointing(False) #reset the arm position
             time.sleep(2)
             self.STATE_MACHINE = 5 #next state
@@ -279,6 +278,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def start_experiment(self):
         self.emit(self.start_signal)
+        self.btnStartExperiment.hide() #hiding the start button
 
     def confirm_pressed(self):
         self.emit(self.confirm_signal, self.horizontalSlider.sliderPosition())
@@ -298,7 +298,6 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def disable_gui(self):
         self.horizontalSlider.setEnabled(False)
         self.btnConfirm.setEnabled(False)
-        self.btnStartExperiment.hide() #hiding the start button
         self.horizontalSlider.setValue(5)
 
     def enable_gui(self):

@@ -87,6 +87,7 @@ class WorkerThread(QThread):
                 self.emit(self.disable_signal) #GUI disabled
                 self.logger = logbook.Logbook() #Logbook Init
             else:
+                self.emit(self.disable_signal) #GUI disabled
                 current_time = time.strftime("%H:%M:%S", time.gmtime())
                 status = "robot_coonnected = " + str(self._robot_connected) + "\n" + "xml_uploaded = " + str(self._xml_uploaded) + "\n" + "start_pressed = " + str(self._start_pressed) + "\n"
                 print "[0] " + current_time + " Waiting... \n" + status
@@ -166,12 +167,12 @@ class WorkerThread(QThread):
               print "[4] pointing == False"
               self._log_pointing = "False"
               self.myPuppet.right_arm_pointing(False)
-            time.sleep(2) 
+            time.sleep(1) 
             #Updating the investment values           
             self._log_rinv = float(self._log_pinv) * float(self._log_rmult)
             self._log_ptresure = self._log_ptresure + self._log_rinv
             self.emit(self.update_lcd_signal, self._log_ptresure, self._log_rinv) #GUI lcd updated
-            time.sleep(2)
+            time.sleep(1)
             self.myPuppet.right_arm_pointing(False) #reset the arm position
             time.sleep(2)
             self.STATE_MACHINE = 5 #next state
@@ -278,6 +279,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def start_experiment(self):
         self.emit(self.start_signal)
+        self.btnStartExperiment.hide() #hiding the start button
 
     def confirm_pressed(self):
         self.emit(self.confirm_signal, self.horizontalSlider.sliderPosition())
@@ -297,7 +299,6 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def disable_gui(self):
         self.horizontalSlider.setEnabled(False)
         self.btnConfirm.setEnabled(False)
-        self.btnStartExperiment.hide() #hiding the start button
         self.horizontalSlider.setValue(5)
 
     def enable_gui(self):
