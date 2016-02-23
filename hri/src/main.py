@@ -138,6 +138,9 @@ class WorkerThread(QThread):
             time.sleep(4) #sleep as long as the mp3 file
             #when mp3 file finish          
             self.STATE_MACHINE = 3 #next state
+            #The robot look the screen
+            self.myPuppet.look_to(1, 0.5) #angle(radians) + speed
+            time.sleep(1)
             self.timer.restart() #RESET here the timer
             print "[3] Waiting for the subject answer..." #going to state 3
 
@@ -154,11 +157,22 @@ class WorkerThread(QThread):
                 #self._log_ptresure = float(self._log_ptresure) - float(self._log_pinv) #TODO I should subtract this value or not?
                 self.emit(self.update_lcd_signal, self._log_ptresure, self._log_pinv) #GUI lcd updated
                 self.STATE_MACHINE = 4 #next state
-                time.sleep(2) #Sleep to evitate fast movements of the robot just after the answer
+                time.sleep(1) #Sleep to evitate fast movements of the robot just after the answer
 
         #STATE-4 Pointing or not and gives the reward
         if self.STATE_MACHINE == 4:
             print "[4] Pointing/Non-Pointing"                         
+            if self.myParser._gaze_list[self._log_trial] == "True":
+              print "[2] looking == True"
+              self._log_gaze = "True"
+              self.myPuppet.look_to(0, 0.5) #angle(radians) + speed
+            elif self.myParser._gaze_list[self._log_trial] == "False":
+              print "[2] looking == False"
+              self._log_gaze = "False"
+              self.myPuppet.look_to(1, 0.5) #angle(radians) + speed
+
+            time.sleep(1)
+
             if self.myParser._pointing_list[self._log_trial] == "True":
               print "[4] pointing == True"
               self._log_pointing = "True"
@@ -167,6 +181,7 @@ class WorkerThread(QThread):
               print "[4] pointing == False"
               self._log_pointing = "False"
               self.myPuppet.right_arm_pointing(False)
+
             time.sleep(1) 
             #Updating the investment values           
             self._log_rinv = float(self._log_pinv) * float(self._log_rmult)
