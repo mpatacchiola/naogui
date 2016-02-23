@@ -74,6 +74,14 @@ class Parser(object):
         print("PARSER: Experiment list, trials loaded ........ %s" %counter)
         self._size = counter
 
+    def check_file_existence(self, path):
+        for file_name in self._mp3_list:
+            file_name = path + file_name 
+            if not os.path.isfile(file_name):
+                return False
+        return True
+    
+
     def clear_lists(self):
         print("PARSER: Clearing the objects lists.")
         del self._number_list[:]

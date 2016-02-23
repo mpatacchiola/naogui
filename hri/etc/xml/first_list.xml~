@@ -55,7 +55,7 @@
 	</trial>
 	<trial>
 		<number>8</number>
-		<mp3>GAZE_POINT_NAT_RP_01_AB_07.wav</mp3>
+		<mp3>GAZE_POINT_NAT_RP_01_AB_0.wav</mp3>
 		<pmf>3</pmf>
 		<gaze>True</gaze>
 		<pointing>True</pointing>

@@ -234,8 +234,14 @@ class WorkerThread(QThread):
     try:
         self.myParser.LoadFile(str(path))
         self.myParser.parse_experiment_list()
-        self.emit(self.good_xml_signal)
-        self._xml_uploaded = True
+        file_existance = self.myParser.check_file_existence("../share/mp3/")
+        if file_existance == True:
+            self.emit(self.good_xml_signal)
+            self._xml_uploaded = True
+        elif file_existance == False:
+            self.emit(self.bad_xml_signal)
+            print("\nERROR: Some audio files do not exist.\n")
+            self._xml_uploaded = False 
     except:
         self.emit(self.bad_xml_signal)
         print("\nERROR: Impossible to read the XML file!\n")
@@ -344,7 +350,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
             msgBox = QtGui.QMessageBox()
             msgBox.setIcon(QtGui.QMessageBox.Critical)
             msgBox.setWindowTitle("Ops... malformed XML file")
-            msgBox.setText("ERROR: It was not possible to read the XML file. \nFollow these tips and try to select again. \n \n1- Verify if you can open correctly the file with a text editor (es. notepad). \n2- Once opened the file, check if for each open bracket <trial> there is a closed bracket </trial>. \n");
+            msgBox.setText("ERROR: It was not possible to read the XML file. \nFollow these tips and try to select again. \n \n1- Verify if you can open correctly the file with a text editor (es. notepad). \n2- Once opened the file, check if for each open bracket <trial> there is a closed bracket </trial>. \n3- Check if the name of the audio files is correct.\n");
             msgBox.exec_();
 
     def good_xml_confirmation(self):

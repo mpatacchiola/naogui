@@ -1,2 +1,9 @@
-Graphical user interface for Human-Robot Interaction experiment
----------------------------------------------------------------
+GUI 4 HRI
+----------
+
+
+Installation
+------------
+
+1. Install qt4: `sudo apt-get install qt4-dev-tools qt4-designer qtcreator`
+2. Inastall pyqt: `sudo apt-get install python-qt4 pyqt4-dev-tools`

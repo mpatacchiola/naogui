@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '../include/mainwindow.ui'
 #
-# Created: Mon Feb 22 17:53:03 2016
+# Created: Tue Feb 23 11:14:02 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -132,7 +132,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusBar)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -151,7 +151,7 @@ class Ui_MainWindow(object):
         self.label_2.setText(_translate("MainWindow", "XML path:", None))
         self.btnBrowse.setText(_translate("MainWindow", "...", None))
         self.groupBox_3.setTitle(_translate("MainWindow", "Robt Control", None))
-        self.btnWakeUp.setText(_translate("MainWindow", "Wake Up", None))
+        self.btnWakeUp.setText(_translate("MainWindow", "Init Position", None))
         self.btnRest.setText(_translate("MainWindow", "Rest", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Admin", None))
 
