@@ -33,6 +33,9 @@ import parser
 import nao
 import logbook
 
+#Robot Paramaters
+SPEED = 0.2
+
 
 class WorkerThread(QThread):
   def __init__(self):
@@ -101,11 +104,11 @@ class WorkerThread(QThread):
             if self.myParser._gaze_list[self._log_trial] == "True":
               print "[1] looking == True"
               self._log_gaze = "True"
-              self.myPuppet.look_to(0, 0.5) #angle(radians) + speed
+              self.myPuppet.look_to(0, SPEED) #angle(radians) + speed
             elif self.myParser._gaze_list[self._log_trial] == "False":
               print "[1] looking == False"
               self._log_gaze = "False"
-              self.myPuppet.look_to(1, 0.5) #angle(radians) + speed 
+              self.myPuppet.look_to(1, SPEED) #angle(radians) + speed 
             time.sleep(2)
             self._log_mp3 = self.myParser._mp3_list[self._log_trial]
             mp3_path = "../share/mp3/" + self._log_mp3
@@ -121,15 +124,16 @@ class WorkerThread(QThread):
             self._log_pmult = float(self.myParser._pmf_list[self._log_trial])
             self._log_rmult = float(self.myParser._rmf_list[self._log_trial])       
             print "[2] Robot Talking + Looking/Non-Looking"            
-            self.myPuppet.look_to(1, 0.5)
+            self.myPuppet.look_to(1, SPEED)
+            time.sleep(2)
             if self.myParser._gaze_list[self._log_trial] == "True":
               print "[2] looking == True"
               self._log_gaze = "True"
-              self.myPuppet.look_to(0, 0.5) #angle(radians) + speed
+              self.myPuppet.look_to(0, SPEED) #angle(radians) + speed
             elif self.myParser._gaze_list[self._log_trial] == "False":
               print "[2] looking == False"
               self._log_gaze = "False"
-              self.myPuppet.look_to(1, 0.5) #angle(radians) + speed
+              self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
 
             print "[2] bla bla bla ..."
             self._log_mp3 = self.myParser._mp3_list[self._log_trial]
@@ -139,8 +143,9 @@ class WorkerThread(QThread):
             #when mp3 file finish          
             self.STATE_MACHINE = 3 #next state
             #The robot look the screen
-            self.myPuppet.look_to(1, 0.5) #angle(radians) + speed
+            self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
             time.sleep(1)
+            #Reset the timer and switch to the next state
             self.timer.restart() #RESET here the timer
             print "[3] Waiting for the subject answer..." #going to state 3
 
@@ -157,7 +162,7 @@ class WorkerThread(QThread):
                 #self._log_ptresure = float(self._log_ptresure) - float(self._log_pinv) #TODO I should subtract this value or not?
                 self.emit(self.update_lcd_signal, self._log_ptresure, self._log_pinv) #GUI lcd updated
                 self.STATE_MACHINE = 4 #next state
-                time.sleep(2) #Sleep to evitate fast movements of the robot just after the answer
+                time.sleep(1) #Sleep to evitate fast movements of the robot just after the answer
 
         #STATE-4 Pointing or not and gives the reward
         if self.STATE_MACHINE == 4:
@@ -165,11 +170,11 @@ class WorkerThread(QThread):
             if self.myParser._gaze_list[self._log_trial] == "True":
               print "[2] looking == True"
               self._log_gaze = "True"
-              self.myPuppet.look_to(0, 0.5) #angle(radians) + speed
+              self.myPuppet.look_to(0, SPEED) #angle(radians) + speed
             elif self.myParser._gaze_list[self._log_trial] == "False":
               print "[2] looking == False"
               self._log_gaze = "False"
-              self.myPuppet.look_to(1, 0.5) #angle(radians) + speed
+              self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
 
             time.sleep(1)
 
