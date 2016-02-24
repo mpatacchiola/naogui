@@ -113,10 +113,10 @@ class WorkerThread(QThread):
             self._log_robot_investment = 0
             self._log_player_investment = 0
             #total, player_investment, round_total, your_investment, robot_investment, robot_slider_value
-            self.emit(self.update_lcd_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, 15) #GUI lcd updated      
+            self.emit(self.update_lcd_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, 5, 15)     
             print "[2] Robot Talking + Looking/Non-Looking"            
-            self.myPuppet.look_to(1, SPEED)
-            time.sleep(2)
+            #self.myPuppet.look_to(1, SPEED)
+            #time.sleep(2)
             if self.myParser._gaze_list[self._log_trial] == "True":
               print "[2] looking == True"
               self._log_gaze = "True"
@@ -154,8 +154,9 @@ class WorkerThread(QThread):
                 self._log_multiplied_person_investment = self._log_person_investment * float(self._log_pmult)
                 self._log_player_investment = self._log_multiplied_person_investment
                 self._log_robot_investment = 0
+                person_slider_value = self._log_person_investment
                 #total, player_investment, round_total, your_investment, robot_investment
-                self.emit(self.update_lcd_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, 15) #GUI lcd updated
+                self.emit(self.update_lcd_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, person_slider_value, 15)
                 self.STATE_MACHINE = 4 #next state
                 time.sleep(1) #Sleep to evitate fast movements of the robot just after the answer
 
@@ -189,7 +190,8 @@ class WorkerThread(QThread):
             self._log_total = self._log_total + self._log_round + self._log_robot_investment
             self._log_player_investment = self._log_robot_investment
             robot_slider_value = math.ceil(self._log_robot_investment)
-            self.emit(self.update_lcd_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, robot_slider_value) #GUI lcd updated
+            person_slider_value = self._log_person_investment
+            self.emit(self.update_lcd_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, person_slider_value, robot_slider_value)
             time.sleep(1)
             self.myPuppet.right_arm_pointing(False) #reset the arm position
             time.sleep(2)
@@ -322,8 +324,8 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def disable_gui(self):
         self.horizontalSlider.setEnabled(False)
         self.btnConfirm.setEnabled(False)
-        self.horizontalSlider.setValue(5)
-        self.horizontalSliderRobot.setValue(15)
+        #self.horizontalSlider.setValue(5)
+        #self.horizontalSliderRobot.setValue(15)
         self.horizontalSliderRobot.setEnabled(True)
 
     def enable_gui(self):
@@ -331,12 +333,13 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.btnConfirm.setEnabled(True)
         self.horizontalSliderRobot.setEnabled(False)
 
-    def update_lcd(self, total, player_investment, round_total, your_investment, robot_investment, robot_slider_value):
+    def update_lcd(self, total, player_investment, round_total, your_investment, robot_investment, person_slider_value, robot_slider_value):
         self.lcdNumberTotal.display(float(total))
         self.lcdNumberPlayerInvestment.display(float(player_investment))
         self.lcdNumberRound.display(float(round_total))
         self.lcdNumberYourInvestment.display(float(your_investment))
         self.lcdNumberRobotInvestment.display(float(robot_investment))
+        self.horizontalSlider.setValue(person_slider_value)
         self.horizontalSliderRobot.setValue(robot_slider_value)
 
     def browse_folder(self):
