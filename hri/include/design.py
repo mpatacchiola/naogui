@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '../include/mainwindow.ui'
 #
-# Created: Wed Feb 24 16:06:55 2016
+# Created: Wed Feb 24 16:40:23 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -52,10 +52,12 @@ class Ui_MainWindow(object):
         self.horizontalSlider.setTickInterval(1)
         self.horizontalSlider.setObjectName(_fromUtf8("horizontalSlider"))
         self.horizontalSliderRobot = QtGui.QSlider(self.tab)
+        self.horizontalSliderRobot.setEnabled(False)
         self.horizontalSliderRobot.setGeometry(QtCore.QRect(20, 50, 871, 39))
         self.horizontalSliderRobot.setCursor(QtGui.QCursor(QtCore.Qt.OpenHandCursor))
         self.horizontalSliderRobot.setLayoutDirection(QtCore.Qt.RightToLeft)
         self.horizontalSliderRobot.setMaximum(30)
+        self.horizontalSliderRobot.setSingleStep(1)
         self.horizontalSliderRobot.setProperty("value", 15)
         self.horizontalSliderRobot.setOrientation(QtCore.Qt.Horizontal)
         self.horizontalSliderRobot.setTickPosition(QtGui.QSlider.TicksBothSides)

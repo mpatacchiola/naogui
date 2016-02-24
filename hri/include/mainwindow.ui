@@ -71,6 +71,9 @@
           </property>
          </widget>
          <widget class="QSlider" name="horizontalSliderRobot">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="geometry">
            <rect>
             <x>20</x>
@@ -87,6 +90,9 @@
           </property>
           <property name="maximum">
            <number>30</number>
+          </property>
+          <property name="singleStep">
+           <number>1</number>
           </property>
           <property name="value">
            <number>15</number>

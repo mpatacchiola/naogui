@@ -11,6 +11,7 @@
 # minidom python XML parser
 
 import sys
+import time
 #HERE it is necessary to specify the addres of the official NAO python library
 from naoqi import ALProxy
 
@@ -80,14 +81,20 @@ class Puppet(object):
 	#subprocess.Popen(["play","-q",filePath]) #using this method for the moment
         print("SAY: Neither acapela nor mp3 player have been implemented... ")
 
-    def right_arm_pointing(self, state):
+    def right_arm_pointing(self, state, speed):
         """
         Move the rigth arm
         """       	
         if state == True:
- 	     self._al_motion_proxy.setAngles("RShoulderPitch", 1.0, 0.5) #1.0 radians and 0.5 speed
+ 	     self._al_motion_proxy.setAngles("RShoulderPitch", 1.0, speed) #1.0 radians and speed
+             time.sleep(0.5)
+             self._al_motion_proxy.setAngles("RShoulderRoll", 0.2, speed) #1.0 radians and speed
         elif state == False:
-  	     self._al_motion_proxy.setAngles("RShoulderPitch", 0.0, 0.5) #1.0 radians and 0.5 speed            
+             self._al_motion_proxy.setAngles("RShoulderRoll", -0.15, speed) #1.0 radians and speed
+             time.sleep(0.5)
+  	     self._al_motion_proxy.setAngles("RShoulderPitch", 1.4, speed) #radians and speed  
+
+          
 
     def look_to(self, ANGLE, HEAD_SPEED):
         """
@@ -98,7 +105,7 @@ class Puppet(object):
  	self._al_motion_proxy.setAngles("HeadPitch", ANGLE, HEAD_SPEED)
 
 
-    def say_yes(self, ANGLE, HEAD_SPEED):
+    def say_yes(self, ANGLE, HEAD_SPEED, SLEEP_TIME):
         """
         Move the head saying YES
         """    
@@ -113,7 +120,7 @@ class Puppet(object):
 	time.sleep(SLEEP_TIME)
 	self._al_motion_proxy.setAngles("HeadYaw", 0.0, HEAD_SPEED)
 
-    def say_no(self, ANGLE, HEAD_SPEED):
+    def say_no(self, ANGLE, HEAD_SPEED, SLEEP_TIME):
         """
         Move the head saying NO
         """

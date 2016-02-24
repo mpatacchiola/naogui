@@ -177,13 +177,14 @@ class WorkerThread(QThread):
             if self.myParser._pointing_list[self._log_trial] == "True":
               print "[4] pointing == True"
               self._log_pointing = "True"
-              self.myPuppet.right_arm_pointing(True)
+              self.myPuppet.right_arm_pointing(True, SPEED)
             elif self.myParser._pointing_list[self._log_trial] == "False":
               print "[4] pointing == False"
               self._log_pointing = "False"
-              self.myPuppet.right_arm_pointing(False)
+              self.myPuppet.right_arm_pointing(False, SPEED)
 
-            time.sleep(1) 
+            time.sleep(0.5) 
+
             #Updating the investment values           
             self._log_robot_investment = float(self._log_person_investment) * float(self._log_rmult)
             #check if nasty orn not and floor or ceil the number
@@ -197,7 +198,7 @@ class WorkerThread(QThread):
             robot_slider_value = self._log_robot_investment
             self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, person_slider_value, robot_slider_value)
             time.sleep(1)
-            self.myPuppet.right_arm_pointing(False) #reset the arm position
+            self.myPuppet.right_arm_pointing(False, SPEED) #reset the arm position
             time.sleep(2)
             self.STATE_MACHINE = 5 #next state
 
