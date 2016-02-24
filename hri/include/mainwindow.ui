@@ -43,32 +43,6 @@
            </font>
           </property>
          </widget>
-         <widget class="QLCDNumber" name="lcdNumberTresure">
-          <property name="geometry">
-           <rect>
-            <x>640</x>
-            <y>320</y>
-            <width>101</width>
-            <height>41</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>15</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="layoutDirection">
-           <enum>Qt::LeftToRight</enum>
-          </property>
-          <property name="autoFillBackground">
-           <bool>false</bool>
-          </property>
-          <property name="intValue" stdset="0">
-           <number>10</number>
-          </property>
-         </widget>
          <widget class="QPushButton" name="btnConfirm">
           <property name="geometry">
            <rect>
@@ -90,9 +64,12 @@
            <rect>
             <x>20</x>
             <y>220</y>
-            <width>471</width>
+            <width>551</width>
             <height>39</height>
            </rect>
+          </property>
+          <property name="cursor">
+           <cursorShape>SizeVerCursor</cursorShape>
           </property>
           <property name="maximum">
            <number>10</number>
@@ -131,9 +108,12 @@
            <rect>
             <x>20</x>
             <y>60</y>
-            <width>471</width>
+            <width>551</width>
             <height>39</height>
            </rect>
+          </property>
+          <property name="cursor">
+           <cursorShape>OpenHandCursor</cursorShape>
           </property>
           <property name="layoutDirection">
            <enum>Qt::RightToLeft</enum>
@@ -154,57 +134,96 @@
            <number>1</number>
           </property>
          </widget>
-         <widget class="QLabel" name="label_4">
+         <widget class="QGroupBox" name="groupBox_4">
           <property name="geometry">
            <rect>
-            <x>640</x>
-            <y>300</y>
-            <width>81</width>
-            <height>16</height>
+            <x>420</x>
+            <y>290</y>
+            <width>331</width>
+            <height>121</height>
            </rect>
           </property>
-          <property name="text">
-           <string>Total:</string>
+          <property name="title">
+           <string/>
           </property>
-         </widget>
-         <widget class="QLCDNumber" name="lcdNumberTresure_2">
-          <property name="geometry">
-           <rect>
-            <x>470</x>
-            <y>300</y>
-            <width>131</width>
-            <height>71</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>15</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="layoutDirection">
-           <enum>Qt::LeftToRight</enum>
-          </property>
-          <property name="autoFillBackground">
-           <bool>false</bool>
-          </property>
-          <property name="intValue" stdset="0">
-           <number>10</number>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label_5">
-          <property name="geometry">
-           <rect>
-            <x>470</x>
-            <y>280</y>
-            <width>81</width>
-            <height>16</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Round:</string>
-          </property>
+          <widget class="QLabel" name="label_4">
+           <property name="geometry">
+            <rect>
+             <x>190</x>
+             <y>40</y>
+             <width>81</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Total:</string>
+           </property>
+          </widget>
+          <widget class="QLCDNumber" name="lcdNumberTresure">
+           <property name="geometry">
+            <rect>
+             <x>190</x>
+             <y>60</y>
+             <width>101</width>
+             <height>41</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>15</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
+           <property name="autoFillBackground">
+            <bool>false</bool>
+           </property>
+           <property name="intValue" stdset="0">
+            <number>10</number>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_5">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>10</y>
+             <width>81</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Round:</string>
+           </property>
+          </widget>
+          <widget class="QLCDNumber" name="lcdNumberRound">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>30</y>
+             <width>131</width>
+             <height>71</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>15</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
+           <property name="autoFillBackground">
+            <bool>false</bool>
+           </property>
+           <property name="intValue" stdset="0">
+            <number>10</number>
+           </property>
+          </widget>
          </widget>
         </widget>
         <widget class="QWidget" name="tab_2">
