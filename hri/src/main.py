@@ -49,7 +49,7 @@ class WorkerThread(QThread):
     self.yes_robot_signal = SIGNAL("yes_robot_signal")
     self.bad_xml_signal = SIGNAL("bad_xml_signal")
     self.good_xml_signal = SIGNAL("good_xml_signal")
-    self.update_lcd_signal = SIGNAL("update_lcd_signal")
+    self.update_gui_signal = SIGNAL("update_gui_signal")
 
     #Misc variables
     self.myParser = parser.Parser()
@@ -113,7 +113,7 @@ class WorkerThread(QThread):
             self._log_robot_investment = 0
             self._log_player_investment = 0
             #total, player_investment, round_total, your_investment, robot_investment, robot_slider_value
-            self.emit(self.update_lcd_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, 5, 15)     
+            self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, 5, 15)     
             print "[2] Robot Talking + Looking/Non-Looking"            
             #self.myPuppet.look_to(1, SPEED)
             #time.sleep(2)
@@ -156,7 +156,7 @@ class WorkerThread(QThread):
                 self._log_robot_investment = 0
                 person_slider_value = self._log_person_investment
                 #total, player_investment, round_total, your_investment, robot_investment
-                self.emit(self.update_lcd_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, person_slider_value, 15)
+                self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, person_slider_value, 15)
                 self.STATE_MACHINE = 4 #next state
                 time.sleep(1) #Sleep to evitate fast movements of the robot just after the answer
 
@@ -186,12 +186,16 @@ class WorkerThread(QThread):
             time.sleep(1) 
             #Updating the investment values           
             self._log_robot_investment = float(self._log_person_investment) * float(self._log_rmult)
-            #TODO round the investment value based on the nasty behaviour
+            #check if nasty orn not and floor or ceil the number
+            if self.myParser._nasty_list[self._log_trial] == "True":
+                 self._log_robot_investment = math.floor(self._log_robot_investment)
+            elif self.myParser._nasty_list[self._log_trial] == "False":
+                 self._log_robot_investment = math.ceil(self._log_robot_investment)
             self._log_total = self._log_total + self._log_round + self._log_robot_investment
             self._log_player_investment = self._log_robot_investment
-            robot_slider_value = math.ceil(self._log_robot_investment)
             person_slider_value = self._log_person_investment
-            self.emit(self.update_lcd_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, person_slider_value, robot_slider_value)
+            robot_slider_value = self._log_robot_investment
+            self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, person_slider_value, robot_slider_value)
             time.sleep(1)
             self.myPuppet.right_arm_pointing(False) #reset the arm position
             time.sleep(2)
@@ -259,11 +263,11 @@ class WorkerThread(QThread):
             self._xml_uploaded = True
         elif file_existance == False:
             self.emit(self.bad_xml_signal)
-            print("\nERROR: Some audio files do not exist.\n")
+            print("\n ######## ERROR: Some audio files do not exist. ######## \n")
             self._xml_uploaded = False 
     except:
         self.emit(self.bad_xml_signal)
-        print("\nERROR: Impossible to read the XML file!\n")
+        print("\n ####### ERROR: Impossible to read the XML file! ########\n")
         self._xml_uploaded = False
 
 
@@ -333,7 +337,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.btnConfirm.setEnabled(True)
         self.horizontalSliderRobot.setEnabled(False)
 
-    def update_lcd(self, total, player_investment, round_total, your_investment, robot_investment, person_slider_value, robot_slider_value):
+    def update_gui(self, total, player_investment, round_total, your_investment, robot_investment, person_slider_value, robot_slider_value):
         self.lcdNumberTotal.display(float(total))
         self.lcdNumberPlayerInvestment.display(float(player_investment))
         self.lcdNumberRound.display(float(round_total))
@@ -410,7 +414,7 @@ def main():
     form.connect(thread, thread.yes_robot_signal, form.yes_robot_confirmation)
     form.connect(thread, thread.bad_xml_signal, form.bad_xml_error)
     form.connect(thread, thread.good_xml_signal, form.good_xml_confirmation)
-    form.connect(thread, thread.update_lcd_signal, form.update_lcd)
+    form.connect(thread, thread.update_gui_signal, form.update_gui)
 
     #Starting thread
     thread.start()

@@ -19,7 +19,7 @@ class Parser(object):
         self._rmf_list = list() #moltiplication factor for the robot
         self._mp3_list = list() #reward given by the robot
         self._mp3t_list = list() #name of the mp3 file
-
+        self._nasty_list = list() #nasty or not robot
         self._size = 0
 
    
@@ -67,6 +67,10 @@ class Parser(object):
 		self._mp3_list.append(returned.firstChild.data)
                 print("mp3 ........ %s" %returned.firstChild.data)
 
+		returned = item.getElementsByTagName("nasty")[0]
+		self._nasty_list.append(returned.firstChild.data)
+                print("nasty ........ %s" %returned.firstChild.data)
+
                 print("")
                 counter = counter + 1
 
@@ -78,6 +82,7 @@ class Parser(object):
         for file_name in self._mp3_list:
             file_name = path + file_name 
             if not os.path.isfile(file_name):
+                print("PARSER: Error the file does not exist ... %s" %file_name)
                 return False
         return True
     
@@ -90,5 +95,6 @@ class Parser(object):
         del self._mp3_list[:]
         del self._person_moltfact_list[:]
         del self._robot_moltfact_list[:]
+        del self._nasty_list[:]
         self._experiment_loaded = False
 
