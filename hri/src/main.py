@@ -226,9 +226,9 @@ class WorkerThread(QThread):
   def start_experiment(self):
     self._start_pressed = True
 
-  def confirm(self, investment):
+  def confirm(self, person_investment, robot_investment):
     self._confirm_pressed = True
-    self._log_pinv = float(investment) * float(self._log_pmult)
+    self._log_pinv = float(person_investment) * float(self._log_pmult)
     #self._log_ptresure = float(self._log_ptresure) + float(self._log_pinv)
 
   def ip(self, ip_string, port_string):
@@ -308,7 +308,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.btnStartExperiment.hide() #hiding the start button
 
     def confirm_pressed(self):
-        self.emit(self.confirm_signal, self.horizontalSlider.sliderPosition())
+        self.emit(self.confirm_signal, self.horizontalSlider.sliderPosition(), self.horizontalSliderRobot.sliderPosition())
 
     def connect_pressed(self):
         ip_string = str(self.lineEditNaoIP.text())
@@ -331,9 +331,12 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.horizontalSlider.setEnabled(True)
         self.btnConfirm.setEnabled(True)
 
-    def update_lcd(self, ptreasure, rinv):
-        self.lcdNumberTresure.display(float(ptreasure))
-        self.lcdNumberGiven.display(float(rinv))
+    def update_lcd(self, total, player_investment, round_total, your_investment, robot_investment):
+        self.lcdNumberTotal.display(float(total))
+        self.lcdNumberPlayerInvestment.display(float(player_investment))
+        self.lcdNumberRound.display(float(round_total))
+        self.lcdNumberYourInvestment.display(float(your_investment))
+        self.lcdNumberRobotInvestment.display(float(robot_investment))
 
     def browse_folder(self):
         selected_file = QtGui.QFileDialog.getOpenFileName(self, "Select a configuration file", "../etc/xml","XML files(*.xml)")

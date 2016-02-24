@@ -103,7 +103,7 @@
            <string>START</string>
           </property>
          </widget>
-         <widget class="QSlider" name="horizontalSlider_2">
+         <widget class="QSlider" name="horizontalSliderRobot">
           <property name="geometry">
            <rect>
             <x>20</x>
