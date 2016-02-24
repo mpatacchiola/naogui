@@ -64,9 +64,14 @@ class WorkerThread(QThread):
    #Logbook variables
     self._log_timer = 0
     self._log_trial = 0
-    self._log_ptresure = 10
-    self._log_pinv = 0
-    self._log_rinv = 0
+
+    self._log_round = 10
+    self._log_total = 0
+    self._log_player_investment = 0
+    self._log_person_investment = 0   
+    self._log_robot_investment = 0
+    self._log_multiplied_person_investment = 0
+
     self._log_pmult = 0
     self._log_rmult = 0
     self._log_gaze = False
@@ -86,7 +91,7 @@ class WorkerThread(QThread):
         #STATE-0 init
         if self.STATE_MACHINE == 0:
             if self._robot_connected==True and self._xml_uploaded==True and self._start_pressed==True:
-                self.STATE_MACHINE = 1 #switching to next state
+                self.STATE_MACHINE = 2 #switching to next state
                 self.emit(self.disable_signal) #GUI disabled
                 self.logger = logbook.Logbook() #Logbook Init
             else:
@@ -95,34 +100,19 @@ class WorkerThread(QThread):
                 status = "robot_coonnected = " + str(self._robot_connected) + "\n" + "xml_uploaded = " + str(self._xml_uploaded) + "\n" + "start_pressed = " + str(self._start_pressed) + "\n"
                 print "[0] " + current_time + " Waiting... \n" + status
                 time.sleep(3)
-
-        #STATE-1 Hello!
-        if self.STATE_MACHINE == 1:
-            print "[1] Robot Hello"
-            #Reset thr investment values
-            self.emit(self.update_lcd_signal, self._log_ptresure, self._log_rinv) #GUI lcd reset
-            if self.myParser._gaze_list[self._log_trial] == "True":
-              print "[1] looking == True"
-              self._log_gaze = "True"
-              self.myPuppet.look_to(0, SPEED) #angle(radians) + speed
-            elif self.myParser._gaze_list[self._log_trial] == "False":
-              print "[1] looking == False"
-              self._log_gaze = "False"
-              self.myPuppet.look_to(1, SPEED) #angle(radians) + speed 
-            time.sleep(2)
-            self._log_mp3 = self.myParser._mp3_list[self._log_trial]
-            mp3_path = "../share/mp3/" + self._log_mp3
-            subprocess.Popen(["play","-q", mp3_path])
-            time.sleep(6)
-            self.STATE_MACHINE = 5 #Jumping to state 5
-            #From here we skip the first item in the list (hello)
-            #self._log_trial = self._log_trial + 1 
  
         #STATE-2 robot look or not and talk
         if self.STATE_MACHINE == 2:
             #Updating the multiplication values
             self._log_pmult = float(self.myParser._pmf_list[self._log_trial])
-            self._log_rmult = float(self.myParser._rmf_list[self._log_trial])       
+            self._log_rmult = float(self.myParser._rmf_list[self._log_trial])
+            #Updating the investment values (RESET)
+            self._log_round = 10
+            self._log_person_investment = 0
+            self._log_robot_investment = 0
+            self._log_player_investment = 0
+            #total, player_investment, round_total, your_investment, robot_investment, robot_slider_value
+            self.emit(self.update_lcd_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, 15) #GUI lcd updated      
             print "[2] Robot Talking + Looking/Non-Looking"            
             self.myPuppet.look_to(1, SPEED)
             time.sleep(2)
@@ -155,12 +145,16 @@ class WorkerThread(QThread):
             if self._confirm_pressed == True:   #when subject give the answer
                 self._log_timer = self.timer.elapsed() #record the time
                 print "[3] TIME: " + str(self._log_timer)
-                print "[3] INVESTMENT: " + str(self._log_pinv)
+                print "[3] INVESTMENT: " + str(self._log_person_investment)
                 self._confirm_pressed = False #reset the variable state
                 self.emit(self.disable_signal) #GUI disabled
                 #Updating the investment values
-                #self._log_ptresure = float(self._log_ptresure) - float(self._log_pinv) #TODO I should subtract this value or not?
-                self.emit(self.update_lcd_signal, self._log_ptresure, self._log_pinv) #GUI lcd updated
+                self._log_round = float(self._log_round) - float(self._log_person_investment)
+                self._log_multiplied_person_investment = self._log_person_investment * float(self._log_pmult)
+                self._log_player_investment = self._log_multiplied_person_investment
+                self._log_robot_investment = 0
+                #total, player_investment, round_total, your_investment, robot_investment
+                self.emit(self.update_lcd_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, 15) #GUI lcd updated
                 self.STATE_MACHINE = 4 #next state
                 time.sleep(1) #Sleep to evitate fast movements of the robot just after the answer
 
@@ -189,9 +183,12 @@ class WorkerThread(QThread):
 
             time.sleep(1) 
             #Updating the investment values           
-            self._log_rinv = float(self._log_pinv) * float(self._log_rmult)
-            self._log_ptresure = self._log_ptresure + self._log_rinv
-            self.emit(self.update_lcd_signal, self._log_ptresure, self._log_rinv) #GUI lcd updated
+            self._log_robot_investment = float(self._log_person_investment) * float(self._log_rmult)
+            #TODO round the investment value based on the nasty behaviour
+            self._log_total = self._log_total + self._log_round + self._log_robot_investment
+            self._log_player_investment = self._log_robot_investment
+            robot_slider_value = math.ceil(self._log_robot_investment)
+            self.emit(self.update_lcd_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, robot_slider_value) #GUI lcd updated
             time.sleep(1)
             self.myPuppet.right_arm_pointing(False) #reset the arm position
             time.sleep(2)
@@ -200,9 +197,8 @@ class WorkerThread(QThread):
         #STATE-5 Saving in the logbook
         if self.STATE_MACHINE == 5:
             print "[5] Saving the trial in the logbook"
-            #TODO save the correct informations
-            self.logger.AddLine(self._log_trial+1, self._log_pinv, self._log_rinv, self._log_pmult, self._log_rmult, self._log_gaze, self._log_pointing, self._log_timer, self._log_mp3)
-            print "[3] " + str(self._log_trial+1) + "," + str(self._log_pinv) + "," + str(self._log_rinv) + "," + str(self._log_pmult) + "," + str(self._log_rmult) + "," + str(self._log_gaze) + "," + str(self._log_pointing) + "," + str(self._log_timer)+ "," + str(self._log_mp3)
+            self.logger.AddLine(self._log_trial+1, self._log_person_investment, self._log_robot_investment, self._log_pmult, self._log_rmult, self._log_gaze, self._log_pointing, self._log_timer, self._log_mp3)
+            print "[3] " + str(self._log_trial+1) + "," + str(self._log_person_investment) + "," + str(self._log_robot_investment) + "," + str(self._log_pmult) + "," + str(self._log_rmult) + "," + str(self._log_gaze) + "," + str(self._log_pointing) + "," + str(self._log_timer)+ "," + str(self._log_mp3)
 
             time.sleep(1)
 
@@ -228,8 +224,8 @@ class WorkerThread(QThread):
 
   def confirm(self, person_investment, robot_investment):
     self._confirm_pressed = True
-    self._log_pinv = float(investment) * float(self._log_pmult)
-    #self._log_ptresure = float(self._log_ptresure) + float(self._log_pinv)
+    self._log_person_investment = float(person_investment)
+    self._log_robot_investment = float(robot_investment)
 
   def ip(self, ip_string, port_string):
     print "IP: " + str(ip_string) 
@@ -326,17 +322,21 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.horizontalSlider.setEnabled(False)
         self.btnConfirm.setEnabled(False)
         self.horizontalSlider.setValue(5)
+        self.horizontalSliderRobot.setValue(15)
+        self.horizontalSliderRobot.setEnabled(True)
 
     def enable_gui(self):
         self.horizontalSlider.setEnabled(True)
         self.btnConfirm.setEnabled(True)
+        self.horizontalSliderRobot.setEnabled(False)
 
-    def update_lcd(self, total, player_investment, round_total, your_investment, robot_investment):
+    def update_lcd(self, total, player_investment, round_total, your_investment, robot_investment, robot_slider_value):
         self.lcdNumberTotal.display(float(total))
         self.lcdNumberPlayerInvestment.display(float(player_investment))
         self.lcdNumberRound.display(float(round_total))
         self.lcdNumberYourInvestment.display(float(your_investment))
         self.lcdNumberRobotInvestment.display(float(robot_investment))
+        self.horizontalSliderRobot.setValue(robot_slider_value)
 
     def browse_folder(self):
         selected_file = QtGui.QFileDialog.getOpenFileName(self, "Select a configuration file", "../etc/xml","XML files(*.xml)")

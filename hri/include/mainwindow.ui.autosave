@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>667</width>
-    <height>645</height>
+    <width>941</width>
+    <height>767</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,30 +26,13 @@
          <attribute name="title">
           <string>Exp</string>
          </attribute>
-         <widget class="QLCDNumber" name="lcdNumberPlayerInvestment">
-          <property name="geometry">
-           <rect>
-            <x>440</x>
-            <y>140</y>
-            <width>131</width>
-            <height>51</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>15</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
-         </widget>
          <widget class="QPushButton" name="btnConfirm">
           <property name="geometry">
            <rect>
-            <x>260</x>
-            <y>120</y>
-            <width>91</width>
-            <height>91</height>
+            <x>390</x>
+            <y>130</y>
+            <width>131</width>
+            <height>121</height>
            </rect>
           </property>
           <property name="cursor">
@@ -62,14 +45,14 @@
          <widget class="QSlider" name="horizontalSlider">
           <property name="geometry">
            <rect>
-            <x>20</x>
-            <y>220</y>
+            <x>160</x>
+            <y>290</y>
             <width>561</width>
             <height>39</height>
            </rect>
           </property>
           <property name="cursor">
-           <cursorShape>SizeVerCursor</cursorShape>
+           <cursorShape>OpenHandCursor</cursorShape>
           </property>
           <property name="maximum">
            <number>10</number>
@@ -87,28 +70,12 @@
            <number>1</number>
           </property>
          </widget>
-         <widget class="QPushButton" name="btnStartExperiment">
-          <property name="geometry">
-           <rect>
-            <x>20</x>
-            <y>430</y>
-            <width>571</width>
-            <height>81</height>
-           </rect>
-          </property>
-          <property name="cursor">
-           <cursorShape>PointingHandCursor</cursorShape>
-          </property>
-          <property name="text">
-           <string>START</string>
-          </property>
-         </widget>
          <widget class="QSlider" name="horizontalSliderRobot">
           <property name="geometry">
            <rect>
             <x>20</x>
-            <y>60</y>
-            <width>561</width>
+            <y>50</y>
+            <width>871</width>
             <height>39</height>
            </rect>
           </property>
@@ -119,10 +86,13 @@
            <enum>Qt::RightToLeft</enum>
           </property>
           <property name="maximum">
-           <number>10</number>
+           <number>30</number>
+          </property>
+          <property name="singleStep">
+           <number>1</number>
           </property>
           <property name="value">
-           <number>5</number>
+           <number>15</number>
           </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -137,10 +107,10 @@
          <widget class="QGroupBox" name="groupBox_4">
           <property name="geometry">
            <rect>
-            <x>10</x>
-            <y>300</y>
+            <x>140</x>
+            <y>370</y>
             <width>601</width>
-            <height>121</height>
+            <height>231</height>
            </rect>
           </property>
           <property name="title">
@@ -302,19 +272,65 @@
             <string>Robot investment:</string>
            </property>
           </widget>
+          <widget class="QPushButton" name="btnStartExperiment">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>130</y>
+             <width>571</width>
+             <height>81</height>
+            </rect>
+           </property>
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="text">
+            <string>START</string>
+           </property>
+          </widget>
          </widget>
-         <widget class="QLabel" name="label_8">
+         <widget class="QGroupBox" name="groupBox_5">
           <property name="geometry">
            <rect>
-            <x>440</x>
-            <y>120</y>
-            <width>141</width>
-            <height>16</height>
+            <x>560</x>
+            <y>130</y>
+            <width>161</width>
+            <height>91</height>
            </rect>
           </property>
-          <property name="text">
-           <string>Player investment:</string>
+          <property name="title">
+           <string/>
           </property>
+          <widget class="QLCDNumber" name="lcdNumberPlayerInvestment">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>30</y>
+             <width>131</width>
+             <height>51</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>15</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_8">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>10</y>
+             <width>141</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Player investment:</string>
+           </property>
+          </widget>
          </widget>
         </widget>
         <widget class="QWidget" name="tab_2">
@@ -514,7 +530,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>667</width>
+     <width>941</width>
      <height>25</height>
     </rect>
    </property>
