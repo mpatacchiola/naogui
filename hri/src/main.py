@@ -170,7 +170,7 @@ class WorkerThread(QThread):
                     #Pretrial finished
                     print "[1][3] Pretrial finished, starting the experiment..."
                     self.emit(self.show_start_btn_signal, True) #show the button START
-                    self.emit(self.disable_signal) #GUI disabled 
+                    self.emit(self.disable_signal) #GUI disabled
                     self.SUB_STATE = 4
                 else:
                     self._pretrial_counter = self._pretrial_counter + 1
@@ -191,6 +191,14 @@ class WorkerThread(QThread):
                 if self._start_pressed == True: 
                     self._start_pressed = False
                     #TODO Reset all the log variables
+                    #Updating the investment values (RESET)
+                    self._log_round = 10
+                    self._log_person_investment = 0
+                    self._log_robot_investment = 0
+                    self._log_player_investment = 0
+                    self._log_total = 0
+                    #total, player_investment, round_total, your_investment, robot_investment, robot_slider_value
+                    self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, 5, 15)
                     self.emit(self.show_start_btn_signal, False)
                     self.STATE_MACHINE = 2
                     time.sleep(5) #small pause before starting
