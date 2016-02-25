@@ -22,6 +22,11 @@ class Parser(object):
         self._nasty_list = list() #nasty or not robot
         self._size = 0
 
+        #Pretrial list
+        self._pretrial_repeat = 0
+        self._pretrial_rmf = 0
+        self._pretrial_pmf = 0
+
    
     def LoadFile(self, filePath):
         print(filePath)
@@ -33,6 +38,26 @@ class Parser(object):
         else:
             print("PARSER: Error the XML file does not exist, please check if the path is correct.")
             return False
+
+    def parse_pretrial_list(self):
+       	items = self._doc.getElementsByTagName("pretrial")
+        counter = 0
+        print("PARSER: Pretrial list, downloading settigs:")
+	for item in items:
+		returned = item.getElementsByTagName("repeat")[0]
+		self._pretrial_repeat = returned.firstChild.data
+                print("repeat ........ %s" %returned.firstChild.data)
+
+		returned = item.getElementsByTagName("pmf")[0]
+		self._pretrial_pmf = returned.firstChild.data
+                print("pmf ........ %s" %returned.firstChild.data)
+
+		returned = item.getElementsByTagName("rmf")[0]
+		self._pretrial_rmf = returned.firstChild.data
+                print("rmf ........ %s" %returned.firstChild.data)
+
+        print("PARSER: Pretrial list, trials loaded ........ %s" %counter)
+
 
     def parse_experiment_list(self):
        	items = self._doc.getElementsByTagName("trial")

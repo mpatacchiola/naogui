@@ -1,4 +1,9 @@
 <list1>
+	<pretrial>
+		<repeat>3</repeat>
+		<pmf>3</pmf>
+		<rmf>0.5</rmf>
+	</pretrial>
 	<trial>
 		<number>1</number>
 		<mp3>GAZE_POINT_NAT_RP_01_AB_01.wav</mp3>
