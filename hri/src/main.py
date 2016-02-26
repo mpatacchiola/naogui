@@ -96,7 +96,12 @@ class WorkerThread(QThread):
         #STATE-0 init
         if self.STATE_MACHINE == 0:
             if self._robot_connected==True and self._xml_uploaded==True and self._start_pressed==True:
-                self.STATE_MACHINE = 1 #switching to next state
+                #When there are zero pretrial then jump to state 2
+                #If there are more than zero pretrial go to state 1
+                if self.myParser._pretrial_repeat == 0:
+                    self.STATE_MACHINE = 2
+                elif self.myParser._pretrial_repeat > 0:
+                    self.STATE_MACHINE = 1 #switching to next state
                 self.SUB_STATE = 0 #substate of state machine 1 set to zero
                 self.emit(self.disable_signal) #GUI disabled
                 self.logger = logbook.Logbook() #Logbook Init

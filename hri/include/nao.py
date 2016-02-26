@@ -15,6 +15,8 @@ import time
 #HERE it is necessary to specify the addres of the official NAO python library
 from naoqi import ALProxy
 
+from sys import platform as _platform
+
 
 class Puppet(object):
 
@@ -77,9 +79,15 @@ class Puppet(object):
         print("REST: the robot is going to sleep... ")
 	self._al_motion_proxy.rest()
 
-    def say_something(self, sentence):
-	#subprocess.Popen(["play","-q",filePath]) #using this method for the moment
-        print("SAY: Neither acapela nor mp3 player have been implemented... ")
+    def say_something(self, file_path):
+	#subprocess.Popen(["play","-q",filePath]) #using this method for the moment        
+        # linux
+        if _platform == "linux" or _platform == "linux2":
+            print("NAO: calling the audio player for Linux... ")      
+            subprocess.Popen(["play","-q", file_path])
+        # Windows...
+        elif _platform == "win32":
+            print("NAO: the windows audio player is not called from here ")
 
     def right_arm_pointing(self, state, speed):
         """
