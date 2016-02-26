@@ -28,7 +28,7 @@ import subprocess
 sys.path.insert(1, '../include')
 sys.path.insert(1, "../include/pynaoqi-python2.7-2.1.3.3-linux64") #import this module for the nao.py module
 import design
-import parser
+import pparser
 import nao
 import logbook
 
