@@ -42,6 +42,10 @@ class Puppet(object):
 
         self._is_recording = False
 
+    ##
+    # Play the NAO internal video
+    # 
+    #
     def play_video(self):
         # wake up the robot
 	if SIMULATOR == False:
@@ -59,13 +63,18 @@ class Puppet(object):
 	else:
 		print("VIDEO: simulator mode, the video is not recorded")
 
+    ##
+    # Stop the NAO internal video
+    #
     def stop_video(self):
 	if SIMULATOR == False:
                 if self._video_proxy.isRecording() == True:
 			print("VIDEO: stopping the video... ")
 			videoInfo = self._video_proxy.stopRecording()
 			self._is_recording = False
-
+    ##
+    # Robot wake up
+    #
     def wake_up(self):
         # wake up the robot
         print("WAKE UP: waking up the robot... ")
@@ -74,11 +83,18 @@ class Puppet(object):
 	#self._al_motion_proxy.setAngles("HeadPitch", 0.0, HEAD_SPEED)
         self._posture_proxy.goToPosture("Stand", 1)
 
+    ##
+    # Robot in rest mode
+    #
     def rest(self):
         # the robot rest
         print("REST: the robot is going to sleep... ")
 	self._al_motion_proxy.rest()
 
+    ##
+    # A player is called and an audio file is reproduced
+    # @param file_path paath to the audio file to reproduce
+    #
     def say_something(self, file_path):
 	#subprocess.Popen(["play","-q",filePath]) #using this method for the moment        
         # linux
@@ -87,8 +103,14 @@ class Puppet(object):
             subprocess.Popen(["play","-q", file_path])
         # Windows...
         elif _platform == "win32":
+            #TODO call the windows player from here
             print("NAO: the windows audio player is not called from here ")
 
+    ##
+    # Pointing the screen with the right arm
+    # @param state if True move the arm, if False set the arm in rest position
+    # @param speed the speed of the movement (between 0 and 1)
+    #
     def right_arm_pointing(self, state, speed):
         """
         Move the rigth arm
@@ -150,6 +172,9 @@ class Puppet(object):
 	self._al_motion_proxy.setAngles("HeadYaw", 0.0, HEAD_SPEED)
 	self._al_motion_proxy.setAngles("HeadPitch", 0.0, HEAD_SPEED)
 
+    ##
+    # Shutdown the robot
+    #
     def shutdown(self):
 	print("SHUTDOWN: unloading the mp3 file in the NAO...")
 

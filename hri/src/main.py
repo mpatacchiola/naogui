@@ -1,16 +1,12 @@
 #!/usr/bin/env python
 
-
-#------- Massimiliano Patacchiola -------
-#------- Plymouth University 2016 -------
+## @package NAO
+#
+#Massimiliano Patacchiola, Plymouth University 2016
 #
 # Scree resolution 1920x1080
-#
 # It is necessary to have pyQt4 installed
-#
-# To generate python code from the .ui file:
-# pyuic4 mainwindow.ui -o design.py
-#
+# To generate python code from the .ui file: pyuic4 mainwindow.ui -o design.py
 #
 
 # Libraries for Qt
@@ -39,7 +35,11 @@ import logbook
 #Robot Paramaters
 SPEED = 0.2
 
-
+## Class WorkerThread
+#  
+# It is a QThread that send signals
+# and receive signals from the GUI
+#
 class WorkerThread(QThread):
   def __init__(self):
     QThread.__init__(self)
@@ -85,6 +85,11 @@ class WorkerThread(QThread):
     self._log_pointing = False
     self._log_mp3 = ""
 
+
+  ## Main function of the Thread
+  # 
+  # It runs the State Machine
+  #
   def run(self):
     #Init the State machine 
     #self.emit(self.enable_signal) #GUI enabled
@@ -412,6 +417,11 @@ class WorkerThread(QThread):
     self.wait()
 
 
+## Class ExampleApp
+#  
+# It is a GUI class created in pyQT
+# and receive signals from the GUI
+#
 class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def __init__(self):
         super(self.__class__, self).__init__()
