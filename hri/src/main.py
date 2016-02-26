@@ -2,7 +2,7 @@
 
 ## @package NAO
 #
-#Massimiliano Patacchiola, Plymouth University 2016
+# Massimiliano Patacchiola, Plymouth University 2016
 #
 # Scree resolution 1920x1080
 # It is necessary to have pyQt4 installed
@@ -56,8 +56,8 @@ class WorkerThread(QThread):
     self.show_start_btn_signal = SIGNAL("show_start_btn_signal")
 
     #Misc variables
-    self.myParser = parser.Parser()
     self.timer = QElapsedTimer()
+    self.myParser = pparser.Parser()    
     self.STATE_MACHINE = 0
 
     #Status variables
@@ -250,7 +250,8 @@ class WorkerThread(QThread):
             print "[2] bla bla bla ..."
             self._log_mp3 = self.myParser._mp3_list[self._log_trial]
             mp3_path = "../share/mp3/" + self._log_mp3
-            subprocess.Popen(["play","-q", mp3_path])
+            #subprocess.Popen(["play","-q", mp3_path])
+            self.myPuppet.say_something(mp3_path)
             time.sleep(4) #sleep as long as the mp3 file
             #when mp3 file finish          
             self.STATE_MACHINE = 3 #next state

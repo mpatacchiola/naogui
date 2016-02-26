@@ -97,12 +97,14 @@ class Puppet(object):
 	#subprocess.Popen(["play","-q",filePath]) #using this method for the moment        
         # linux
         if _platform == "linux" or _platform == "linux2":
-            print("NAO: calling the audio player for Linux... ")      
+            print("NAO: playing the audio file on Linux... ")      
             subprocess.Popen(["play","-q", file_path])
         # Windows...
         elif _platform == "win32":
-            #TODO call the windows player from here
-            print("NAO: the windows audio player is not called from here ")
+            print("NAO: playing the audio file on windows... ")
+            #print("NAO: the windows audio player is not called from here ")
+            abs_file_path = os.path.abspath(file_path)
+            os.startfile(abs_file_path) #It opens the audio file with the standard software associated
 
     ##
     # Pointing the screen with the right arm

@@ -2,12 +2,11 @@
 
 ## @package NAO
 #
-#Massimiliano Patacchiola, Plymouth University 2016
+# Massimiliano Patacchiola, Plymouth University 2016
 #
 # Scree resolution 1920x1080
 # It is necessary to have pyQt4 installed
-# To generate python code from the .ui file:
-# pyuic4 mainwindow.ui -o design.py
+# To generate python code from the .ui file: pyuic4 mainwindow.ui -o design.py
 #
 
 # Libraries for Qt
@@ -251,7 +250,8 @@ class WorkerThread(QThread):
             print "[2] bla bla bla ..."
             self._log_mp3 = self.myParser._mp3_list[self._log_trial]
             mp3_path = "../share/mp3/" + self._log_mp3
-            subprocess.Popen(["play","-q", mp3_path])
+            #subprocess.Popen(["play","-q", mp3_path])
+            self.myPuppet.say_something(mp3_path)
             time.sleep(4) #sleep as long as the mp3 file
             #when mp3 file finish          
             self.STATE_MACHINE = 3 #next state
