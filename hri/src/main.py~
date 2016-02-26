@@ -45,6 +45,7 @@ class WorkerThread(QThread):
     QThread.__init__(self)
 
     #Signal variables
+    self.enable_components_gui_signal = SIGNAL("enable_components_gui_signal")
     self.disable_signal = SIGNAL("disable_signal")
     self.enable_signal = SIGNAL("enable_signal")
     self.no_robot_signal = SIGNAL("no_robot_signal")
@@ -65,11 +66,12 @@ class WorkerThread(QThread):
     self._start_pressed = False
     self._confirm_pressed = False
 
+    #sub state of state 1
+    self.SUB_STATE = 0
+
     #Logbook variables
     self._log_timer = 0
     self._log_trial = 0
-    self.SUB_STATE = 0
-
     self._log_round = 10
     self._log_total = 0
     self._log_player_investment = 0
@@ -85,7 +87,8 @@ class WorkerThread(QThread):
 
   def run(self):
     #Init the State machine 
-    self.emit(self.enable_signal) #GUI enabled
+    #self.emit(self.enable_signal) #GUI enabled
+    self.emit(self.enable_components_gui_signal, True,  False, False, False)
     self.timer.start()
     self.STATE_MACHINE = 0
 
@@ -102,14 +105,13 @@ class WorkerThread(QThread):
                     self.STATE_MACHINE = 2
                 elif self.myParser._pretrial_repeat > 0:
                     self.STATE_MACHINE = 1 #switching to next state
-
                 self.SUB_STATE = 0 #substate of state machine 1 set to zero
-                self.emit(self.disable_signal) #GUI disabled
+                #self.emit(self.disable_signal) #GUI disabled                
                 self.logger = logbook.Logbook() #Logbook Init
                 self.emit(self.show_start_btn_signal, False)
                 self._start_pressed = False
             else:
-                self.emit(self.disable_signal) #GUI disabled
+                #self.emit(self.disable_signal) #GUI disabled
                 current_time = time.strftime("%H:%M:%S", time.gmtime())
                 status = "robot_coonnected = " + str(self._robot_connected) + "\n" + "xml_uploaded = " + str(self._xml_uploaded) + "\n" + "start_pressed = " + str(self._start_pressed) + "\n"
                 print "[0] " + current_time + " Waiting... \n" + status
@@ -126,14 +128,16 @@ class WorkerThread(QThread):
                 self._confirm_pressed = False
                 self._start_pressed = False
                 self.SUB_STATE = 1
-                self.emit(self.enable_signal) #GUI enabled
+                #self.emit(self.enable_signal) #GUI enabled
+                print "[1][0] Enablig components"
+                self.emit(self.enable_components_gui_signal, False,  True, True, False)
                 
             #SUB_STATE == 1
                 #Waiting person answer CONFIRM
                 #Print the result when person reply
             if self.SUB_STATE == 1:
                 if self._confirm_pressed == True:
-                    print "[1] Person Confirm Pressed"
+                    print "[1][1] Person Confirm Pressed"
                     self._confirm_pressed = False
                     self._log_round = float(self._log_round) - float(self._log_person_investment)
                     self._log_multiplied_person_investment = self._log_person_investment * float(self.myParser._pretrial_pmf)
@@ -142,6 +146,7 @@ class WorkerThread(QThread):
                     person_slider_value = self._log_person_investment
                     #total, player_investment, round_total, your_investment, robot_investment, robot_slider_value
                     self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, person_slider_value, 15)
+                    self.emit(self.enable_components_gui_signal, False,  True, False, True)
                     print "[1][1] Waiting for researcher feedback..." 
                     self.SUB_STATE = 2
 
@@ -162,9 +167,11 @@ class WorkerThread(QThread):
                     robot_slider_value = self._log_robot_investment
                     self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, person_slider_value, robot_slider_value)
                     #TODO check if this pause is ok or not
-                    self.emit(self.disable_signal) #GUI disabled
+                    #self.emit(self.disable_signal) #GUI disabled
+                    self.emit(self.enable_components_gui_signal, False,  False, False, False)
                     time.sleep(5)
-                    self.emit(self.enable_signal) #GUI enabled                                                     
+                    self.emit(self.enable_components_gui_signal, False,  True, True, False)
+                    #self.emit(self.enable_signal) #GUI enabled                                                     
                     self.SUB_STATE = 3
 
             #SUB_STATE == 3
@@ -176,7 +183,8 @@ class WorkerThread(QThread):
                     #Pretrial finished
                     print "[1][3] Pretrial finished, starting the experiment..."
                     self.emit(self.show_start_btn_signal, True) #show the button START
-                    self.emit(self.disable_signal) #GUI disabled
+                    #self.emit(self.disable_signal) #GUI disabled
+                    self.emit(self.enable_components_gui_signal, True,  False, False, False)
                     self.SUB_STATE = 4
                 else:
                     self._pretrial_counter = self._pretrial_counter + 1
@@ -196,7 +204,6 @@ class WorkerThread(QThread):
             if self.SUB_STATE == 4:
                 if self._start_pressed == True: 
                     self._start_pressed = False
-                    #TODO Reset all the log variables
                     #Updating the investment values (RESET)
                     self._log_round = 10
                     self._log_person_investment = 0
@@ -205,7 +212,8 @@ class WorkerThread(QThread):
                     self._log_total = 0
                     #total, player_investment, round_total, your_investment, robot_investment, robot_slider_value
                     self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, 5, 15)
-                    self.emit(self.show_start_btn_signal, False)
+                    #self.emit(self.show_start_btn_signal, False)
+                    self.emit(self.enable_components_gui_signal, False,  False, False, False)
                     self.STATE_MACHINE = 2
                     time.sleep(5) #small pause before starting
             
@@ -250,13 +258,15 @@ class WorkerThread(QThread):
 
         #STATE-3 waiting for the subject investment
         if self.STATE_MACHINE == 3:                      
-            self.emit(self.enable_signal) #GUI enbled                      
+            #self.emit(self.enable_signal) #GUI enbled
+            self.emit(self.enable_components_gui_signal, False,  True, True, False)                      
             if self._confirm_pressed == True:   #when subject give the answer
                 self._log_timer = self.timer.elapsed() #record the time
                 print "[3] TIME: " + str(self._log_timer)
                 print "[3] INVESTMENT: " + str(self._log_person_investment)
                 self._confirm_pressed = False #reset the variable state
-                self.emit(self.disable_signal) #GUI disabled
+                #self.emit(self.disable_signal) #GUI disabled
+                self.emit(self.enable_components_gui_signal, False,  False, False, True) #GUI components
                 #Updating the investment values
                 self._log_round = float(self._log_round) - float(self._log_person_investment)
                 self._log_multiplied_person_investment = self._log_person_investment * float(self._log_pmult)
@@ -308,7 +318,7 @@ class WorkerThread(QThread):
             time.sleep(1)
             self.myPuppet.right_arm_pointing(False, SPEED) #reset the arm position
             time.sleep(2)
-            self.STATE_MACHINE = 5 #next state
+            self.STATE_MACHINE = 5 #next state        
 
         #STATE-5 Saving in the logbook
         if self.STATE_MACHINE == 5:
@@ -320,6 +330,7 @@ class WorkerThread(QThread):
 
             if self._log_trial+1 != self.myParser._size:
                 self.STATE_MACHINE = 2 #cycling to state 2
+                self.emit(self.enable_components_gui_signal, False,  False, False, False) 
                 self._log_trial = self._log_trial + 1
             elif self._log_trial+1 == self.myParser._size:
                 self.STATE_MACHINE = 6 #experiment finished               
@@ -331,7 +342,14 @@ class WorkerThread(QThread):
             self._start_pressed = False
             self._log_trial = 0
             self.STATE_MACHINE = 0 #cycling to state 0
-            #subprocess.Popen(["play","-q", "bye.wav"])
+            #Updating the investment values (RESET)
+            self._log_round = 10
+            self._log_person_investment = 0
+            self._log_robot_investment = 0
+            self._log_player_investment = 0
+            #total, player_investment, round_total, your_investment, robot_investment, robot_slider_value
+            self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, 5, 15) 
+            self.emit(self.enable_components_gui_signal, False,  False, False, False) #GUI components
             time.sleep(5)
 
 
@@ -441,6 +459,15 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         elif is_visible == False:        
             self.btnStartExperiment.hide()
 
+    def enable_components_gui(self, start_btn, confirm_btn, person_slider, robot_slider):
+        if  start_btn == True:
+            self.btnStartExperiment.show()
+        elif  start_btn == False:        
+            self.btnStartExperiment.hide()
+        self.btnConfirm.setEnabled(confirm_btn)
+        self.horizontalSlider.setEnabled(person_slider)
+        self.horizontalSliderRobot.setEnabled(robot_slider)
+
     def disable_gui(self):
         self.horizontalSlider.setEnabled(False)
         self.btnConfirm.setEnabled(False)
@@ -524,6 +551,7 @@ def main():
     thread.connect(form, form.wake_up_signal, thread.wake)
 
     #Connecting: thread > form
+    form.connect(thread, thread.enable_components_gui_signal, form.enable_components_gui)
     form.connect(thread, thread.disable_signal, form.disable_gui)
     form.connect(thread, thread.enable_signal, form.enable_gui)
     form.connect(thread, thread.no_robot_signal, form.no_robot_error)
