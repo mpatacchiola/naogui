@@ -13,6 +13,7 @@
 import sys
 import time
 import subprocess
+import os
 #HERE it is necessary to specify the addres of the official NAO python library
 from naoqi import ALProxy
 
