@@ -56,8 +56,8 @@ class WorkerThread(QThread):
     self.show_start_btn_signal = SIGNAL("show_start_btn_signal")
 
     #Misc variables
-    self.myParser = parser.Parser()
     self.timer = QElapsedTimer()
+    self.myParser = pparser.Parser()    
     self.STATE_MACHINE = 0
 
     #Status variables
