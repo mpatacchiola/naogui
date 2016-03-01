@@ -508,17 +508,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.pushButton_10.setEnabled(confirm_btn)
 
 
-    def disable_gui(self):
-        self.horizontalSlider.setEnabled(False)
-        self.btnConfirm.setEnabled(False)
-        #self.horizontalSlider.setValue(5)
-        #self.horizontalSliderRobot.setValue(15)
-        self.horizontalSliderRobot.setEnabled(True)        
 
-    def enable_gui(self):
-        self.horizontalSlider.setEnabled(True)
-        self.btnConfirm.setEnabled(True)
-        self.horizontalSliderRobot.setEnabled(True)
 
     def update_gui(self, total, player_investment, round_total, your_investment, robot_investment, person_slider_value, robot_slider_value):
         self.lcdNumberTotal.display(float(total))
@@ -592,8 +582,8 @@ def main():
 
     #Connecting: thread > form
     form.connect(thread, thread.enable_components_gui_signal, form.enable_components_gui)
-    form.connect(thread, thread.disable_signal, form.disable_gui)
-    form.connect(thread, thread.enable_signal, form.enable_gui)
+    #form.connect(thread, thread.disable_signal, form.disable_gui)
+    #form.connect(thread, thread.enable_signal, form.enable_gui)
     form.connect(thread, thread.no_robot_signal, form.no_robot_error)
     form.connect(thread, thread.yes_robot_signal, form.yes_robot_confirmation)
     form.connect(thread, thread.bad_xml_signal, form.bad_xml_error)
