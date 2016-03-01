@@ -35,6 +35,13 @@ class Puppet(object):
         print("INIT: Getting the proxy objects... ")
         self._posture_proxy = ALProxy("ALRobotPosture", NAO_IP, int(NAO_PORT))
 
+        print("INIT: Create a proxy to ALFaceDetection... ")
+        try:
+           self._face_proxy = ALProxy("ALFaceDetection", NAO_IP, int(NAO_PORT))
+        except Exception, e:
+           print "INIT: Error when creating face detection proxy:"
+           print str(e)
+
         if SIMULATOR == False:
 		self._video_proxy = ALProxy("ALVideoRecorder", NAO_IP, int(NAO_PORT))
         else:
@@ -107,6 +114,13 @@ class Puppet(object):
             #print("NAO: the windows audio player is not called from here ")
             abs_file_path = os.path.abspath(file_path)
             os.startfile(abs_file_path) #It opens the audio file with the standard software associated
+
+    ##
+    # It enables the face tracking component
+    # @param state it can be true or false
+    #
+    def enable_face_tracking(self, state):
+        self._face_proxy.enableTracking(state)
 
     ##
     # Pointing the screen with the right arm
