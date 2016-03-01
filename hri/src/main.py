@@ -436,6 +436,20 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.btnWakeUp.clicked.connect(self.wake_up_pressed)
         self.btnRest.clicked.connect(self.rest_pressed)
 
+        #Buttons investment
+        self.pushButton_0.clicked.connect(lambda: self.confirm_pressed(0))
+        self.pushButton_1.clicked.connect(lambda: self.confirm_pressed(1))
+        self.pushButton_2.clicked.connect(lambda: self.confirm_pressed(2))
+        self.pushButton_3.clicked.connect(lambda: self.confirm_pressed(3))
+        self.pushButton_4.clicked.connect(lambda: self.confirm_pressed(4))
+        self.pushButton_5.clicked.connect(lambda: self.confirm_pressed(5))
+        self.pushButton_6.clicked.connect(lambda: self.confirm_pressed(6))
+        self.pushButton_7.clicked.connect(lambda: self.confirm_pressed(7))
+        self.pushButton_8.clicked.connect(lambda: self.confirm_pressed(8))
+        self.pushButton_9.clicked.connect(lambda: self.confirm_pressed(9))
+        self.pushButton_10.clicked.connect(lambda: self.confirm_pressed(10))
+
+
         #Signal to be sent to Thread
         self.start_signal = SIGNAL("start_signal")
         self.confirm_signal = SIGNAL("confirm_signal")
@@ -449,8 +463,10 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.emit(self.start_signal)
         #self.btnStartExperiment.hide() #hiding the start button
 
-    def confirm_pressed(self):
-        self.emit(self.confirm_signal, self.horizontalSlider.sliderPosition(), self.horizontalSliderRobot.sliderPosition())
+    def confirm_pressed(self, person_investment):
+        #self.emit(self.confirm_signal, self.horizontalSlider.sliderPosition(), self.horizontalSliderRobot.sliderPosition())
+        self.emit(self.confirm_signal, person_investment, self.horizontalSliderRobot.sliderPosition())
+        print "CONFIRM: " + str(person_investment)
 
     def connect_pressed(self):
         ip_string = str(self.lineEditNaoIP.text())
@@ -478,6 +494,19 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.btnConfirm.setEnabled(confirm_btn)
         self.horizontalSlider.setEnabled(person_slider)
         self.horizontalSliderRobot.setEnabled(robot_slider)
+        #Enabling the confirm buttons
+        self.pushButton_0.setEnabled(confirm_btn)
+        self.pushButton_1.setEnabled(confirm_btn)
+        self.pushButton_2.setEnabled(confirm_btn)
+        self.pushButton_3.setEnabled(confirm_btn)
+        self.pushButton_4.setEnabled(confirm_btn)
+        self.pushButton_5.setEnabled(confirm_btn)
+        self.pushButton_6.setEnabled(confirm_btn)
+        self.pushButton_7.setEnabled(confirm_btn)
+        self.pushButton_8.setEnabled(confirm_btn)
+        self.pushButton_9.setEnabled(confirm_btn)
+        self.pushButton_10.setEnabled(confirm_btn)
+
 
     def disable_gui(self):
         self.horizontalSlider.setEnabled(False)

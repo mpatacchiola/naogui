@@ -29,10 +29,10 @@
          <widget class="QPushButton" name="btnConfirm">
           <property name="geometry">
            <rect>
-            <x>670</x>
-            <y>330</y>
+            <x>10</x>
+            <y>190</y>
             <width>71</width>
-            <height>61</height>
+            <height>71</height>
            </rect>
           </property>
           <property name="cursor">
@@ -45,8 +45,8 @@
          <widget class="QSlider" name="horizontalSlider">
           <property name="geometry">
            <rect>
-            <x>760</x>
-            <y>330</y>
+            <x>610</x>
+            <y>370</y>
             <width>641</width>
             <height>51</height>
            </rect>
