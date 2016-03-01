@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 
 
-#PREREQUISITES:
+## @package nao.py
+#
+# Massimiliano Patacchiola, Plymouth University 2016
+#
+# PREREQUISITES:
 # Naoqi SDK python, export the path in the terminal before using: export PYTHONPATH=${PYTHONPATH}:/path/to/pynaoqi-python2.7-2.1.3.3-linux64
 # export PYTHONPATH=${PYTHONPATH}:/home/massimiliano/Desktop/nao%20idm/pynaoqi-python2.7-2.1.3.3-linux64
 # linux "play" mp3 player running in background with subprocess
@@ -141,7 +145,12 @@ class Puppet(object):
   	     self._al_motion_proxy.setAngles("RShoulderPitch", 1.4, speed) #radians and speed  
 
           
-
+    ##
+    # Look to (only pitch)
+    #
+    # @param ANGLE pitch angle
+    # @param HEAD_SPEED the speed of the movement (between 0 and 1)
+    #
     def look_to(self, ANGLE, HEAD_SPEED):
         """
         Move the head looking to
@@ -149,8 +158,14 @@ class Puppet(object):
         maximum speed 1.0
         """       	
  	self._al_motion_proxy.setAngles("HeadPitch", ANGLE, HEAD_SPEED)
+        self._al_motion_proxy.setAngles("HeadYaw", 0, HEAD_SPEED) #reset the yaw
 
-
+    ##
+    # Move the head saying yes
+    #
+    # @param ANGLE pitch angle
+    # @param HEAD_SPEED the speed of the movement (between 0 and 1)
+    #
     def say_yes(self, ANGLE, HEAD_SPEED, SLEEP_TIME):
         """
         Move the head saying YES
@@ -166,6 +181,12 @@ class Puppet(object):
 	time.sleep(SLEEP_TIME)
 	self._al_motion_proxy.setAngles("HeadYaw", 0.0, HEAD_SPEED)
 
+    ##
+    # Move the head saying no
+    #
+    # @param ANGLE pitch angle
+    # @param HEAD_SPEED the speed of the movement (between 0 and 1)
+    #
     def say_no(self, ANGLE, HEAD_SPEED, SLEEP_TIME):
         """
         Move the head saying NO
@@ -181,6 +202,11 @@ class Puppet(object):
 	time.sleep(SLEEP_TIME)
 	self._al_motion_proxy.setAngles("HeadYaw", 0.0, HEAD_SPEED)
 
+    ##
+    # Reset head angles to zero
+    #
+    # @param HEAD_SPEED the speed of the movement (between 0 and 1)
+    #
     def set_neutral(self, HEAD_SPEED):
         """
         Sets the head back into a neutral pose
