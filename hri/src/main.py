@@ -167,7 +167,9 @@ class WorkerThread(QThread):
                     #TODO understand if in the pretrial mode the robot_investment should be multiplied or not           
                     #self._log_robot_investment = float(self._log_person_investment) * float(self.myParser._pretrial_rmf) #TODO this must be active or not?
                     self._log_total = self._log_total + self._log_round + self._log_robot_investment
-                    self._log_player_investment = self._log_robot_investment
+                    #self._log_multiplied_person_investment = self._log_person_investment * float(self.myParser._pretrial_pmf)
+                    #self._log_player_investment = self._log_multiplied_person_investment
+                    #self._log_player_investment = self._log_robot_investment
                     person_slider_value = self._log_person_investment
                     robot_slider_value = self._log_robot_investment
                     self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, person_slider_value, robot_slider_value)
@@ -317,7 +319,9 @@ class WorkerThread(QThread):
             elif self.myParser._nasty_list[self._log_trial] == "False":
                  self._log_robot_investment = math.ceil(self._log_robot_investment)
             self._log_total = self._log_total + self._log_round + self._log_robot_investment
-            self._log_player_investment = self._log_robot_investment
+            self._log_multiplied_person_investment = self._log_person_investment * float(self._log_pmult)
+            self._log_player_investment = self._log_multiplied_person_investment
+            #self._log_player_investment = self._log_robot_investment
             person_slider_value = self._log_person_investment
             robot_slider_value = self._log_robot_investment
             self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, person_slider_value, robot_slider_value)
@@ -492,7 +496,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         elif  start_btn == False:        
             self.btnStartExperiment.hide()
         self.btnConfirm.setEnabled(confirm_btn)
-        self.horizontalSlider.setEnabled(person_slider)
+        #self.horizontalSlider.setEnabled(person_slider)
         self.horizontalSliderRobot.setEnabled(robot_slider)
         #Enabling the confirm buttons
         self.pushButton_0.setEnabled(confirm_btn)
@@ -506,6 +510,14 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.pushButton_8.setEnabled(confirm_btn)
         self.pushButton_9.setEnabled(confirm_btn)
         self.pushButton_10.setEnabled(confirm_btn)
+        if confirm_btn == True:
+            #self.pushButton_0.setStyleSheet("background-color: green")
+            self.groupBox_confirm_btn.setStyleSheet("border-style: solid")
+            self.groupBox_confirm_btn.setStyleSheet("border-color: green")
+        elif confirm_btn == False:
+            #self.pushButton_0.setStyleSheet("background-color: red")
+            self.groupBox_confirm_btn.setStyleSheet("border-style: solid")
+            self.groupBox_confirm_btn.setStyleSheet("border-color: red")
 
 
 
@@ -514,9 +526,9 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.lcdNumberTotal.display(float(total))
         self.lcdNumberPlayerInvestment.display(float(player_investment))
         self.lcdNumberRound.display(float(round_total))
-        self.lcdNumberYourInvestment.display(float(your_investment))
+        #self.lcdNumberYourInvestment.display(float(your_investment))
         self.lcdNumberRobotInvestment.display(float(robot_investment))
-        self.horizontalSlider.setValue(person_slider_value)
+        #self.horizontalSlider.setValue(person_slider_value)
         self.horizontalSliderRobot.setValue(robot_slider_value)
 
     def browse_folder(self):
