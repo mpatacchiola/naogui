@@ -18,7 +18,7 @@ import sys
 import time
 import subprocess
 import os
-#HERE it is necessary to specify the addres of the official NAO python library
+
 from naoqi import ALProxy
 
 from sys import platform as _platform
@@ -124,8 +124,12 @@ class Puppet(object):
     # @param state it can be true or false
     #
     def enable_face_tracking(self, state):
-        self._face_proxy.enableTracking(state)
 
+        try:
+            self._face_proxy.enableTracking(state)
+        except Exception, e:
+           print "Error: NAO face tracking error..."
+           print str(e)
     ##
     # Pointing the screen with the right arm
     # @param state if True move the arm, if False set the arm in rest position

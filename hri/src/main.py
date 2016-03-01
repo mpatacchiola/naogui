@@ -244,9 +244,11 @@ class WorkerThread(QThread):
               print "[2] looking == True"
               self._log_gaze = "True"
               self.myPuppet.look_to(0, SPEED) #angle(radians) + speed
+              self.myPuppet.enable_face_tracking(True) #enables face tracking
             elif self.myParser._gaze_list[self._log_trial] == "False":
               print "[2] looking == False"
               self._log_gaze = "False"
+              self.myPuppet.enable_face_tracking(False) #disable face tracking
               self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
 
             print "[2] bla bla bla ..."
@@ -293,9 +295,11 @@ class WorkerThread(QThread):
               print "[2] looking == True"
               self._log_gaze = "True"
               self.myPuppet.look_to(0, SPEED) #angle(radians) + speed
+              self.myPuppet.enable_face_tracking(True) #enables face tracking
             elif self.myParser._gaze_list[self._log_trial] == "False":
               print "[2] looking == False"
               self._log_gaze = "False"
+              self.myPuppet.enable_face_tracking(False) #disable face tracking
               self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
 
             time.sleep(1)
@@ -387,7 +391,7 @@ class WorkerThread(QThread):
   def xml(self, path):
     print("Looking for external files... ")
     if not os.path.isfile(str(path)):
-            print("\nERROR: I cannot find the XML file. The programm will be stopped!\n")
+            print("\n# ERROR: I cannot find the XML file. The programm will be stopped!\n")
             self._xml_uploaded = False
             return
     print("Initializing XML Parser... ")
@@ -401,11 +405,11 @@ class WorkerThread(QThread):
             self._xml_uploaded = True
         elif file_existance == False:
             self.emit(self.bad_xml_signal)
-            print("\n ######## ERROR: Some audio files do not exist. ######## \n")
+            print("\n # ERROR: Some audio files do not exist. \n")
             self._xml_uploaded = False 
     except:
         self.emit(self.bad_xml_signal)
-        print("\n ####### ERROR: Impossible to read the XML file! ########\n")
+        print("\n # ERROR: Impossible to read the XML file! \n")
         self._xml_uploaded = False
 
 
@@ -414,6 +418,9 @@ class WorkerThread(QThread):
              self.myPuppet.wake_up()
         else:     
              self.myPuppet.rest()
+
+  def face_tracking(self, state):
+        self.myPuppet.enable_face_tracking(state)
 
   def stop(self):
     self.stopped = 1
@@ -439,6 +446,8 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.btnConnectToNao.clicked.connect(self.connect_pressed)
         self.btnWakeUp.clicked.connect(self.wake_up_pressed)
         self.btnRest.clicked.connect(self.rest_pressed)
+        self.btnFaceTrackingEnable.clicked.connect(lambda:  self.face_tracking_pressed(True))
+        self.btnFaceTrackingDisable.clicked.connect(lambda:  self.face_tracking_pressed(False))
 
         #Buttons investment
         self.pushButton_0.clicked.connect(lambda: self.confirm_pressed(0))
@@ -460,6 +469,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.xml_path_signal = SIGNAL("xml_path_signal")
         self.ip_signal = SIGNAL("ip_signal")
         self.wake_up_signal = SIGNAL("wake_up_signal")
+        self.face_tracking_signal = SIGNAL("face_tracking_signal")
 
         self.showMaximized()
 
@@ -477,6 +487,9 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         port_string = str(self.lineEditNaoPort.text())
         #print "IP: " + ip_string
         self.emit(self.ip_signal, ip_string, port_string)
+
+    def face_tracking_pressed(self, state):
+        self.emit(self.face_tracking_signal, state)
 
     def wake_up_pressed(self):
         self.emit(self.wake_up_signal, True)
@@ -552,6 +565,8 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
             msgBox.exec_();
             self.btnWakeUp.setEnabled(False)
             self.btnRest.setEnabled(False)
+            self.btnFaceTrackingEnable.setEnabled(False)
+            self.btnFaceTrackingDisable.setEnabled(False)
 
     def yes_robot_confirmation(self):
             msgBox = QtGui.QMessageBox()
@@ -561,6 +576,8 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
             msgBox.exec_();
             self.btnWakeUp.setEnabled(True)
             self.btnRest.setEnabled(True)
+            self.btnFaceTrackingEnable.setEnabled(True)
+            self.btnFaceTrackingDisable.setEnabled(True)
 
     def bad_xml_error(self):
             msgBox = QtGui.QMessageBox()
@@ -591,6 +608,7 @@ def main():
     thread.connect(form, form.confirm_signal, thread.confirm)
     thread.connect(form, form.ip_signal, thread.ip)
     thread.connect(form, form.wake_up_signal, thread.wake)
+    thread.connect(form, form.face_tracking_signal, thread.face_tracking)
 
     #Connecting: thread > form
     form.connect(thread, thread.enable_components_gui_signal, form.enable_components_gui)
