@@ -20,7 +20,7 @@
       <item>
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="title">
@@ -605,9 +605,9 @@
           <property name="geometry">
            <rect>
             <x>580</x>
-            <y>90</y>
+            <y>50</y>
             <width>391</width>
-            <height>331</height>
+            <height>451</height>
            </rect>
           </property>
           <property name="title">
@@ -622,7 +622,7 @@
              <x>10</x>
              <y>50</y>
              <width>361</width>
-             <height>121</height>
+             <height>91</height>
             </rect>
            </property>
            <property name="text">
@@ -636,13 +636,45 @@
            <property name="geometry">
             <rect>
              <x>10</x>
-             <y>190</y>
+             <y>150</y>
              <width>361</width>
-             <height>121</height>
+             <height>81</height>
             </rect>
            </property>
            <property name="text">
             <string>Rest</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="btnFaceTrackingEnable">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>240</y>
+             <width>361</width>
+             <height>91</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Enable Face Tracking</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="btnFaceTrackingDisable">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>340</y>
+             <width>361</width>
+             <height>91</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Disable Face Tracking</string>
            </property>
           </widget>
          </widget>
