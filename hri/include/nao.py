@@ -126,6 +126,11 @@ class Puppet(object):
     def enable_face_tracking(self, state):
 
         try:
+            if state == True:
+                print "NAO: enabling traking..."
+            elif state == False:
+                print "NAO: disabling traking..."
+
             self._face_proxy.enableTracking(state)
         except Exception, e:
            print "Error: NAO face tracking error..."
@@ -140,14 +145,37 @@ class Puppet(object):
         Move the rigth arm
         """       	
         if state == True:
- 	     self._al_motion_proxy.setAngles("RShoulderPitch", 1.0, speed) #1.0 radians and speed
+ 	     self._al_motion_proxy.setAngles("RShoulderPitch", 1.0, speed) #arm goes up
+             time.sleep(0.1)
+             self._al_motion_proxy.setAngles("RShoulderRoll", 0.0, speed) #hand point to the center
              time.sleep(0.3)
-             self._al_motion_proxy.setAngles("RShoulderRoll", 0.2, speed) #1.0 radians and speed
+             self._al_motion_proxy.setAngles("RShoulderRoll", -0.4, speed) #arm move to the right
+             time.sleep(0.1)
         elif state == False:
              self._al_motion_proxy.setAngles("RShoulderRoll", -0.15, speed) #1.0 radians and speed
              time.sleep(0.3)
   	     self._al_motion_proxy.setAngles("RShoulderPitch", 1.4, speed) #radians and speed  
 
+    ##
+    # Pointing the screen with the right arm
+    # @param state if True move the arm, if False set the arm in rest position
+    # @param speed the speed of the movement (between 0 and 1)
+    #
+    def left_arm_pointing(self, state, speed):
+        """
+        Move the left arm
+        """       	
+        if state == True:
+ 	     self._al_motion_proxy.setAngles("LShoulderPitch", 1.0, speed) #arm goes up
+             time.sleep(0.1)
+             self._al_motion_proxy.setAngles("LShoulderRoll", 0.0, speed) #hand point to the center
+             time.sleep(0.3)
+             self._al_motion_proxy.setAngles("LShoulderRoll", 0.4, speed) #arm move to the left
+             time.sleep(0.1)
+        elif state == False:
+             self._al_motion_proxy.setAngles("LShoulderRoll", 0.2, speed) #this is the arm neutral position
+             time.sleep(0.3)
+  	     self._al_motion_proxy.setAngles("LShoulderPitch", 1.4, speed) #arm goes down
           
     ##
     # Look to (only pitch)

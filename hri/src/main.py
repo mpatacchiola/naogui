@@ -14,6 +14,7 @@ from PyQt4 import QtGui  # Import the PyQt4 module we'll need
 from PyQt4.QtCore import QElapsedTimer
 from PyQt4.QtCore import QThread
 from PyQt4.QtCore import SIGNAL
+from PyQt4 import QtCore
 
 import sys  
 import os
@@ -150,7 +151,7 @@ class WorkerThread(QThread):
                     self._log_robot_investment = 0
                     person_slider_value = self._log_person_investment
                     #total, player_investment, round_total, your_investment, robot_investment, robot_slider_value
-                    self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, person_slider_value, 15)
+                    self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, person_slider_value, 15, False)
                     self.emit(self.enable_components_gui_signal, False,  True, False, True) #GUI components
                     print "[1][1] Waiting for researcher feedback..." 
                     self.SUB_STATE = 2
@@ -172,7 +173,7 @@ class WorkerThread(QThread):
                     #self._log_player_investment = self._log_robot_investment
                     person_slider_value = self._log_person_investment
                     robot_slider_value = self._log_robot_investment
-                    self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, person_slider_value, robot_slider_value)
+                    self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, person_slider_value, robot_slider_value, False)
                     #TODO check if this pause is ok or not
                     #self.emit(self.disable_signal) #GUI disabled
                     self.emit(self.enable_components_gui_signal, False,  False, False, False) #GUI components
@@ -201,7 +202,7 @@ class WorkerThread(QThread):
                     self._log_robot_investment = 0
                     self._log_player_investment = 0
                     #total, player_investment, round_total, your_investment, robot_investment, robot_slider_value
-                    self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, 5, 15)
+                    self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, 5, 15, False)
                     print "[1][3] New Round: " + str(self._pretrial_counter) + " / " + str(self.myParser._pretrial_repeat)
                     self.SUB_STATE = 1
 
@@ -218,7 +219,7 @@ class WorkerThread(QThread):
                     self._log_player_investment = 0
                     self._log_total = 0
                     #total, player_investment, round_total, your_investment, robot_investment, robot_slider_value
-                    self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, 5, 15)
+                    self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, 5, 15, False)
                     #self.emit(self.show_start_btn_signal, False)
                     self.emit(self.enable_components_gui_signal, False,  False, False, False) #GUI components
                     self.STATE_MACHINE = 2
@@ -236,7 +237,7 @@ class WorkerThread(QThread):
             self._log_robot_investment = 0
             self._log_player_investment = 0
             #total, player_investment, round_total, your_investment, robot_investment, robot_slider_value
-            self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, 5, 15)     
+            self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, 5, 15, False)     
             print "[2] Robot Talking + Looking/Non-Looking"            
             #self.myPuppet.look_to(1, SPEED)
             #time.sleep(2)
@@ -284,7 +285,7 @@ class WorkerThread(QThread):
                 self._log_robot_investment = 0
                 person_slider_value = self._log_person_investment
                 #total, player_investment, round_total, your_investment, robot_investment
-                self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, person_slider_value, 15)
+                self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, person_slider_value, 15, False)
                 self.STATE_MACHINE = 4 #next state
                 time.sleep(1) #Sleep to evitate fast movements of the robot just after the answer
 
@@ -302,19 +303,6 @@ class WorkerThread(QThread):
               self.myPuppet.enable_face_tracking(False) #disable face tracking
               self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
 
-            time.sleep(1)
-
-            if self.myParser._pointing_list[self._log_trial] == "True":
-              print "[4] pointing == True"
-              self._log_pointing = "True"
-              self.myPuppet.right_arm_pointing(True, SPEED)
-            elif self.myParser._pointing_list[self._log_trial] == "False":
-              print "[4] pointing == False"
-              self._log_pointing = "False"
-              self.myPuppet.right_arm_pointing(False, SPEED)
-
-            time.sleep(0.5) 
-
             #Updating the investment values           
             self._log_robot_investment = float(self._log_person_investment) * float(self._log_rmult)
             #check if nasty orn not and floor or ceil the number
@@ -326,11 +314,31 @@ class WorkerThread(QThread):
             self._log_multiplied_person_investment = self._log_person_investment * float(self._log_pmult)
             self._log_player_investment = self._log_multiplied_person_investment
             #self._log_player_investment = self._log_robot_investment
+
+            time.sleep(1)
+
+            if self.myParser._pointing_list[self._log_trial] == "True":
+              print "[4] pointing == True"
+              self._log_pointing = "True"
+              if (self._log_robot_investment > 15):
+                  self.myPuppet.right_arm_pointing(True, SPEED)
+              else:
+                 self.myPuppet.left_arm_pointing(True, SPEED)
+            elif self.myParser._pointing_list[self._log_trial] == "False":
+              print "[4] pointing == False"
+              self._log_pointing = "False"
+              self.myPuppet.right_arm_pointing(False, SPEED)
+              self.myPuppet.left_arm_pointing(False, SPEED)
+
+            time.sleep(0.5) 
+
+            #Updating the GUI
             person_slider_value = self._log_person_investment
             robot_slider_value = self._log_robot_investment
-            self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, person_slider_value, robot_slider_value)
+            self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, person_slider_value, robot_slider_value, True)
             time.sleep(1)
-            self.myPuppet.right_arm_pointing(False, SPEED) #reset the arm position
+            self.myPuppet.right_arm_pointing(False, SPEED)
+            self.myPuppet.left_arm_pointing(False, SPEED)
             time.sleep(2)
             self.STATE_MACHINE = 5 #next state        
 
@@ -338,20 +346,29 @@ class WorkerThread(QThread):
         if self.STATE_MACHINE == 5:
             print "[5] Saving the trial in the logbook"
             self.logger.AddLine(self._log_trial+1, self._log_person_investment, self._log_robot_investment, self._log_pmult, self._log_rmult, self._log_total, self._log_gaze, self._log_pointing, self._log_timer, self._log_mp3)
-            print "[3] " + str(self._log_trial+1) + "," + str(self._log_person_investment) + "," + str(self._log_robot_investment) + "," + str(self._log_pmult) + "," + str(self._log_rmult) + "," + str(self._log_total) + "," + str(self._log_gaze) + "," + str(self._log_pointing) + "," + str(self._log_timer)+ "," + str(self._log_mp3)
+            print "[5] " + str(self._log_trial+1) + "," + str(self._log_person_investment) + "," + str(self._log_robot_investment) + "," + str(self._log_pmult) + "," + str(self._log_rmult) + "," + str(self._log_total) + "," + str(self._log_gaze) + "," + str(self._log_pointing) + "," + str(self._log_timer)+ "," + str(self._log_mp3)
 
             time.sleep(1)
 
             if self._log_trial+1 != self.myParser._size:
-                self.STATE_MACHINE = 2 #cycling to state 2
-                self.emit(self.enable_components_gui_signal, False,  False, False, False) #GUI components
+                self.STATE_MACHINE = 6 #cycling to state 6
+                self.emit(self.enable_components_gui_signal, True,  False, False, False) #Enable the Start Button
                 self._log_trial = self._log_trial + 1
             elif self._log_trial+1 == self.myParser._size:
-                self.STATE_MACHINE = 6 #experiment finished               
+                self.STATE_MACHINE = 7 #experiment finished               
 
         #STATE-6 Final state is called to shutdown the robot
         if self.STATE_MACHINE == 6:
-            print "[6] The experiment is finished"
+            if self._start_pressed == True: 
+                self._start_pressed = False
+                print "[6] Start pressed..."
+                self.emit(self.enable_components_gui_signal, False,  False, False, False)
+                self.STATE_MACHINE = 2 #cycling to state 2
+                time.sleep(2)
+
+        #STATE-6 Final state is called to shutdown the robot
+        if self.STATE_MACHINE == 7:
+            print "[7] The experiment is finished"
             self._xml_uploaded = False #reset status variable
             self._start_pressed = False
             self._log_trial = 0
@@ -362,7 +379,7 @@ class WorkerThread(QThread):
             self._log_robot_investment = 0
             self._log_player_investment = 0
             #total, player_investment, round_total, your_investment, robot_investment, robot_slider_value
-            self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, 5, 15) 
+            self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, 5, 15, False) 
             self.emit(self.enable_components_gui_signal, False,  False, False, False) #GUI components
             time.sleep(5)
 
@@ -523,19 +540,20 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.pushButton_8.setEnabled(confirm_btn)
         self.pushButton_9.setEnabled(confirm_btn)
         self.pushButton_10.setEnabled(confirm_btn)
+
         if confirm_btn == True:
             #self.pushButton_0.setStyleSheet("background-color: green")
-            self.groupBox_confirm_btn.setStyleSheet("border-style: solid")
-            self.groupBox_confirm_btn.setStyleSheet("border-color: green")
+            self.pushButton_0.setStyleSheet("border-style: solid")
+            self.pushButton_0.setStyleSheet("border-color: green")
         elif confirm_btn == False:
             #self.pushButton_0.setStyleSheet("background-color: red")
-            self.groupBox_confirm_btn.setStyleSheet("border-style: solid")
-            self.groupBox_confirm_btn.setStyleSheet("border-color: red")
+            self.pushButton_0.setStyleSheet("border-style: solid")
+            self.pushButton_0.setStyleSheet("border-color: red")
 
 
 
 
-    def update_gui(self, total, player_investment, round_total, your_investment, robot_investment, person_slider_value, robot_slider_value):
+    def update_gui(self, total, player_investment, round_total, your_investment, robot_investment, person_slider_value, robot_slider_value, end_round):
         self.lcdNumberTotal.display(float(total))
         self.lcdNumberPlayerInvestment.display(float(player_investment))
         self.lcdNumberRound.display(float(round_total))
@@ -543,6 +561,15 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.lcdNumberRobotInvestment.display(float(robot_investment))
         #self.horizontalSlider.setValue(person_slider_value)
         self.horizontalSliderRobot.setValue(robot_slider_value)
+        self.progressBar.setValue(robot_slider_value)
+        if (end_round == True):
+            local_string = "You invested: " + str(your_investment) + "   Robot invested: " + str(robot_investment) + "   You made: " + str(round_total+robot_investment) + '\n' + "Total in your bank: " + str(total) + '\n\n' + "Please press START to begin a new round..."
+            yourstr = QtCore.QString(local_string)
+            self.textEdit.clear() #clear the textedit            
+            self.textEdit.append(yourstr)
+        else:
+            self.textEdit.clear() #clear the textedit       
+
 
     def browse_folder(self):
         selected_file = QtGui.QFileDialog.getOpenFileName(self, "Select a configuration file", "../etc/xml","XML files(*.xml)")
