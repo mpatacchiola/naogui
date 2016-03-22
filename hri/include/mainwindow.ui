@@ -20,7 +20,7 @@
       <item>
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="title">
@@ -532,14 +532,14 @@ p, li { white-space: pre-wrap; }
          <widget class="QGroupBox" name="groupBox">
           <property name="geometry">
            <rect>
-            <x>250</x>
-            <y>220</y>
+            <x>70</x>
+            <y>120</y>
             <width>271</width>
             <height>201</height>
            </rect>
           </property>
           <property name="title">
-           <string>Connection Box</string>
+           <string>1- Connection Box</string>
           </property>
           <widget class="QLineEdit" name="lineEditNaoIP">
            <property name="geometry">
@@ -616,14 +616,14 @@ p, li { white-space: pre-wrap; }
          <widget class="QGroupBox" name="groupBox_2">
           <property name="geometry">
            <rect>
-            <x>250</x>
-            <y>90</y>
-            <width>291</width>
-            <height>121</height>
+            <x>860</x>
+            <y>110</y>
+            <width>311</width>
+            <height>151</height>
            </rect>
           </property>
           <property name="title">
-           <string>XML file</string>
+           <string>3- XML file</string>
           </property>
           <widget class="QLabel" name="label_2">
            <property name="geometry">
@@ -644,7 +644,7 @@ p, li { white-space: pre-wrap; }
              <x>0</x>
              <y>50</y>
              <width>211</width>
-             <height>61</height>
+             <height>71</height>
             </rect>
            </property>
            <property name="readOnly">
@@ -656,8 +656,8 @@ p, li { white-space: pre-wrap; }
             <rect>
              <x>220</x>
              <y>50</y>
-             <width>51</width>
-             <height>61</height>
+             <width>71</width>
+             <height>71</height>
             </rect>
            </property>
            <property name="text">
@@ -668,14 +668,14 @@ p, li { white-space: pre-wrap; }
          <widget class="QGroupBox" name="groupBox_3">
           <property name="geometry">
            <rect>
-            <x>580</x>
-            <y>50</y>
+            <x>410</x>
+            <y>110</y>
             <width>391</width>
             <height>451</height>
            </rect>
           </property>
           <property name="title">
-           <string>Robt Control</string>
+           <string>2- Robt Control</string>
           </property>
           <widget class="QPushButton" name="btnWakeUp">
            <property name="enabled">
