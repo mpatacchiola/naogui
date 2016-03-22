@@ -47,6 +47,12 @@ class Puppet(object):
            print "INIT: Error when creating face detection proxy:"
            print str(e)
 
+        try:
+         self._audio_proxy = ALProxy("ALAudioPlayer", NAO_IP, int(NAO_PORT))
+        except Exception, e:
+           print "INIT: Error when creating audio proxy:"
+           print str(e)
+
         if SIMULATOR == False:
 		self._video_proxy = ALProxy("ALVideoRecorder", NAO_IP, int(NAO_PORT))
         else:
@@ -121,22 +127,49 @@ class Puppet(object):
             os.startfile(abs_file_path) #It opens the audio file with the standard software associated
 
     ##
+    # The robot plays an internal stored audio file
+    # @param file_path the internal path to the audio file to reproduce
+    # the root directory is: "/home/nao"
+    # @volume set the volume of the robot speakers (0.0 - 1.0)
+    #
+    def play_audio(self, file_path, volume=0.5):
+        #check the volume
+        if volume > 1.0:
+            volume = 1.0
+        if volume < 0.0:
+            volume = 0.0
+        try:
+            #Loads a file
+            path = str(file_path)
+            fileId = self._audio_proxy.loadFile(path) #load file
+            self._audio_proxy.setVolume(fileId, volume) #set volume
+            time.sleep(0.1)
+            self._audio_proxy.play(fileId)
+        except Exception,e:
+            print "NAO: error playing the audio file"
+            print "Error was: ",e
+
+    ##
     # It enables the face tracking component
     # @param state it can be true or false
     #
     def enable_face_tracking(self, state):
 
-        try:
+        try:                
             if state == True:
                 print "NAO: enabling traking..."
-                #self._face_proxy.enableTracking(True)
+                if (self._tracker.isActive() == True):
+                    print "NAO: Is tracking now enabled on the robot?", self._tracker.isActive()
+                    return
                 faceWidth = 0.1
                 self._tracker.registerTarget("Face", faceWidth) #Add target to track.   
                 self._tracker.track("Face") # Start tracker.
                 print "NAO: Is tracking now enabled on the robot?", self._tracker.isActive()
             elif state == False:
                 print "NAO: disabling traking..."
-                #self._face_proxy.enableTracking(False)   
+                if (self._tracker.isActive() == False):
+                    print "NAO: Is tracking now enabled on the robot?", self._tracker.isActive()
+                    return 
                 self._tracker.stopTracker() # Stop tracker.
                 self._tracker.unregisterAllTargets()
                 print "NAO: Is tracking now enabled on the robot?", self._tracker.isActive()

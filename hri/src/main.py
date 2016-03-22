@@ -244,7 +244,7 @@ class WorkerThread(QThread):
             if self.myParser._gaze_list[self._log_trial] == "True":
               print "[2] looking == True"
               self._log_gaze = "True"
-              self.myPuppet.look_to(0, SPEED) #angle(radians) + speed
+              #self.myPuppet.look_to(0, SPEED) #angle(radians) + speed
               self.myPuppet.enable_face_tracking(True) #enables face tracking
             elif self.myParser._gaze_list[self._log_trial] == "False":
               print "[2] looking == False"
@@ -254,10 +254,12 @@ class WorkerThread(QThread):
 
             print "[2] bla bla bla ..."
             self._log_mp3 = self.myParser._mp3_list[self._log_trial]
-            mp3_path = "../share/mp3/" + self._log_mp3
-            #subprocess.Popen(["play","-q", mp3_path])
-            self.myPuppet.say_something(mp3_path)
-            time.sleep(4) #sleep as long as the mp3 file
+            mp3_path = "/home/nao/naoqi/mp3/" + self._log_mp3
+            self.myPuppet.play_audio(mp3_path, 0.8) #play the audio file at that volume
+            #mp3_path = "../share/mp3/" + self._log_mp3
+            #self.myPuppet.say_something(mp3_path)
+            #The sleep is not necessary here if the play_audio function is used
+            #time.sleep(4) #sleep as long as the mp3 file
             #when mp3 file finish          
             self.STATE_MACHINE = 3 #next state
             #The robot look the screen
@@ -293,17 +295,6 @@ class WorkerThread(QThread):
         #STATE-4 Pointing or not and gives the reward
         if self.STATE_MACHINE == 4:
             print "[4] Pointing/Non-Pointing"                         
-            if self.myParser._gaze_list[self._log_trial] == "True":
-              print "[2] looking == True"
-              self._log_gaze = "True"
-              self.myPuppet.look_to(0, SPEED) #angle(radians) + speed
-              self.myPuppet.enable_face_tracking(True) #enables face tracking
-            elif self.myParser._gaze_list[self._log_trial] == "False":
-              print "[2] looking == False"
-              self._log_gaze = "False"
-              self.myPuppet.enable_face_tracking(False) #disable face tracking
-              self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
-
             #Updating the investment values           
             self._log_robot_investment = float(self._log_person_investment) * float(self._log_rmult)
             #check if nasty orn not and floor or ceil the number
@@ -318,6 +309,7 @@ class WorkerThread(QThread):
 
             time.sleep(1)
 
+            #Pointing (or not) while looking to the screen
             if self.myParser._pointing_list[self._log_trial] == "True":
               print "[4] pointing == True"
               self._log_pointing = "True"
@@ -337,9 +329,26 @@ class WorkerThread(QThread):
             person_slider_value = self._log_person_investment
             robot_slider_value = self._log_robot_investment
             self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, person_slider_value, robot_slider_value, True)
-            time.sleep(1)
+
+            #Reset the arms
+            time.sleep(0.5)
             self.myPuppet.right_arm_pointing(False, SPEED)
             self.myPuppet.left_arm_pointing(False, SPEED)
+
+            #Looking (or not) the subject
+            if self.myParser._gaze_list[self._log_trial] == "True":
+              print "[2] looking == True"
+              self._log_gaze = "True"
+              self.myPuppet.look_to(0, SPEED) #angle(radians) + speed
+              time.sleep(0.2)
+              self.myPuppet.enable_face_tracking(True) #enables face tracking
+            elif self.myParser._gaze_list[self._log_trial] == "False":
+              print "[2] looking == False"
+              self._log_gaze = "False"
+              self.myPuppet.enable_face_tracking(False) #disable face tracking
+              self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
+
+            #Change state
             time.sleep(2)
             self.STATE_MACHINE = 5 #next state        
 
