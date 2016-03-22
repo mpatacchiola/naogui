@@ -189,14 +189,14 @@ class Puppet(object):
         """       	
         if state == True:
  	     self._al_motion_proxy.setAngles("RShoulderPitch", 1.0, speed) #arm goes up
-             time.sleep(0.1)
-             self._al_motion_proxy.setAngles("RShoulderRoll", 0.0, speed) #hand point to the center
+             self._al_motion_proxy.setAngles("RWristYaw", -1.0, speed) #hand turn 
              time.sleep(0.3)
-             self._al_motion_proxy.setAngles("RShoulderRoll", -0.4, speed) #arm move to the right
+             self._al_motion_proxy.setAngles("RShoulderRoll", -0.5, speed) #arm move to the right
              time.sleep(0.1)
         elif state == False:
-             self._al_motion_proxy.setAngles("RShoulderRoll", -0.15, speed) #1.0 radians and speed
+             self._al_motion_proxy.setAngles("RShoulderRoll", -0.2, speed) #this is the arm neutral position
              time.sleep(0.3)
+             self._al_motion_proxy.setAngles("RWristYaw", 0.0, speed) #hand turn
   	     self._al_motion_proxy.setAngles("RShoulderPitch", 1.4, speed) #radians and speed  
 
     ##
@@ -210,14 +210,14 @@ class Puppet(object):
         """       	
         if state == True:
  	     self._al_motion_proxy.setAngles("LShoulderPitch", 1.0, speed) #arm goes up
-             time.sleep(0.1)
-             self._al_motion_proxy.setAngles("LShoulderRoll", 0.0, speed) #hand point to the center
+             self._al_motion_proxy.setAngles("LWristYaw", 1.0, speed) #hand turn             
              time.sleep(0.3)
-             self._al_motion_proxy.setAngles("LShoulderRoll", 0.4, speed) #arm move to the left
+             self._al_motion_proxy.setAngles("LShoulderRoll", 0.5, speed) #arm move to the left
              time.sleep(0.1)
         elif state == False:
              self._al_motion_proxy.setAngles("LShoulderRoll", 0.2, speed) #this is the arm neutral position
              time.sleep(0.3)
+             self._al_motion_proxy.setAngles("LWristYaw", 0.0, speed) #hand turn
   	     self._al_motion_proxy.setAngles("LShoulderPitch", 1.4, speed) #arm goes down
           
     ##
