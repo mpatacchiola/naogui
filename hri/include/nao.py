@@ -39,9 +39,10 @@ class Puppet(object):
         print("INIT: Getting the proxy objects... ")
         self._posture_proxy = ALProxy("ALRobotPosture", NAO_IP, int(NAO_PORT))
 
-        print("INIT: Create a proxy to ALFaceDetection... ")
+        print("INIT: Create a proxy to ALFaceDetection and ALTracker... ")
         try:
            self._face_proxy = ALProxy("ALFaceDetection", NAO_IP, int(NAO_PORT))
+           self._tracker = ALProxy("ALTracker", NAO_IP, int(NAO_PORT))
         except Exception, e:
            print "INIT: Error when creating face detection proxy:"
            print str(e)
@@ -128,10 +129,19 @@ class Puppet(object):
         try:
             if state == True:
                 print "NAO: enabling traking..."
+                #self._face_proxy.enableTracking(True)
+                faceWidth = 0.1
+                self._tracker.registerTarget("Face", faceWidth) #Add target to track.   
+                self._tracker.track("Face") # Start tracker.
+                print "NAO: Is tracking now enabled on the robot?", self._tracker.isActive()
             elif state == False:
                 print "NAO: disabling traking..."
+                #self._face_proxy.enableTracking(False)   
+                self._tracker.stopTracker() # Stop tracker.
+                self._tracker.unregisterAllTargets()
+                print "NAO: Is tracking now enabled on the robot?", self._tracker.isActive()
 
-            self._face_proxy.enableTracking(state)
+            #self._face_proxy.enableTracking(state)
         except Exception, e:
            print "Error: NAO face tracking error..."
            print str(e)

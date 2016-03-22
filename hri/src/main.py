@@ -261,6 +261,7 @@ class WorkerThread(QThread):
             #when mp3 file finish          
             self.STATE_MACHINE = 3 #next state
             #The robot look the screen
+            self.myPuppet.enable_face_tracking(False) #disable face tracking
             self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
             time.sleep(1)
             #Reset the timer and switch to the next state
