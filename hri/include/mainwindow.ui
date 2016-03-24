@@ -20,7 +20,7 @@
       <item>
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="title">
@@ -101,7 +101,7 @@
             </rect>
            </property>
            <property name="text">
-            <string>Total:</string>
+            <string>Bank:</string>
            </property>
           </widget>
           <widget class="QLCDNumber" name="lcdNumberTotal">
@@ -238,7 +238,7 @@
             </rect>
            </property>
            <property name="text">
-            <string>Robot investment:</string>
+            <string>Robot returned:</string>
            </property>
           </widget>
           <widget class="QLCDNumber" name="lcdNumberRobotInvestment">
@@ -488,10 +488,10 @@
          <widget class="QGroupBox" name="groupBox_6">
           <property name="geometry">
            <rect>
-            <x>480</x>
-            <y>350</y>
-            <width>891</width>
-            <height>171</height>
+            <x>380</x>
+            <y>340</y>
+            <width>1081</width>
+            <height>181</height>
            </rect>
           </property>
           <property name="title">
@@ -502,8 +502,8 @@
             <rect>
              <x>40</x>
              <y>10</y>
-             <width>831</width>
-             <height>141</height>
+             <width>1001</width>
+             <height>161</height>
             </rect>
            </property>
            <property name="font">
@@ -617,7 +617,7 @@ p, li { white-space: pre-wrap; }
           <property name="geometry">
            <rect>
             <x>860</x>
-            <y>110</y>
+            <y>120</y>
             <width>311</width>
             <height>151</height>
            </rect>
@@ -669,7 +669,7 @@ p, li { white-space: pre-wrap; }
           <property name="geometry">
            <rect>
             <x>410</x>
-            <y>110</y>
+            <y>120</y>
             <width>391</width>
             <height>451</height>
            </rect>
