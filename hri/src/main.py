@@ -397,7 +397,7 @@ class WorkerThread(QThread):
               self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
 
             #Change state
-            time.sleep(2)
+            time.sleep(0.5)
             self.STATE_MACHINE = 5 #next state        
 
         #STATE-5 Saving in the logbook
@@ -406,7 +406,7 @@ class WorkerThread(QThread):
             self.logger.AddLine(self._log_trial+1, self._log_person_investment, self._log_robot_investment, self._log_pmult, self._log_rmult, self._log_total, self._log_gaze, self._log_pointing, self._log_timer, self._log_mp3)
             print "[5] " + str(self._log_trial+1) + "," + str(self._log_person_investment) + "," + str(self._log_robot_investment) + "," + str(self._log_pmult) + "," + str(self._log_rmult) + "," + str(self._log_total) + "," + str(self._log_gaze) + "," + str(self._log_pointing) + "," + str(self._log_timer)+ "," + str(self._log_mp3)
 
-            time.sleep(1)
+            #time.sleep(1)
 
             if self._log_trial+1 != self.myParser._size:
                 self.STATE_MACHINE = 6 #cycling to state 6
@@ -415,14 +415,14 @@ class WorkerThread(QThread):
             elif self._log_trial+1 == self.myParser._size:
                 self.STATE_MACHINE = 7 #experiment finished               
 
-        #STATE-6 Final state is called to shutdown the robot
+        #STATE-6 Waiting for the subject pressing START
         if self.STATE_MACHINE == 6:
             if self._start_pressed == True: 
                 self._start_pressed = False
                 print "[6] Start pressed..."
                 self.emit(self.enable_components_gui_signal, False,  False, False, False)
                 self.STATE_MACHINE = 2 #cycling to state 2
-                time.sleep(2)
+                time.sleep(1)
 
         #STATE-7 Final state is called to shutdown the robot
         if self.STATE_MACHINE == 7:
