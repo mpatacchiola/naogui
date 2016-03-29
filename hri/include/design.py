@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '../include/mainwindow.ui'
 #
-# Created: Tue Mar 29 19:01:08 2016
+# Created: Tue Mar 29 19:19:41 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -246,6 +246,7 @@ class Ui_MainWindow(object):
         self.groupBox_7.setObjectName(_fromUtf8("groupBox_7"))
         self.textEditSubjectNumber = QtGui.QTextEdit(self.groupBox_7)
         self.textEditSubjectNumber.setGeometry(QtCore.QRect(10, 60, 231, 31))
+        self.textEditSubjectNumber.setInputMethodHints(QtCore.Qt.ImhNone)
         self.textEditSubjectNumber.setObjectName(_fromUtf8("textEditSubjectNumber"))
         self.label_6 = QtGui.QLabel(self.groupBox_7)
         self.label_6.setGeometry(QtCore.QRect(10, 40, 141, 17))

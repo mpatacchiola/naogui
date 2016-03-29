@@ -116,7 +116,7 @@ class WorkerThread(QThread):
                 self.SUB_STATE = 0 #substate of state machine 1 set to zero
                 #self.emit(self.disable_signal) #GUI disabled                
                 self.logger = logbook.Logbook() #Logbook Init
-                #self.logger.   self._log_first_line  #Add the first line to the logbook
+                self.logger.AddTextLine(self._log_first_line)  #Add the first line to the logbook
                 self.emit(self.show_start_btn_signal, False)
                 self._start_pressed = False
             else:
