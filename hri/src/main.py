@@ -66,11 +66,13 @@ class WorkerThread(QThread):
     self._xml_uploaded = False
     self._start_pressed = False
     self._confirm_pressed = False
+    self._session_info_given = False
 
-    #sub state of state 1
+    #Sub state of state 1
     self.SUB_STATE = 0
 
     #Logbook variables
+    self._log_first_line = ""
     self._log_timer = 0
     self._log_trial = 0
     self._log_round = 10
@@ -104,7 +106,7 @@ class WorkerThread(QThread):
 
         #STATE-0 init
         if self.STATE_MACHINE == 0:
-            if self._robot_connected==True and self._xml_uploaded==True and self._start_pressed==True:
+            if self._robot_connected==True and self._xml_uploaded==True and self._start_pressed==True and self._session_info_given==True:
                 #When there are zero pretrial then jump to state 2
                 #If there are more than zero pretrial go to state 1
                 if self.myParser._pretrial_repeat == 0:
@@ -114,12 +116,16 @@ class WorkerThread(QThread):
                 self.SUB_STATE = 0 #substate of state machine 1 set to zero
                 #self.emit(self.disable_signal) #GUI disabled                
                 self.logger = logbook.Logbook() #Logbook Init
+                #self.logger.   self._log_first_line  #Add the first line to the logbook
                 self.emit(self.show_start_btn_signal, False)
                 self._start_pressed = False
             else:
                 #self.emit(self.disable_signal) #GUI disabled
                 current_time = time.strftime("%H:%M:%S", time.gmtime())
-                status = "robot_coonnected = " + str(self._robot_connected) + "\n" + "xml_uploaded = " + str(self._xml_uploaded) + "\n" + "start_pressed = " + str(self._start_pressed) + "\n"
+                status = "robot_coonnected = " + str(self._robot_connected) + "\n" 
+                status += "xml_uploaded = " + str(self._xml_uploaded) + "\n" 
+                status += "start_pressed = " + str(self._start_pressed) + "\n"
+                status += "session_info_given = " + str(self._session_info_given) + "\n"
                 print "[0] " + current_time + " Waiting... \n" + status
                 time.sleep(3)
 
@@ -496,6 +502,14 @@ class WorkerThread(QThread):
   def face_tracking(self, state):
         self.myPuppet.enable_face_tracking(state)
 
+
+  def session_info_update(self, info1, info2, info3):
+      my_string = str(info1) + "," + str(info2) + "," + str(info3)
+      print("SESSION INFO: ", info1, info2, info3)
+      self._log_first_line = my_string
+      self._session_info_given = True
+        
+
   def stop(self):
     self.stopped = 1
 
@@ -522,6 +536,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.btnRest.clicked.connect(self.rest_pressed)
         self.btnFaceTrackingEnable.clicked.connect(lambda:  self.face_tracking_pressed(True))
         self.btnFaceTrackingDisable.clicked.connect(lambda:  self.face_tracking_pressed(False))
+        self.btnSessionInfoConfirm.clicked.connect(self.session_info_pressed)
 
         #Buttons investment
         self.pushButton_0.clicked.connect(lambda: self.confirm_pressed(0))
@@ -544,6 +559,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.ip_signal = SIGNAL("ip_signal")
         self.wake_up_signal = SIGNAL("wake_up_signal")
         self.face_tracking_signal = SIGNAL("face_tracking_signal")
+        self.session_info_signal = SIGNAL("session_info_signal")
 
         self.showMaximized()
 
@@ -570,6 +586,12 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def rest_pressed(self):
         self.emit(self.wake_up_signal, False)
+
+    def session_info_pressed(self):
+        info1 = str(self.textEditSubjectNumber.toPlainText())
+        info2 = str(self.textEditSessionNumber.toPlainText())
+        info3 = str(self.textEditOther.toPlainText())
+        self.emit(self.session_info_signal, info1, info2, info3)
 
     def show_start_btn(self, is_visible):
         if is_visible == True:
@@ -608,15 +630,12 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
             self.pushButton_0.setStyleSheet("border-color: red")
 
 
-
-
     def update_gui(self, total, player_investment, round_total, your_investment, robot_investment, robot_slider_value, text_label=""):
         self.lcdNumberTotal.display(float(total))
         self.lcdNumberPlayerInvestment.display(float(player_investment))
         self.lcdNumberRound.display(float(round_total))
         #self.lcdNumberYourInvestment.display(float(your_investment))
         self.lcdNumberRobotInvestment.display(float(robot_investment))
-        #self.horizontalSlider.setValue(person_slider_value)
         self.horizontalSliderRobot.setValue(robot_slider_value)
         self.progressBar.setValue(robot_slider_value)
         #Update the textEdit label
@@ -689,6 +708,7 @@ def main():
     thread.connect(form, form.ip_signal, thread.ip)
     thread.connect(form, form.wake_up_signal, thread.wake)
     thread.connect(form, form.face_tracking_signal, thread.face_tracking)
+    thread.connect(form, form.session_info_signal, thread.session_info_update)
 
     #Connecting: thread > form
     form.connect(thread, thread.enable_components_gui_signal, form.enable_components_gui)
