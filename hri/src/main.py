@@ -136,7 +136,7 @@ class WorkerThread(QThread):
                 #self.emit(self.enable_signal) #GUI enabled
                 print "[1][0] Enablig components"
                 self.emit(self.enable_components_gui_signal, False,  True, True, False) #GUI components
-                local_string = "It is your turn..."
+                local_string = "It's your turn..."
                 self.emit(self.update_gui_signal, 0, 0, 10, 0, 0, 15, local_string)
                 self.SUB_STATE = 1    
           
@@ -226,7 +226,8 @@ class WorkerThread(QThread):
 
 
             #SUB_STATE == 5
-                #When the START button is pressed go to STATE_MACHINE=2 
+                #When the START button is pressed go to STATE_MACHINE=2
+                #but before it resets the robot arms and move the head to look down 
             if self.SUB_STATE == 5:
                 if self._start_pressed == True: 
                     self._start_pressed = False
@@ -303,7 +304,7 @@ class WorkerThread(QThread):
             #self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
             time.sleep(1)
             #Writing: "It is your turn"
-            local_string = "It is your turn..."
+            local_string = "It's your turn..."
             self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, 15, local_string) 
             #Reset the timer and switch to the next state
             self.timer.restart() #RESET here the timer
@@ -360,13 +361,13 @@ class WorkerThread(QThread):
                   self.myPuppet.right_arm_pointing(True, SPEED)
               else:
                  self.myPuppet.left_arm_pointing(True, SPEED)
+              time.sleep(0.2)
             elif self.myParser._pointing_list[self._log_trial] == "False":
               print "[4] pointing == False"
               self._log_pointing = "False"
               self.myPuppet.right_arm_pointing(False, SPEED)
               self.myPuppet.left_arm_pointing(False, SPEED)
-
-            time.sleep(0.2) 
+              time.sleep(2.0) #Sleep to slow down the flow in the non-movement condition
 
             #Updating the GUI
             robot_slider_value = self._log_robot_investment
