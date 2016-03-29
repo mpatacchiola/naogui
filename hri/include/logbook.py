@@ -33,6 +33,15 @@ class Logbook(object):
            # log exception
            print("* LOGBOOK: execpion creating the header.")
 
+    def AddTextLine(self, stringToAdd):
+        try:
+            path_to_file = self._id + ".csv"
+            with open(path_to_file, "a") as f:
+                f.write( stringToAdd + '\n')
+                f.close()
+        except:
+            # log exception
+            print("* LOGBOOK: execpion adding a text line to the file.")
 
     def AddLine(self, trial, pinv, rinv, pmult, rmult, total, gaze, pointing, timer, mp3 ):
         try:
