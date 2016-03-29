@@ -20,9 +20,19 @@ class Logbook(object):
         self._timer = 0
         self._mp3 = ""
 
-
         #create the file
         open(self._id + ".csv", 'a').close()
+
+        #Write the header as first line
+        try:
+           path_to_file = self._id + ".csv"
+           with open(path_to_file, "a") as f:
+               f.write( "trial," + "pinv," +  "rinv," + "pmult," + "rmult," + "total," + "gaze," + "pointing," + "timer," + "audio" + '\n')
+               f.close()
+        except:
+           # log exception
+           print("* LOGBOOK: execpion creating the header.")
+
 
     def AddLine(self, trial, pinv, rinv, pmult, rmult, total, gaze, pointing, timer, mp3 ):
         try:
