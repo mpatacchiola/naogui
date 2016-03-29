@@ -20,7 +20,7 @@
       <item>
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="title">
@@ -83,9 +83,9 @@
           <property name="geometry">
            <rect>
             <x>620</x>
-            <y>660</y>
+            <y>670</y>
             <width>601</width>
-            <height>281</height>
+            <height>261</height>
            </rect>
           </property>
           <property name="title">
@@ -272,7 +272,7 @@
           <property name="geometry">
            <rect>
             <x>230</x>
-            <y>520</y>
+            <y>530</y>
             <width>1411</width>
             <height>131</height>
            </rect>
@@ -491,7 +491,7 @@
             <x>380</x>
             <y>340</y>
             <width>1081</width>
-            <height>181</height>
+            <height>191</height>
            </rect>
           </property>
           <property name="title">
@@ -503,7 +503,7 @@
              <x>40</x>
              <y>10</y>
              <width>1001</width>
-             <height>161</height>
+             <height>171</height>
             </rect>
            </property>
            <property name="font">
@@ -616,9 +616,9 @@ p, li { white-space: pre-wrap; }
          <widget class="QGroupBox" name="groupBox_2">
           <property name="geometry">
            <rect>
-            <x>860</x>
+            <x>850</x>
             <y>120</y>
-            <width>311</width>
+            <width>321</width>
             <height>151</height>
            </rect>
           </property>
@@ -628,7 +628,7 @@ p, li { white-space: pre-wrap; }
           <widget class="QLabel" name="label_2">
            <property name="geometry">
             <rect>
-             <x>10</x>
+             <x>20</x>
              <y>30</y>
              <width>151</width>
              <height>17</height>
@@ -641,7 +641,7 @@ p, li { white-space: pre-wrap; }
           <widget class="QTextEdit" name="textEditXML">
            <property name="geometry">
             <rect>
-             <x>0</x>
+             <x>20</x>
              <y>50</y>
              <width>211</width>
              <height>71</height>
@@ -654,7 +654,7 @@ p, li { white-space: pre-wrap; }
           <widget class="QPushButton" name="btnBrowse">
            <property name="geometry">
             <rect>
-             <x>220</x>
+             <x>240</x>
              <y>50</y>
              <width>71</width>
              <height>71</height>
