@@ -100,7 +100,7 @@ class WorkerThread(QThread):
 
     while True:
 
-        time.sleep(0.05) #50 msec sleep to evitate block
+        time.sleep(0.050) #50 msec sleep to evitate block
 
         #STATE-0 init
         if self.STATE_MACHINE == 0:
@@ -376,7 +376,7 @@ class WorkerThread(QThread):
             local_string += "In this round you made: " + str(self._log_round + self._log_robot_investment) + '\n' 
             local_string += "Total in your bank: " + str(self._log_total) + '\n\n'
             local_string += "Please press START to begin a new round..."
-            self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, robot_slider_value, local_string)
+            self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round+ self._log_robot_investment, self._log_person_investment, self._log_robot_investment, robot_slider_value, local_string)
 
             #Reset the arms
             time.sleep(0.5)
@@ -405,8 +405,6 @@ class WorkerThread(QThread):
             print "[5] Saving the trial in the logbook"
             self.logger.AddLine(self._log_trial+1, self._log_person_investment, self._log_robot_investment, self._log_pmult, self._log_rmult, self._log_total, self._log_gaze, self._log_pointing, self._log_timer, self._log_mp3)
             print "[5] " + str(self._log_trial+1) + "," + str(self._log_person_investment) + "," + str(self._log_robot_investment) + "," + str(self._log_pmult) + "," + str(self._log_rmult) + "," + str(self._log_total) + "," + str(self._log_gaze) + "," + str(self._log_pointing) + "," + str(self._log_timer)+ "," + str(self._log_mp3)
-
-            #time.sleep(1)
 
             if self._log_trial+1 != self.myParser._size:
                 self.STATE_MACHINE = 6 #cycling to state 6
