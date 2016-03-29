@@ -313,15 +313,15 @@ class WorkerThread(QThread):
         #STATE-4 Pointing or not and gives the reward
         if self.STATE_MACHINE == 4:
             print "[4] Pointing/Non-Pointing"                         
-            #Updating the investment values           
-            self._log_robot_investment = float(self._log_person_investment) * float(self._log_rmult)
-            #check if nasty orn not and floor or ceil the number
+            #Updating the investment values
+            self._log_multiplied_person_investment = self._log_person_investment * float(self._log_pmult)          
+            self._log_robot_investment = float(self._log_multiplied_person_investment) * float(self._log_rmult)
+            #check if nasty or not and floor or ceil the number
             if self.myParser._nasty_list[self._log_trial] == "True":
                  self._log_robot_investment = math.floor(self._log_robot_investment)
             elif self.myParser._nasty_list[self._log_trial] == "False":
                  self._log_robot_investment = math.ceil(self._log_robot_investment)
             self._log_total = self._log_total + self._log_round + self._log_robot_investment
-            self._log_multiplied_person_investment = self._log_person_investment * float(self._log_pmult)
             self._log_player_investment = self._log_multiplied_person_investment
             #self._log_player_investment = self._log_robot_investment
 
