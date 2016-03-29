@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '../include/mainwindow.ui'
 #
-# Created: Tue Mar 29 17:29:27 2016
+# Created: Tue Mar 29 19:01:08 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -241,6 +241,30 @@ class Ui_MainWindow(object):
         self.btnFaceTrackingDisable.setEnabled(False)
         self.btnFaceTrackingDisable.setGeometry(QtCore.QRect(10, 340, 361, 91))
         self.btnFaceTrackingDisable.setObjectName(_fromUtf8("btnFaceTrackingDisable"))
+        self.groupBox_7 = QtGui.QGroupBox(self.tab_2)
+        self.groupBox_7.setGeometry(QtCore.QRect(1220, 120, 251, 341))
+        self.groupBox_7.setObjectName(_fromUtf8("groupBox_7"))
+        self.textEditSubjectNumber = QtGui.QTextEdit(self.groupBox_7)
+        self.textEditSubjectNumber.setGeometry(QtCore.QRect(10, 60, 231, 31))
+        self.textEditSubjectNumber.setObjectName(_fromUtf8("textEditSubjectNumber"))
+        self.label_6 = QtGui.QLabel(self.groupBox_7)
+        self.label_6.setGeometry(QtCore.QRect(10, 40, 141, 17))
+        self.label_6.setObjectName(_fromUtf8("label_6"))
+        self.label_9 = QtGui.QLabel(self.groupBox_7)
+        self.label_9.setGeometry(QtCore.QRect(10, 110, 141, 17))
+        self.label_9.setObjectName(_fromUtf8("label_9"))
+        self.textEditSessionNumber = QtGui.QTextEdit(self.groupBox_7)
+        self.textEditSessionNumber.setGeometry(QtCore.QRect(10, 130, 231, 31))
+        self.textEditSessionNumber.setObjectName(_fromUtf8("textEditSessionNumber"))
+        self.textEditOther = QtGui.QTextEdit(self.groupBox_7)
+        self.textEditOther.setGeometry(QtCore.QRect(10, 200, 231, 31))
+        self.textEditOther.setObjectName(_fromUtf8("textEditOther"))
+        self.label_10 = QtGui.QLabel(self.groupBox_7)
+        self.label_10.setGeometry(QtCore.QRect(10, 180, 67, 17))
+        self.label_10.setObjectName(_fromUtf8("label_10"))
+        self.btnSessionInfoConfirm = QtGui.QPushButton(self.groupBox_7)
+        self.btnSessionInfoConfirm.setGeometry(QtCore.QRect(10, 260, 231, 61))
+        self.btnSessionInfoConfirm.setObjectName(_fromUtf8("btnSessionInfoConfirm"))
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
         self.verticalLayout.addWidget(self.tabWidget)
         self.horizontalLayout.addLayout(self.verticalLayout)
@@ -257,7 +281,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusBar)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -300,5 +324,25 @@ class Ui_MainWindow(object):
         self.btnRest.setText(_translate("MainWindow", "Rest", None))
         self.btnFaceTrackingEnable.setText(_translate("MainWindow", "Enable Face Tracking", None))
         self.btnFaceTrackingDisable.setText(_translate("MainWindow", "Disable Face Tracking", None))
+        self.groupBox_7.setTitle(_translate("MainWindow", "4- Session info", None))
+        self.textEditSubjectNumber.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'Ubuntu\'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">0</p></body></html>", None))
+        self.label_6.setText(_translate("MainWindow", "Subject Number:", None))
+        self.label_9.setText(_translate("MainWindow", "Session Number:", None))
+        self.textEditSessionNumber.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'Ubuntu\'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">0</p></body></html>", None))
+        self.textEditOther.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'Ubuntu\'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">0</p></body></html>", None))
+        self.label_10.setText(_translate("MainWindow", "Other:", None))
+        self.btnSessionInfoConfirm.setText(_translate("MainWindow", "Confirm", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Admin", None))
 
