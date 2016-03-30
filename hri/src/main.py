@@ -363,11 +363,24 @@ class WorkerThread(QThread):
             if self.myParser._pointing_list[self._log_trial] == "True":
               print "[4] pointing == True"
               self._log_pointing = "True"
-              if (self._log_robot_investment > 15):
+              #If robot returns ZERO no arm movement
+              if (self._log_robot_investment == 0):
+                  self.myPuppet.right_arm_pointing(False, SPEED)
+                  self.myPuppet.left_arm_pointing(False, SPEED) 
+              #if value is less than 15                 
+              elif (self._log_robot_investment > 0 and self._log_robot_investment < 15):
+                  self.myPuppet.left_arm_pointing(True, SPEED)
+              #If value is 15: move left if NASTY otherwise move right
+              elif (self._log_robot_investment == 15):
+                  if self.myParser._nasty_list[self._log_trial] == "True":
+                      self.myPuppet.left_arm_pointing(True, SPEED)
+                  elif self.myParser._nasty_list[self._log_trial] == "False":
+                      self.myPuppet.right_arm_pointing(True, SPEED)
+              #If value is more than 15 then move the right arm
+              elif (self._log_robot_investment > 15):
                   self.myPuppet.right_arm_pointing(True, SPEED)
-              else:
-                 self.myPuppet.left_arm_pointing(True, SPEED)
               time.sleep(0.2)
+            #If the condition is ointing==FALSE then does not move the arm
             elif self.myParser._pointing_list[self._log_trial] == "False":
               print "[4] pointing == False"
               self._log_pointing = "False"
