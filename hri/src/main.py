@@ -358,9 +358,9 @@ class WorkerThread(QThread):
         if self.STATE_MACHINE == 4:
             print "[4] Pointing/Non-Pointing"                         
             #Updating the investment values
+            #check if nasty or not and floor or ceil the number
             self._log_multiplied_person_investment = self._log_person_investment * float(self._log_pmult)          
             self._log_robot_investment = float(self._log_multiplied_person_investment) * float(self._log_rmult)
-            #check if nasty or not and floor or ceil the number
             if self.myParser._nasty_list[self._log_trial] == "True":
                  self._log_robot_investment = math.floor(self._log_robot_investment)
             elif self.myParser._nasty_list[self._log_trial] == "False":
@@ -371,28 +371,34 @@ class WorkerThread(QThread):
 
             time.sleep(1)
 
+            #Computing the values to use for movements and GUI update
+            robot_slider_value = self._log_robot_investment
+            energy_value = self._log_robot_investment
+            energy_maximum = self._log_multiplied_person_investment #always integer
+            energy_half = (self._log_multiplied_person_investment / 2)
+
             #Pointing (or not) while looking to the screen
             if self.myParser._pointing_list[self._log_trial] == "True":
               print "[4] pointing == True"
               self._log_pointing = "True"
               #If robot returns ZERO no arm movement
-              if (self._log_robot_investment == 0):
+              if (energy_value == 0):
                   self.myPuppet.right_arm_pointing(False, SPEED)
                   self.myPuppet.left_arm_pointing(False, SPEED) 
               #if value is less than 15                 
-              elif (self._log_robot_investment > 0 and self._log_robot_investment < 15):
+              elif (energy_value > 0 and energy_value < energy_half):
                   self.myPuppet.left_arm_pointing(True, SPEED)
               #If value is 15: move left if NASTY otherwise move right
-              elif (self._log_robot_investment == 15):
+              elif (energy_value == int(energy_half) ):
                   if self.myParser._nasty_list[self._log_trial] == "True":
                       self.myPuppet.left_arm_pointing(True, SPEED)
                   elif self.myParser._nasty_list[self._log_trial] == "False":
                       self.myPuppet.right_arm_pointing(True, SPEED)
               #If value is more than 15 then move the right arm
-              elif (self._log_robot_investment > 15):
+              elif (energy_value > energy_half):
                   self.myPuppet.right_arm_pointing(True, SPEED)
               time.sleep(0.2)
-            #If the condition is ointing==FALSE then does not move the arm
+            #If the condition is pointing==FALSE then does not move the arm
             elif self.myParser._pointing_list[self._log_trial] == "False":
               print "[4] pointing == False"
               self._log_pointing = "False"
@@ -401,9 +407,6 @@ class WorkerThread(QThread):
               time.sleep(2.0) #Sleep to slow down the flow in the non-movement condition
 
             #Updating the GUI
-            robot_slider_value = self._log_robot_investment
-            energy_value = self._log_robot_investment
-            energy_maximum = self._log_multiplied_person_investment
             local_string = "You invested: " + str(self._log_person_investment) 
             local_string += "  Robot received: " + str(self._log_multiplied_person_investment) + "  Robot returned: " + str(self._log_robot_investment) + '\n'
             local_string += "In this round you made: " + str(self._log_round + self._log_robot_investment) + '\n' 
@@ -628,7 +631,8 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         elif is_visible == False:        
             self.btnStartExperiment.hide()
 
-    def enable_components_gui(self, start_btn, confirm_btn, person_slider, robot_slider):
+    #start_btn, confirm_btn, person_slider, robot_slider, show_slider
+    def enable_components_gui(self, start_btn, confirm_btn, person_slider, robot_slider, show_slider=False):
         if  start_btn == True:
             self.btnStartExperiment.show()
         elif  start_btn == False:        
@@ -648,6 +652,11 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.pushButton_8.setEnabled(confirm_btn)
         self.pushButton_9.setEnabled(confirm_btn)
         self.pushButton_10.setEnabled(confirm_btn)
+        #Showing or not the slider
+        if (show_slider == False):
+            self.horizontalSliderRobot.hide()
+        else:
+            self.horizontalSliderRobot.show()
 
         if confirm_btn == True:
             #self.pushButton_0.setStyleSheet("background-color: green")
