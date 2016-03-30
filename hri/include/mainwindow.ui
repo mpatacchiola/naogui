@@ -30,7 +30,7 @@
           <property name="geometry">
            <rect>
             <x>10</x>
-            <y>190</y>
+            <y>180</y>
             <width>71</width>
             <height>71</height>
            </rect>
@@ -49,7 +49,7 @@
           <property name="geometry">
            <rect>
             <x>100</x>
-            <y>200</y>
+            <y>260</y>
             <width>1641</width>
             <height>51</height>
            </rect>
@@ -69,6 +69,9 @@
           <property name="value">
            <number>15</number>
           </property>
+          <property name="tracking">
+           <bool>true</bool>
+          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -83,7 +86,7 @@
           <property name="geometry">
            <rect>
             <x>620</x>
-            <y>670</y>
+            <y>680</y>
             <width>601</width>
             <height>261</height>
            </rect>
@@ -99,6 +102,13 @@
              <width>81</width>
              <height>16</height>
             </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>14</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
            </property>
            <property name="text">
             <string>Bank:</string>
@@ -135,9 +145,16 @@
             <rect>
              <x>150</x>
              <y>10</y>
-             <width>121</width>
+             <width>171</width>
              <height>16</height>
             </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>14</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
            </property>
            <property name="text">
             <string>Round total:</string>
@@ -177,6 +194,13 @@
              <width>571</width>
              <height>111</height>
             </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>24</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
            </property>
            <property name="cursor">
             <cursorShape>PointingHandCursor</cursorShape>
@@ -218,11 +242,18 @@
           <widget class="QLabel" name="label_8">
            <property name="geometry">
             <rect>
-             <x>100</x>
+             <x>90</x>
              <y>10</y>
-             <width>141</width>
+             <width>151</width>
              <height>16</height>
             </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>14</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
            </property>
            <property name="text">
             <string>Robot received:</string>
@@ -231,11 +262,18 @@
           <widget class="QLabel" name="label_7">
            <property name="geometry">
             <rect>
-             <x>280</x>
+             <x>270</x>
              <y>10</y>
-             <width>141</width>
+             <width>151</width>
              <height>16</height>
             </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>14</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
            </property>
            <property name="text">
             <string>Robot returned:</string>
@@ -292,6 +330,13 @@
              <height>91</height>
             </rect>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>24</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="cursor">
             <cursorShape>PointingHandCursor</cursorShape>
            </property>
@@ -307,6 +352,13 @@
              <width>99</width>
              <height>91</height>
             </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>24</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
            </property>
            <property name="cursor">
             <cursorShape>PointingHandCursor</cursorShape>
@@ -324,6 +376,13 @@
              <height>91</height>
             </rect>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>24</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="cursor">
             <cursorShape>PointingHandCursor</cursorShape>
            </property>
@@ -339,6 +398,13 @@
              <width>99</width>
              <height>91</height>
             </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>24</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
            </property>
            <property name="cursor">
             <cursorShape>PointingHandCursor</cursorShape>
@@ -356,6 +422,13 @@
              <height>91</height>
             </rect>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>24</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="cursor">
             <cursorShape>PointingHandCursor</cursorShape>
            </property>
@@ -371,6 +444,13 @@
              <width>99</width>
              <height>91</height>
             </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>24</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
            </property>
            <property name="cursor">
             <cursorShape>PointingHandCursor</cursorShape>
@@ -388,6 +468,13 @@
              <height>91</height>
             </rect>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>24</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="cursor">
             <cursorShape>PointingHandCursor</cursorShape>
            </property>
@@ -403,6 +490,13 @@
              <width>99</width>
              <height>91</height>
             </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>24</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
            </property>
            <property name="cursor">
             <cursorShape>PointingHandCursor</cursorShape>
@@ -420,6 +514,13 @@
              <height>91</height>
             </rect>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>24</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="cursor">
             <cursorShape>PointingHandCursor</cursorShape>
            </property>
@@ -435,6 +536,13 @@
              <width>99</width>
              <height>91</height>
             </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>24</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
            </property>
            <property name="cursor">
             <cursorShape>PointingHandCursor</cursorShape>
@@ -452,6 +560,13 @@
              <height>91</height>
             </rect>
            </property>
+           <property name="font">
+            <font>
+             <pointsize>24</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="cursor">
             <cursorShape>PointingHandCursor</cursorShape>
            </property>
@@ -464,7 +579,7 @@
           <property name="geometry">
            <rect>
             <x>100</x>
-            <y>290</y>
+            <y>200</y>
             <width>1641</width>
             <height>31</height>
            </rect>
