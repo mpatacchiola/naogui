@@ -144,7 +144,7 @@ class WorkerThread(QThread):
                 self.emit(self.enable_components_gui_signal, False,  True, True, False) #GUI components
                 local_string = "It's your turn..."
                 #total, pinv, round_tot, rinv, rslider, energy_value, max_energy, text
-                self.emit(self.update_gui_signal, 0, 0, 10, 0, 15, 0, 30, local_string)
+                self.emit(self.update_gui_signal, 0, 0, 10, 0, 15, 15, 30, local_string)
                 self.SUB_STATE = 1    
           
             #SUB_STATE == 1
@@ -162,7 +162,7 @@ class WorkerThread(QThread):
                     #total, player_investment, round_total, your_investment, robot_investment, robot_slider_value
                     local_string = ""
                     #total, pinv, round_tot, rinv, rslider, energy_value, max_energy, text
-                    self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_robot_investment, 15, 0, 30, local_string)
+                    self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_robot_investment, 15, 15, 30, local_string)
                     #GUI: start_btn, confirm_btn, person_slider, robot_slider
                     self.emit(self.enable_components_gui_signal, False,  False, False, True) #GUI components
                     print "[1][1] Waiting for researcher feedback..." 
@@ -178,12 +178,11 @@ class WorkerThread(QThread):
                     self._confirm_pressed = False
                     #Updating the investment values
                     #self._log_multiplied_person_investment = self._log_person_investment * 3.0 #multiplied times 3         
-                    self._log_robot_investment = self._log_robot_investment
-                    self._log_total = self._log_total + self._log_round + self._log_robot_investment
-                    #self._log_player_investment = self._log_multiplied_person_investment
                     robot_slider_value = self._log_robot_investment
-                    energy_value = self._log_robot_investment
+                    energy_value = math.ceil(self._log_multiplied_person_investment / 2) #ceiling roundoff
                     energy_maximum = self._log_multiplied_person_investment
+                    self._log_robot_investment = energy_value
+                    self._log_total = self._log_total + self._log_round + self._log_robot_investment
                     local_string = "You invested: " + str(self._log_multiplied_person_investment / 3) 
                     local_string += "  Robot received: " + str(self._log_multiplied_person_investment) + "  Robot returned: " + str(self._log_robot_investment) + '\n'
                     local_string += "In this round you made: " + str(self._log_round + self._log_robot_investment) + '\n' 
