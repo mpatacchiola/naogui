@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '../include/mainwindow.ui'
 #
-# Created: Tue Mar 29 19:19:41 2016
+# Created: Wed Mar 30 15:59:41 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -169,18 +169,14 @@ class Ui_MainWindow(object):
         self.pushButton_10.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.pushButton_10.setObjectName(_fromUtf8("pushButton_10"))
         self.progressBar = QtGui.QProgressBar(self.tab)
-        self.progressBar.setGeometry(QtCore.QRect(100, 290, 1651, 31))
+        self.progressBar.setGeometry(QtCore.QRect(100, 290, 1641, 31))
         self.progressBar.setMaximum(30)
         self.progressBar.setProperty("value", 15)
-        self.progressBar.setTextVisible(True)
+        self.progressBar.setTextVisible(False)
         self.progressBar.setInvertedAppearance(True)
         self.progressBar.setObjectName(_fromUtf8("progressBar"))
-        self.groupBox_6 = QtGui.QGroupBox(self.tab)
-        self.groupBox_6.setGeometry(QtCore.QRect(380, 340, 1081, 191))
-        self.groupBox_6.setTitle(_fromUtf8(""))
-        self.groupBox_6.setObjectName(_fromUtf8("groupBox_6"))
-        self.textEdit = QtGui.QTextEdit(self.groupBox_6)
-        self.textEdit.setGeometry(QtCore.QRect(40, 10, 1001, 171))
+        self.textEdit = QtGui.QTextEdit(self.tab)
+        self.textEdit.setGeometry(QtCore.QRect(420, 340, 1001, 171))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Times New Roman"))
         font.setPointSize(18)
@@ -282,7 +278,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusBar)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
