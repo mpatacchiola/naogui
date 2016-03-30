@@ -184,8 +184,7 @@ class WorkerThread(QThread):
                     local_string += "In this round you made: " + str(self._log_round + self._log_robot_investment) + '\n' 
                     local_string += "Total in your bank: " + str(self._log_total) + '\n\n'
                     local_string += "Please press START to begin a new round..."
-                    self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, robot_slider_value, local_string)
-                    #TODO check if this pause is ok or not
+                    self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round + self._log_robot_investment, self._log_person_investment, self._log_robot_investment, robot_slider_value, local_string)
                     #self.emit(self.disable_signal) #GUI disabled
                     self.emit(self.enable_components_gui_signal, True,  False, False, False) #Start enabled
                     #time.sleep(10)
@@ -209,11 +208,11 @@ class WorkerThread(QThread):
             if self.SUB_STATE == 4:
                 if int(self._pretrial_counter) == int(self.myParser._pretrial_repeat):
                     #Pretrial finished
-                    print "[1][3] Pretrial finished, starting the experiment..."
+                    print "[1][3] Pretrial finished, starting the game..."
                     self.emit(self.show_start_btn_signal, True) #show the button START
                     #self.emit(self.disable_signal) #GUI disabled
                     local_string = "The first part is finished." + '\n\n'
-                    local_string += "Please press START to begin the experiment..."
+                    local_string += "Please press START to begin the game..."
                     self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, 15, local_string)
                     self.emit(self.enable_components_gui_signal, True,  False, False, False) #Start enabled
                     self.SUB_STATE = 5
@@ -443,7 +442,7 @@ class WorkerThread(QThread):
 
         #STATE-7 Final state is called to shutdown the robot
         if self.STATE_MACHINE == 7:
-            print "[7] The experiment is finished"
+            print "[7] The game is finished"
             self._xml_uploaded = False #reset status variable
             self._start_pressed = False
             self._log_trial = 0
@@ -454,7 +453,7 @@ class WorkerThread(QThread):
             self._log_robot_investment = 0
             self._log_player_investment = 0
             #total, player_investment, round_total, your_investment, robot_investment, robot_slider_value
-            local_string = "The experimet is finished." + '\n\n' + "Thank you..."
+            local_string = "The game is finished." + '\n\n' + "Thank you..."
             self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_person_investment, self._log_robot_investment, 15, local_string) 
             self.emit(self.enable_components_gui_signal, False,  False, False, False) #GUI components
             time.sleep(5)
