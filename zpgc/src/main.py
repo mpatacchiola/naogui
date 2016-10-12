@@ -184,10 +184,10 @@ class WorkerThread(QThread):
                     energy_maximum = self._log_multiplied_person_investment
                     self._log_robot_investment = energy_value
                     self._log_total = self._log_total + self._log_round + self._log_robot_investment
-                    local_string = "You invested: " + str(self._log_multiplied_person_investment / 3) 
-                    local_string += "  Robot received: " + str(self._log_multiplied_person_investment) + "  Robot returned: " + str(self._log_robot_investment) + '\n'
-                    local_string += "In this round you made: " + str(self._log_round + self._log_robot_investment) + '\n' 
-                    local_string += "Total in your bank: " + str(self._log_total) + '\n\n'
+                    #local_string = "You invested: " + str(self._log_multiplied_person_investment / 3) 
+                    #local_string += "  Robot received: " + str(self._log_multiplied_person_investment) + "  Robot returned: " + str(self._log_robot_investment) + '\n'
+                    local_string = "In this round you made: " + str(self._log_round + self._log_robot_investment) + '\n' 
+                    #local_string += "Total in your bank: " + str(self._log_total) + '\n\n'
                     local_string += "Please press START to begin a new round..."
                     #total, pinv, round_tot, rinv, rslider, energy_value, max_energy, text
                     self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round + self._log_robot_investment, self._log_robot_investment, robot_slider_value, energy_value, energy_maximum, local_string)
@@ -305,10 +305,10 @@ class WorkerThread(QThread):
               self.myPuppet.enable_face_tracking(False) #disable face tracking
               self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
 
-            print "[2] bla bla bla ..."
-            self._log_mp3 = self.myParser._mp3_list[self._log_trial]
-            mp3_path = "/home/nao/naoqi/mp3/" + self._log_mp3
-            self.myPuppet.play_audio(mp3_path, 0.8) #play the audio file at that volume
+            #print "[2] bla bla bla ..."
+            #self._log_mp3 = self.myParser._mp3_list[self._log_trial]
+            #mp3_path = "/home/nao/naoqi/mp3/" + self._log_mp3
+            #self.myPuppet.play_audio(mp3_path, 0.8) #play the audio file at that volume
             #The sleep is not necessary here if the play_audio function is used
             #time.sleep(4) #sleep as long as the mp3 file
             #when mp3 file finish          
@@ -352,8 +352,25 @@ class WorkerThread(QThread):
                 self.STATE_MACHINE = 4 #next state
                 time.sleep(1) #Sleep to evitate fast movements of the robot just after the answer
 
-        #STATE-4 Pointing or not and gives the reward
+        #STATE-4 the robot talk and says the investment amount made by the person
+        # then it looks down to the screen and switch to next state
         if self.STATE_MACHINE == 4:
+            #Take a sentence from the mp3 filed in the XML
+            #the XXX substring is replaced with the multiplied value
+            #given from the person to the robot. 
+            self._sentence_mp3 = self.myParser._mp3_list[self._log_trial]
+            #Check if XXX is present and replace it with the
+            #multiplied person investement value...
+            has_substring = self._sentence_mp3.find(str2)
+            if(has_substring != -1):
+                self._sentence_mp3.replace("XXX", str(self._log_multiplied_person_investment))
+            #It says the sentence generated above
+            self.myPuppet.say_something(self._sentence_mp3)
+
+            self.STATE_MACHINE = 5 #next state
+
+        #STATE-5 Pointing or not and gives the reward
+        if self.STATE_MACHINE == 5:
             print "[4] Pointing/Non-Pointing"                         
             #Updating the investment values
             #check if nasty or not and floor or ceil the number
@@ -405,10 +422,10 @@ class WorkerThread(QThread):
               time.sleep(2.0) #Sleep to slow down the flow in the non-movement condition
 
             #Updating the GUI
-            local_string = "You invested: " + str(self._log_person_investment) 
-            local_string += "  Robot received: " + str(self._log_multiplied_person_investment) + "  Robot returned: " + str(self._log_robot_investment) + '\n'
-            local_string += "In this round you made: " + str(self._log_round + self._log_robot_investment) + '\n' 
-            local_string += "Total in your bank: " + str(self._log_total) + '\n\n'
+            #local_string = "You invested: " + str(self._log_person_investment) 
+            #local_string += "  Robot received: " + str(self._log_multiplied_person_investment) + "  Robot returned: " + str(self._log_robot_investment) + '\n'
+            local_string = "In this round you made: " + str(self._log_round + self._log_robot_investment) + '\n' 
+            #local_string += "Total in your bank: " + str(self._log_total) + '\n\n'
             local_string += "Please press START to begin a new round..."
             #total, pinv, round_tot, rinv, rslider, energy_value, max_energy, text
             self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round+ self._log_robot_investment, self._log_robot_investment, robot_slider_value, energy_value, energy_maximum, local_string)
@@ -433,23 +450,23 @@ class WorkerThread(QThread):
 
             #Change state
             time.sleep(0.5)
-            self.STATE_MACHINE = 5 #next state        
+            self.STATE_MACHINE = 6 #next state        
 
-        #STATE-5 Saving in the logbook
-        if self.STATE_MACHINE == 5:
+        #STATE-6 Saving in the logbook
+        if self.STATE_MACHINE == 6:
             print "[5] Saving the trial in the logbook"
             self.logger.AddLine(self._log_trial+1, self._log_person_investment, self._log_robot_investment, self._log_pmult, self._log_rmult, self._log_total, self._log_gaze, self._log_pointing, self._log_timer, self._log_mp3)
             print "[5] " + str(self._log_trial+1) + "," + str(self._log_person_investment) + "," + str(self._log_robot_investment) + "," + str(self._log_pmult) + "," + str(self._log_rmult) + "," + str(self._log_total) + "," + str(self._log_gaze) + "," + str(self._log_pointing) + "," + str(self._log_timer)+ "," + str(self._log_mp3)
 
             if self._log_trial+1 != self.myParser._size:
-                self.STATE_MACHINE = 6 #cycling to state 6
+                self.STATE_MACHINE = 7 #cycling to state 7
                 self.emit(self.enable_components_gui_signal, True,  False, False, False) #Enable the Start Button
                 self._log_trial = self._log_trial + 1
             elif self._log_trial+1 == self.myParser._size:
-                self.STATE_MACHINE = 7 #experiment finished               
+                self.STATE_MACHINE = 8 #experiment finished               
 
-        #STATE-6 Waiting for the subject pressing START
-        if self.STATE_MACHINE == 6:
+        #STATE-7 Waiting for the subject pressing START
+        if self.STATE_MACHINE == 7:
             if self._start_pressed == True: 
                 self._start_pressed = False
                 print "[6] Start pressed..."
@@ -457,8 +474,8 @@ class WorkerThread(QThread):
                 self.STATE_MACHINE = 2 #cycling to state 2
                 time.sleep(1)
 
-        #STATE-7 Final state is called to shutdown the robot
-        if self.STATE_MACHINE == 7:
+        #STATE-8 Final state is called to shutdown the robot
+        if self.STATE_MACHINE == 8:
             print "[7] The game is finished"
             self._xml_uploaded = False #reset status variable
             self._start_pressed = False
