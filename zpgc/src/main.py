@@ -346,32 +346,41 @@ class WorkerThread(QThread):
                 #total, pinv, round_tot, rinv, rslider, energy_value, max_energy, text
                 self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_robot_investment, 15, 15, 30, local_string)
                 #The person turn is finished, now switching to robot turn
-                #The robot looks to the monitor (thinking what to do)
-                self.myPuppet.enable_face_tracking(False) #disable face tracking
-                self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
                 self.STATE_MACHINE = 4 #next state
                 time.sleep(1) #Sleep to evitate fast movements of the robot just after the answer
 
         #STATE-4 the robot talk and says the investment amount made by the person
         # then it looks down to the screen and switch to next state
         if self.STATE_MACHINE == 4:
+            print "[4] The robot says the investment made by the person..."
             #Take a sentence from the mp3 filed in the XML
             #the XXX substring is replaced with the multiplied value
             #given from the person to the robot. 
             self._sentence_mp3 = self.myParser._mp3_list[self._log_trial]
+            self._sentence_mp3 = str(self._sentence_mp3) #convert to string
             #Check if XXX is present and replace it with the
             #multiplied person investement value...
-            has_substring = self._sentence_mp3.find(str2)
+            has_substring = self._sentence_mp3.find("XXX")
             if(has_substring != -1):
-                self._sentence_mp3.replace("XXX", str(self._log_multiplied_person_investment))
-            #It says the sentence generated above
-            self.myPuppet.say_something(self._sentence_mp3)
+                print "[4] Found the substring 'XXX' at location: " + str(has_substring)
+                self._sentence_mp3 = self._sentence_mp3.replace("XXX", str(int(self._log_multiplied_person_investment)))
+            print "[4] Saying: '" + self._sentence_mp3 + "'"
+            #It says the sentence generated above only if
+            #the valued returned by the person is different from zero.
+            if(self._log_multiplied_person_investment > 0):
+                self.myPuppet.say_something(str(self._sentence_mp3))
+            else:
+                self.myPuppet.say_something("Ok, I received zero.") #If the robot receive zero the sentence is cut
+            print "[4] looking to the monitor..."
+            #The robot looks to the monitor (thinking what to do)
+            self.myPuppet.enable_face_tracking(False) #disable face tracking
+            self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
 
             self.STATE_MACHINE = 5 #next state
 
         #STATE-5 Pointing or not and gives the reward
         if self.STATE_MACHINE == 5:
-            print "[4] Pointing/Non-Pointing"                         
+            print "[5] Pointing/Non-Pointing"                         
             #Updating the investment values
             #check if nasty or not and floor or ceil the number
             self._log_multiplied_person_investment = self._log_person_investment * float(self._log_pmult)          
@@ -394,7 +403,7 @@ class WorkerThread(QThread):
 
             #Pointing (or not) while looking to the screen
             if self.myParser._pointing_list[self._log_trial] == "True":
-              print "[4] pointing == True"
+              print "[5] pointing == True"
               self._log_pointing = "True"
               #If robot returns ZERO no arm movement
               if (energy_value == 0):
@@ -415,7 +424,7 @@ class WorkerThread(QThread):
               time.sleep(0.2)
             #If the condition is pointing==FALSE then does not move the arm
             elif self.myParser._pointing_list[self._log_trial] == "False":
-              print "[4] pointing == False"
+              print "[5] pointing == False"
               self._log_pointing = "False"
               self.myPuppet.right_arm_pointing(False, SPEED)
               self.myPuppet.left_arm_pointing(False, SPEED)
@@ -454,9 +463,9 @@ class WorkerThread(QThread):
 
         #STATE-6 Saving in the logbook
         if self.STATE_MACHINE == 6:
-            print "[5] Saving the trial in the logbook"
+            print "[6] Saving the trial in the logbook"
             self.logger.AddLine(self._log_trial+1, self._log_person_investment, self._log_robot_investment, self._log_pmult, self._log_rmult, self._log_total, self._log_gaze, self._log_pointing, self._log_timer, self._log_mp3)
-            print "[5] " + str(self._log_trial+1) + "," + str(self._log_person_investment) + "," + str(self._log_robot_investment) + "," + str(self._log_pmult) + "," + str(self._log_rmult) + "," + str(self._log_total) + "," + str(self._log_gaze) + "," + str(self._log_pointing) + "," + str(self._log_timer)+ "," + str(self._log_mp3)
+            print "[6] " + str(self._log_trial+1) + "," + str(self._log_person_investment) + "," + str(self._log_robot_investment) + "," + str(self._log_pmult) + "," + str(self._log_rmult) + "," + str(self._log_total) + "," + str(self._log_gaze) + "," + str(self._log_pointing) + "," + str(self._log_timer)+ "," + str(self._log_mp3)
 
             if self._log_trial+1 != self.myParser._size:
                 self.STATE_MACHINE = 7 #cycling to state 7
@@ -469,14 +478,14 @@ class WorkerThread(QThread):
         if self.STATE_MACHINE == 7:
             if self._start_pressed == True: 
                 self._start_pressed = False
-                print "[6] Start pressed..."
+                print "[7] Start pressed..."
                 self.emit(self.enable_components_gui_signal, False,  False, False, False)
                 self.STATE_MACHINE = 2 #cycling to state 2
                 time.sleep(1)
 
         #STATE-8 Final state is called to shutdown the robot
         if self.STATE_MACHINE == 8:
-            print "[7] The game is finished"
+            print "[8] The game is finished"
             self._xml_uploaded = False #reset status variable
             self._start_pressed = False
             self._log_trial = 0
@@ -527,14 +536,15 @@ class WorkerThread(QThread):
         self.myParser.LoadFile(str(path))
         self.myParser.parse_experiment_list()
         self.myParser.parse_pretrial_list()
-        file_existance = self.myParser.check_file_existence("../share/mp3/")
-        if file_existance == True:
-            self.emit(self.good_xml_signal)
-            self._xml_uploaded = True
-        elif file_existance == False:
-            self.emit(self.bad_xml_signal)
-            print("\n # ERROR: Some audio files do not exist. \n")
-            self._xml_uploaded = False 
+        self._xml_uploaded = True
+        #file_existance = self.myParser.check_file_existence("../share/mp3/")
+        #if file_existance == True:
+            #self.emit(self.good_xml_signal)
+            #self._xml_uploaded = True
+        #elif file_existance == False:
+            #self.emit(self.bad_xml_signal)
+            #print("\n # ERROR: Some audio files do not exist. \n")
+            #self._xml_uploaded = False 
     except:
         self.emit(self.bad_xml_signal)
         print("\n # ERROR: Impossible to read the XML file! \n")
