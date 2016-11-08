@@ -1,0 +1,22 @@
+A- Insert XML file path
+ROBOT_STATE=-1
+
+B- Insert IP Nao
+C- Connect to Nao
+
+0- GUI locked. When the participant is ready it presses the button "START". Robot Hello. 
+GUI_STATE=0; ROBOT_STATE=0
+
+1- GUI locked. The robot speaks and looks.
+GUI_STATE=1; ROBOT_STATE=1
+
+2- GUI unlocked. Start timer. When participant press CONFIRM the timer is stopped. 
+GUI_STATE=2; ROBOT_STATE=2
+
+3- GUI locked. The robot chooses a reward, it moves the slider pointing/non-pointing. 
+GUI_STATE=1; ROBOT_STATE=3
+
+4- GUI locked. Save the log file for the trial. Restart from 1. 
+GUI_STATE=1; ROBOT_STATE=4
+
+
