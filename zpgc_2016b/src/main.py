@@ -4,7 +4,7 @@
 #
 # Massimiliano Patacchiola, Plymouth University 2016
 #
-# Scree resolution 1920x1080
+# Screen resolution 1920x1080
 # It is necessary to have pyQt4 installed
 # To generate python code from the .ui file: pyuic4 mainwindow.ui -o design.py
 
@@ -24,6 +24,7 @@ import sys
 import os
 import time
 import math
+import random
 
 #python -m pip install pyaudio
 #sudo apt-get install python-pyaudio python3-pyaudio
@@ -108,19 +109,12 @@ class WorkerThread(QThread):
 
         #STATE-0 init
         if self.STATE_MACHINE == 0:
-            if self._robot_connected==True and self._xml_uploaded==True and self._start_pressed==True and self._session_info_given==True:
-                #When there are zero pretrial then jump to state 2
-                #If there are more than zero pretrial go to state 1
-                if self.myParser._pretrial_repeat == 0:
-                    self.STATE_MACHINE = 2
-                elif self.myParser._pretrial_repeat > 0:
-                    self.STATE_MACHINE = 1 #switching to next state
-                self.SUB_STATE = 0 #substate of state machine 1 set to zero
-                #self.emit(self.disable_signal) #GUI disabled                
+            if self._robot_connected==True and self._xml_uploaded==True and self._start_pressed==True and self._session_info_given==True:                            
                 self.logger = logbook.Logbook() #Logbook Init
                 self.logger.AddTextLine(self._log_first_line)  #Add the first line to the logbook
                 self.emit(self.show_start_btn_signal, False)
                 self._start_pressed = False
+                self.STATE_MACHINE = 1 #switching to next state
             else:
                 current_time = time.strftime("%H:%M:%S", time.gmtime())
                 status = "robot_coonnected = " + str(self._robot_connected) + "\n" 
@@ -130,14 +124,10 @@ class WorkerThread(QThread):
                 print "[0] " + current_time + " Waiting... \n" + status
                 time.sleep(3)
 
-        #STATE-1 pretraining phase, subject play with researcher
+        #STATE-1 Hello world
         if self.STATE_MACHINE == 1:
-
-            #SUB_STATE == 0
-                #Init all the variables
-                #self._pretrial_is_person_turn == True
+            #Init all the variables
             if self.SUB_STATE == 0:
-                self._pretrial_counter = 0
                 self._confirm_pressed = False
                 self._start_pressed = False
                 #self.emit(self.enable_signal) #GUI enabled
@@ -147,128 +137,9 @@ class WorkerThread(QThread):
                 #total, pinv, round_tot, rinv, rslider, text
                 self.emit(self.update_gui_signal, 0, 0, 10, 0, local_string)
                 self.myPuppet.say_something("Hello, I am NAO. Let's play together.")
-                self.SUB_STATE = 1    
-          
-            #SUB_STATE == 1
-                #Waiting person answer CONFIRM
-                #Print the result when person reply
-            if self.SUB_STATE == 1:
-                if self._confirm_pressed == True:
-                    print "[1][1] Person Confirm Pressed"
-                    self._confirm_pressed = False
-                    self._log_round = float(self._log_round) - float(self._log_person_investment)
-                    self._log_multiplied_person_investment = self._log_person_investment * 3.0
-                    self._log_player_investment = self._log_multiplied_person_investment
-                    self._log_robot_investment = 0
-                    person_slider_value = self._log_person_investment
-                    #total, player_investment, round_total, your_investment, robot_investment, robot_slider_value
-                    local_string = ""
-                    #total, pinv, round_tot, rinv, rslider, text
-                    self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_robot_investment, local_string)
-                    #GUI: start_btn, confirm_btn, person_slider, robot_slider
-                    self.emit(self.enable_components_gui_signal, False,  False) #GUI components
-                    print "[1][1] Waiting for researcher feedback..." 
-                    self.SUB_STATE = 2
+                self.STATE_MACHINE = 2
+                time.sleep(2) 
 
-            #SUB_STATE == 2
-                #Waiting researcher answer
-                #Print result when researcher answer
-                #Switch to SUBSTATE 3
-            if self.SUB_STATE == 2:
-                if self._confirm_pressed == True:
-                    print "[1][2] Researcher Confirm Pressed"
-                    self._confirm_pressed = False
-                    #Updating the investment values
-                    #self._log_multiplied_person_investment = self._log_person_investment * 3.0 #multiplied times 3         
-                    robot_slider_value = self._log_robot_investment
-                    self._log_robot_investment = 0
-                    self._log_total = self._log_total + self._log_round + self._log_robot_investment
-                    #local_string = "You invested: " + str(self._log_multiplied_person_investment / 3) 
-                    #local_string += "  Robot received: " + str(self._log_multiplied_person_investment) + "  Robot returned: " + str(self._log_robot_investment) + '\n'
-                    local_string = "In this round you made: " + str(self._log_round + self._log_robot_investment) + '\n' 
-                    #local_string += "Total in your bank: " + str(self._log_total) + '\n\n'
-                    local_string += "Please press START to begin a new round..."
-                    #total, pinv, round_tot, rinv, rslider, text
-                    self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round + self._log_robot_investment, self._log_robot_investment, robot_slider_value, local_string)
-                    self.emit(self.enable_components_gui_signal, True,  False) #Start enabled                                                   
-                    self.SUB_STATE = 3
-
-            #SUB_STATE == 3
-                #Waiting for the subject pressing START:
-                #when subject press start goes to state 4
-            if self.SUB_STATE == 3:
-                if self._start_pressed == True: 
-                    self._start_pressed = False
-                    self.emit(self.enable_components_gui_signal, False,  True) #Start disabled
-                    self.SUB_STATE = 4
-
-            #SUB_STATE == 4
-                #Check if pretrial is finished:
-                #If pretrial is not finished jump to SUB_STATE 1
-                #if Pretrial is finished show the START button and jump to SUB_STATE 4
-            if self.SUB_STATE == 4:
-                if int(self._pretrial_counter) == int(self.myParser._pretrial_repeat):
-                    #Pretrial finished
-                    print "[1][3] Pretrial finished, starting the game..."
-                    self.emit(self.show_start_btn_signal, True) #show the button START
-                    local_string = "The first part is finished." + '\n\n'
-                    local_string += "Please press START to begin the game..."
-                    #total, pinv, round_tot, rinv, rslider, text
-                    self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_robot_investment, local_string)
-                    self.emit(self.enable_components_gui_signal, True,  False) #Start enabled
-                    self.SUB_STATE = 5
-                else:
-                    self._pretrial_counter = self._pretrial_counter + 1
-                    #Updating the investment values (RESET)
-                    self._log_round = 10
-                    self._log_person_investment = 0
-                    self._log_robot_investment = 0
-                    self._log_player_investment = 0
-                    local_string = "It's your turn..."
-                    #total, player_investment, round_total, your_investment, robot_investment, robot_slider_value
-                    self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_robot_investment, local_string)
-                    print "[1][3] New Round: " + str(self._pretrial_counter) + " / " + str(self.myParser._pretrial_repeat)
-                    self.SUB_STATE = 1
-
-
-            #SUB_STATE == 5
-                #When the START button is pressed go to STATE_MACHINE=2
-                #but before it resets the robot arms and move the head to look down 
-            if self.SUB_STATE == 5:
-                if self._start_pressed == True: 
-                    self._start_pressed = False
-                    #Updating the investment values (RESET)
-                    self._log_round = 10
-                    self._log_person_investment = 0
-                    self._log_robot_investment = 0
-                    self._log_player_investment = 0
-                    self._log_total = 0
-                    #total, player_investment, round_total, your_investment, robot_investment, robot_slider_value
-                    local_string = ""
-                    #total, pinv, round_tot, rinv, rslider, text
-                    self.emit(self.update_gui_signal, self._log_total, self._log_player_investment, self._log_round, self._log_robot_investment, local_string)
-                    #self.emit(self.show_start_btn_signal, False)
-                    self.emit(self.enable_components_gui_signal, False,  False) #GUI components
-                    self.STATE_MACHINE = 2
-                    #Enabling the face tracking OR looking down
-                    #Reset of the arms
-                    #This has been done here because it starts
-                    #before the 3 seconds pause
-                    self.myPuppet.right_arm_pointing(False, SPEED)
-                    self.myPuppet.left_arm_pointing(False, SPEED)
-                    if self.myParser._gaze_list[self._log_trial] == "True":
-                        print "[2] looking == True"
-                        self._log_gaze = "True"
-                        self.myPuppet.enable_face_tracking(True) #enables face tracking
-                    elif self.myParser._gaze_list[self._log_trial] == "False":
-                        print "[2] looking == False"
-                        self._log_gaze = "False"
-                        self.myPuppet.enable_face_tracking(False) #disable face tracking
-                        self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
-                    #Pause then start...
-                    time.sleep(3) #small pause before starting
-            
- 
         #STATE-2  Robot talk (look or not)
         if self.STATE_MACHINE == 2:
             #Updating the multiplication values
@@ -392,6 +263,8 @@ class WorkerThread(QThread):
             if self.myParser._pointing_list[self._log_trial] == "True":
               print "[5] pointing == True"
               self._log_pointing = "True"
+              #Sort a random value and use it to move the arm
+              random_value = random.random()
               #no arm movement
               if (random_value < 0.01):
                   self.myPuppet.right_arm_pointing(False, SPEED)
@@ -402,6 +275,8 @@ class WorkerThread(QThread):
               #right arm movement
               elif (random_value > 0.5 and random_value <= 1.0):
                    self.myPuppet.right_arm_pointing(True, SPEED)
+              else:
+                   print "[5] ERROR: the random_value generated to decide the arm movements is out of range: " + str(random_value)
               time.sleep(0.2)
             #If the condition is pointing==FALSE then does not move the arm
             elif self.myParser._pointing_list[self._log_trial] == "False":
@@ -445,8 +320,9 @@ class WorkerThread(QThread):
         #STATE-6 Saving in the logbook
         if self.STATE_MACHINE == 6:
             print "[6] Saving the trial in the logbook"
-            self.logger.AddLine(self._log_trial+1, self._log_person_investment, self._log_robot_investment, self._log_pmult, self._log_rmult, self._log_total, self._log_gaze, self._log_pointing, self._log_timer, self._log_mp3)
-            print "[6] " + str(self._log_trial+1) + "," + str(self._log_person_investment) + "," + str(self._log_robot_investment) + "," + str(self._log_pmult) + "," + str(self._log_rmult) + "," + str(self._log_total) + "," + str(self._log_gaze) + "," + str(self._log_pointing) + "," + str(self._log_timer)+ "," + str(self._log_mp3)
+            self.logger.AddLine(self._log_trial+1, self._log_person_investment, self._log_robot_investment, self._log_pmult, self._log_rmult, self._log_total, self._log_gaze, self._log_pointing, self._log_timer)
+            print "[6] trial, person_investment, robot_investment, person mult factor, robot mult factor, total, gaze, pointing, timer "
+            print "[6] " + str(self._log_trial+1) + "," + str(self._log_person_investment) + "," + str(self._log_robot_investment) + "," + str(self._log_pmult) + "," + str(self._log_rmult) + "," + str(self._log_total) + "," + str(self._log_gaze) + "," + str(self._log_pointing) + "," + str(self._log_timer)
 
             if self._log_trial+1 != self.myParser._size:
                 self.STATE_MACHINE = 7 #cycling to state 7
@@ -516,7 +392,6 @@ class WorkerThread(QThread):
     try:
         self.myParser.LoadFile(str(path))
         self.myParser.parse_experiment_list()
-        self.myParser.parse_pretrial_list()
         self._xml_uploaded = True
         #file_existance = self.myParser.check_file_existence("../share/mp3/")
         #if file_existance == True:
