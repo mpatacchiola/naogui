@@ -1,8 +1,41 @@
 GUI 4 HRI
 ----------
 
-This graphical user interface has been created for experiment in HRI.
+In this experiment there are two robot (helper and master) which play an investment game with a human player.
 
+XML parameters
+--------------
+
+- **number** [int] the trial id number
+- **gaze** [True, False] If True the robot looks the player.
+- **pointing** [True, False] If True the robot point the screen.
+- **pmf** [float] (p)erson (m)ultiplication (f)actor. It is a value used to multiply the person investement.
+- **rinv1** [float] (r)obot (inv)estment in the 1st interaction.
+- **rinv2a** [float] (r)obot (inv)estment in the 2nd interaction (option 'a')
+- **rinv2b** [float] (r)obot (inv)estment in the 2nd interaction (option 'b')
+- **mp3** [string] sentence produced by the robot. If the 'XXX' substring is present it is replaced with player invesment.
+- **nasty** [True, False] the robot can behave differently.
+
+```xml
+<list1>
+    <trial>
+        <number>1</number>
+        <mp3>Hello world</mp3>
+        <pmf>3.0</pmf>
+        <gaze>True</gaze>
+        <pointing>True</pointing>
+        <nasty>False</nasty>
+    </trial>
+    <trial>
+        <number>2</number>
+        <mp3>My name is NAO</mp3>
+        <pmf>3.0</pmf>
+        <gaze>True</gaze>
+        <pointing>True</pointing>
+        <nasty>False</nasty>
+    </trial>
+</list1>
+```
 
 Installation
 ------------
