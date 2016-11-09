@@ -24,6 +24,9 @@ XML parameters
         <mp3>Hello world</mp3>
         <bmf>2.0</bmf>        
         <pmf>3.0</pmf>
+        <rinv1>10</rinv1>
+        <rinv2a>5</rinv2a>
+        <rinv2b>15</rinv2b>
         <gaze>True</gaze>
         <pointing>True</pointing>
         <nasty>False</nasty>
@@ -33,6 +36,9 @@ XML parameters
         <mp3>My name is NAO</mp3>
         <bmf>2.0</bmf>   
         <pmf>3.0</pmf>
+        <rinv1>10</rinv1>
+        <rinv2a>5</rinv2a>
+        <rinv2b>15</rinv2b>
         <gaze>True</gaze>
         <pointing>True</pointing>
         <nasty>False</nasty>
