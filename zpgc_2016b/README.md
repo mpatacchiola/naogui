@@ -10,6 +10,7 @@ XML parameters
 - **gaze** [True, False] If True the robot looks the player.
 - **pointing** [True, False] If True the robot point the screen.
 - **pmf** [float] (p)erson (m)ultiplication (f)actor. It is a value used to multiply the person investement.
+- **bmf** [float] player (b) (m)ultiplication (f)actor. It multiply the total received by the Player B.
 - **rinv1** [float] (r)obot (inv)estment in the 1st interaction.
 - **rinv2a** [float] (r)obot (inv)estment in the 2nd interaction (option 'a')
 - **rinv2b** [float] (r)obot (inv)estment in the 2nd interaction (option 'b')
@@ -21,6 +22,7 @@ XML parameters
     <trial>
         <number>1</number>
         <mp3>Hello world</mp3>
+        <bmf>2.0</bmf>        
         <pmf>3.0</pmf>
         <gaze>True</gaze>
         <pointing>True</pointing>
@@ -29,6 +31,7 @@ XML parameters
     <trial>
         <number>2</number>
         <mp3>My name is NAO</mp3>
+        <bmf>2.0</bmf>   
         <pmf>3.0</pmf>
         <gaze>True</gaze>
         <pointing>True</pointing>
@@ -36,6 +39,13 @@ XML parameters
     </trial>
 </list1>
 ```
+
+Log structure
+--------------
+
+The log is saved in the same folder of the main file. The structure of the log is a CSV file that follows this convention:
+
+trial, person investment first, robot investment first, person investment second, robot investment second, player b investment, person mult factor, player b mult factor, total, gaze, pointing, timer first, timer second 
 
 Installation
 ------------
