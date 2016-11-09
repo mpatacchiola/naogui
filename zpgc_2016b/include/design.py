@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '../include/mainwindow.ui'
 #
-# Created: Wed Oct  5 11:17:38 2016
+# Created: Wed Nov  9 17:18:23 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -37,24 +37,6 @@ class Ui_MainWindow(object):
         self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
         self.tab = QtGui.QWidget()
         self.tab.setObjectName(_fromUtf8("tab"))
-        self.btnConfirm = QtGui.QPushButton(self.tab)
-        self.btnConfirm.setGeometry(QtCore.QRect(10, 180, 71, 71))
-        self.btnConfirm.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.btnConfirm.setText(_fromUtf8(""))
-        self.btnConfirm.setObjectName(_fromUtf8("btnConfirm"))
-        self.horizontalSliderRobot = QtGui.QSlider(self.tab)
-        self.horizontalSliderRobot.setEnabled(False)
-        self.horizontalSliderRobot.setGeometry(QtCore.QRect(100, 260, 1641, 51))
-        self.horizontalSliderRobot.setCursor(QtGui.QCursor(QtCore.Qt.OpenHandCursor))
-        self.horizontalSliderRobot.setLayoutDirection(QtCore.Qt.RightToLeft)
-        self.horizontalSliderRobot.setMaximum(30)
-        self.horizontalSliderRobot.setSingleStep(1)
-        self.horizontalSliderRobot.setProperty("value", 15)
-        self.horizontalSliderRobot.setTracking(True)
-        self.horizontalSliderRobot.setOrientation(QtCore.Qt.Horizontal)
-        self.horizontalSliderRobot.setTickPosition(QtGui.QSlider.TicksBothSides)
-        self.horizontalSliderRobot.setTickInterval(1)
-        self.horizontalSliderRobot.setObjectName(_fromUtf8("horizontalSliderRobot"))
         self.groupBox_4 = QtGui.QGroupBox(self.tab)
         self.groupBox_4.setGeometry(QtCore.QRect(620, 680, 601, 261))
         self.groupBox_4.setTitle(_fromUtf8(""))
@@ -214,15 +196,8 @@ class Ui_MainWindow(object):
         self.pushButton_10.setFont(font)
         self.pushButton_10.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.pushButton_10.setObjectName(_fromUtf8("pushButton_10"))
-        self.progressBar = QtGui.QProgressBar(self.tab)
-        self.progressBar.setGeometry(QtCore.QRect(100, 200, 1641, 31))
-        self.progressBar.setMaximum(30)
-        self.progressBar.setProperty("value", 15)
-        self.progressBar.setTextVisible(False)
-        self.progressBar.setInvertedAppearance(True)
-        self.progressBar.setObjectName(_fromUtf8("progressBar"))
         self.textEdit = QtGui.QTextEdit(self.tab)
-        self.textEdit.setGeometry(QtCore.QRect(420, 340, 1001, 171))
+        self.textEdit.setGeometry(QtCore.QRect(420, 290, 1001, 221))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Times New Roman"))
         font.setPointSize(18)
@@ -331,7 +306,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "---", None))
         self.label_4.setText(_translate("MainWindow", "Bank:", None))
         self.btnStartExperiment.setText(_translate("MainWindow", "START", None))
-        self.label_7.setText(_translate("MainWindow", "Robot returned:", None))
+        self.label_7.setText(_translate("MainWindow", "Robot invested:", None))
         self.pushButton_0.setText(_translate("MainWindow", "0", None))
         self.pushButton_1.setText(_translate("MainWindow", "1", None))
         self.pushButton_2.setText(_translate("MainWindow", "2", None))
@@ -343,7 +318,6 @@ class Ui_MainWindow(object):
         self.pushButton_8.setText(_translate("MainWindow", "8", None))
         self.pushButton_9.setText(_translate("MainWindow", "9", None))
         self.pushButton_10.setText(_translate("MainWindow", "10", None))
-        self.progressBar.setFormat(_translate("MainWindow", "%v", None))
         self.textEdit.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"

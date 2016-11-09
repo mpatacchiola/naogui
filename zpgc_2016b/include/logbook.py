@@ -43,21 +43,27 @@ class Logbook(object):
             # log exception
             print("* LOGBOOK: execpion adding a text line to the file.")
 
-    def AddLine(self, trial, pinv, rinv, pmult, rmult, total, gaze, pointing, timer, mp3 ):
+
+    def AddLine(self, trial, pinv_first, rinv_first, pinv_second, rinv_second, pbinv, pmult, bmult, total, gaze, pointing, timer_first, timer_second):
+        '''Add a line in the log file
+
+        trial, person_investment_first, robot_investment_first, person_investment_second, robot_investment_second, " +
+        player_b_investment, person mult factor, player b mult factor, total, gaze, pointing, timer_first, timer_second "
+        '''
         try:
-            self._trial = trial
-            self._pinv = pinv
-            self._rinv = rinv
-            self._pmult = pmult
-            self._rmult = rmult
-            self._gaze = gaze
-            self._pointing = pointing
-            self._mp3 = mp3
-            self._timer = timer
+            #self._trial = trial
+            #self._pinv = pinv
+            #self._rinv = rinv
+            #self._pmult = pmult
+            #self._rmult = rmult
+            #self._gaze = gaze
+            #self._pointing = pointing
+            #self._timer = timer
 
             path_to_file = self._id + ".csv"
             with open(path_to_file, "a") as f:
-                f.write( str(trial) + "," + str(pinv) + "," +  str(rinv) + "," + str(pmult) + "," + str(rmult) + "," + str(total) + "," + str(gaze) + "," + str(pointing) + "," + str(timer) + "," + str(mp3) + '\n')
+                f.write( str(trial) + "," + str(pinv_first) + "," +  str(rinv_first) + "," + str(pinv_second) + "," + str(rinv_second) + "," + str(pbinv) 
+                         + "," + str(pmult) + "," + str(bmult) + "," + str(total) + "," + str(gaze) + "," + str(pointing) + "," + str(timer_first) + "," + str(timer_second) + '\n')
                 f.close()
         except:
             # log exception

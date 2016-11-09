@@ -16,9 +16,11 @@ class Parser(object):
         self._pointing_list = list() #list for pointing/non_pointing
 
         self._pmf_list = list() #moltiplication factor for the person
-        self._rmf_list = list() #moltiplication factor for the robot
+        self._bmf_list = list() #moltiplication factor for the player B
         self._mp3_list = list() #reward given by the robot
-        self._mp3t_list = list() #name of the mp3 file
+        self._rinv1_list = list() #robot investement in 1st interaction
+        self._rinv2a_list = list() #Option 'a' for robot investement in 2nd interaction
+        self._rinv2b_list = list() #Option 'b' for robot investement in 2nd interaction
         self._nasty_list = list() #nasty or not robot
         self._size = 0
 
@@ -80,14 +82,22 @@ class Parser(object):
 		self._pmf_list.append(returned.firstChild.data)
                 print("pmf ........ %s" %returned.firstChild.data)
 
-		returned = item.getElementsByTagName("rmf")[0]
-		self._rmf_list.append(returned.firstChild.data)
-                print("rmf ........ %s" %returned.firstChild.data)
+		returned = item.getElementsByTagName("bmf")[0]
+		self._bmf_list.append(returned.firstChild.data)
+                print("bmf ........ %s" %returned.firstChild.data)
 
-		returned = item.getElementsByTagName("mp3t")[0]
-		self._mp3t_list.append(returned.firstChild.data)
-                print("mp3t ........ %s" %returned.firstChild.data)
-               
+		returned = item.getElementsByTagName("rinv1")[0]
+		self._rinv1_list.append(returned.firstChild.data)
+                print("rinv1 ........ %s" %returned.firstChild.data)
+
+		returned = item.getElementsByTagName("rinv2a")[0]
+		self._rinv2a_list.append(returned.firstChild.data)
+                print("rinv2a ........ %s" %returned.firstChild.data)
+
+		returned = item.getElementsByTagName("rinv2b")[0]
+		self._rinv2b_list.append(returned.firstChild.data)
+                print("rinv2b ........ %s" %returned.firstChild.data)
+              
 		returned = item.getElementsByTagName("mp3")[0]
 		self._mp3_list.append(returned.firstChild.data)
                 print("mp3 ........ %s" %returned.firstChild.data)
@@ -119,7 +129,6 @@ class Parser(object):
         del self._pointing_list[:]
         del self._mp3_list[:]
         del self._person_moltfact_list[:]
-        del self._robot_moltfact_list[:]
         del self._nasty_list[:]
         self._experiment_loaded = False
 
