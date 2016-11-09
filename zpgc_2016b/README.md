@@ -6,16 +6,16 @@ In this experiment there are two robot (helper and master) which play an investm
 XML parameters
 --------------
 
-- **number** [int] the trial id number
-- **gaze** [True, False] If True the robot looks the player.
-- **pointing** [True, False] If True the robot point the screen.
-- **pmf** [float] (p)erson (m)ultiplication (f)actor. It is a value used to multiply the person investement.
-- **bmf** [float] player (b) (m)ultiplication (f)actor. It multiply the total received by the Player B.
-- **rinv1** [float] (r)obot (inv)estment in the 1st interaction.
-- **rinv2a** [float] (r)obot (inv)estment in the 2nd interaction (option 'a')
-- **rinv2b** [float] (r)obot (inv)estment in the 2nd interaction (option 'b')
-- **mp3** [string] sentence produced by the robot. If the 'XXX' substring is present it is replaced with player invesment.
-- **nasty** [True, False] the robot can behave differently.
+- **number** {int} the trial id number
+- **gaze** {True, False} If True the robot looks the player.
+- **pointing** {True, False} If True the robot point the screen.
+- **pmf** {float} (p)erson (m)ultiplication (f)actor. It is a value used to multiply the person investement.
+- **bmf** {float} player (b) (m)ultiplication (f)actor. It multiply the total received by the Player B.
+- **rinv1** {float} (r)obot (inv)estment in the 1st interaction.
+- **rinv2a** {float} (r)obot (inv)estment in the 2nd interaction (option 'a')
+- **rinv2b** {float} (r)obot (inv)estment in the 2nd interaction (option 'b')
+- **mp3** {string} sentence produced by the robot. If the 'XXX' substring is present it is replaced with player invesment.
+- **nasty** {True, False} the robot can behave differently.
 
 ```xml
 <list1>
