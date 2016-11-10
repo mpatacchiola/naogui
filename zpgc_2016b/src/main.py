@@ -445,7 +445,7 @@ class WorkerThread(QThread):
             #the amount not invested + the money that player b gave back (half of them)
             self._log_person_total += (10-self._log_person_investment_second) + (self._log_player_b_investment / 2.0)
             self._log_robot_total += (10-self._log_robot_investment_second) + (self._log_player_b_investment / 2.0)
-            local_string = "Player B received: " + str(self._log_person_investment_second + self._log_robot_investment_second * 3) + '\n'
+            local_string = "Player B received: " + str((self._log_person_investment_second + self._log_robot_investment_second) * 3) + '\n'
             local_string += "Player B gave back: " + str(self._log_player_b_investment) + '\n'
             local_string += "You received: " + str(self._log_player_b_investment / 2.0) + '\n'
             local_string += "Your mate received: " + str(self._log_player_b_investment / 2.0) + '\n'
