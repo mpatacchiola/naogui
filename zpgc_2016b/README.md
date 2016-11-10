@@ -14,7 +14,7 @@ XML parameters
 - **rinv1** {float} (r)obot (inv)estment in the 1st interaction.
 - **rinv2a** {float} (r)obot (inv)estment in the 2nd interaction (option 'a')
 - **rinv2b** {float} (r)obot (inv)estment in the 2nd interaction (option 'b')
-- **mp3** {string} sentence produced by the robot. If the 'XXX' substring is present it is replaced with player invesment.
+- **mp3** {string} sentence produced by the robot. If the 'XXX' substring is present it is replaced with player invesment. It cannot be empty.
 - **nasty** {True, False} the robot can behave differently.
 
 ```xml
