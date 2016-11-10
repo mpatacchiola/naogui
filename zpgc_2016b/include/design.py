@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '../include/mainwindow.ui'
 #
-# Created: Wed Nov  9 17:18:23 2016
+# Created: Thu Nov 10 12:16:24 2016
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -42,7 +42,7 @@ class Ui_MainWindow(object):
         self.groupBox_4.setTitle(_fromUtf8(""))
         self.groupBox_4.setObjectName(_fromUtf8("groupBox_4"))
         self.label_4 = QtGui.QLabel(self.groupBox_4)
-        self.label_4.setGeometry(QtCore.QRect(240, 10, 81, 16))
+        self.label_4.setGeometry(QtCore.QRect(240, 10, 131, 16))
         font = QtGui.QFont()
         font.setPointSize(14)
         font.setBold(True)
@@ -74,24 +74,24 @@ class Ui_MainWindow(object):
         self.groupBox_5.setTitle(_fromUtf8(""))
         self.groupBox_5.setObjectName(_fromUtf8("groupBox_5"))
         self.label_7 = QtGui.QLabel(self.groupBox_5)
-        self.label_7.setGeometry(QtCore.QRect(180, 10, 151, 16))
+        self.label_7.setGeometry(QtCore.QRect(190, 10, 131, 16))
         font = QtGui.QFont()
         font.setPointSize(14)
         font.setBold(True)
         font.setWeight(75)
         self.label_7.setFont(font)
         self.label_7.setObjectName(_fromUtf8("label_7"))
-        self.lcdNumberRobotInvestment = QtGui.QLCDNumber(self.groupBox_5)
-        self.lcdNumberRobotInvestment.setGeometry(QtCore.QRect(190, 30, 131, 71))
+        self.lcdNumberRobotTotal = QtGui.QLCDNumber(self.groupBox_5)
+        self.lcdNumberRobotTotal.setGeometry(QtCore.QRect(190, 30, 131, 71))
         font = QtGui.QFont()
         font.setPointSize(15)
         font.setBold(True)
         font.setWeight(75)
-        self.lcdNumberRobotInvestment.setFont(font)
-        self.lcdNumberRobotInvestment.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.lcdNumberRobotInvestment.setAutoFillBackground(False)
-        self.lcdNumberRobotInvestment.setProperty("intValue", 0)
-        self.lcdNumberRobotInvestment.setObjectName(_fromUtf8("lcdNumberRobotInvestment"))
+        self.lcdNumberRobotTotal.setFont(font)
+        self.lcdNumberRobotTotal.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.lcdNumberRobotTotal.setAutoFillBackground(False)
+        self.lcdNumberRobotTotal.setProperty("intValue", 0)
+        self.lcdNumberRobotTotal.setObjectName(_fromUtf8("lcdNumberRobotTotal"))
         self.groupBox_confirm_btn = QtGui.QGroupBox(self.tab)
         self.groupBox_confirm_btn.setGeometry(QtCore.QRect(230, 530, 1411, 131))
         self.groupBox_confirm_btn.setTitle(_fromUtf8(""))
@@ -304,9 +304,9 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "---", None))
-        self.label_4.setText(_translate("MainWindow", "Bank:", None))
+        self.label_4.setText(_translate("MainWindow", "Your Bank:", None))
         self.btnStartExperiment.setText(_translate("MainWindow", "START", None))
-        self.label_7.setText(_translate("MainWindow", "Robot invested:", None))
+        self.label_7.setText(_translate("MainWindow", "Mate Bank:", None))
         self.pushButton_0.setText(_translate("MainWindow", "0", None))
         self.pushButton_1.setText(_translate("MainWindow", "1", None))
         self.pushButton_2.setText(_translate("MainWindow", "2", None))
@@ -326,7 +326,7 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Exp", None))
         self.groupBox.setTitle(_translate("MainWindow", "1- Connection Box", None))
         self.lineEditNaoIP.setInputMask(_translate("MainWindow", "000.000.000.000", None))
-        self.lineEditNaoIP.setText(_translate("MainWindow", "192.168.0.1", None))
+        self.lineEditNaoIP.setText(_translate("MainWindow", "192.168.0.100", None))
         self.label.setText(_translate("MainWindow", "NAO IP Address:", None))
         self.btnConnectToNao.setText(_translate("MainWindow", "Connect", None))
         self.label_3.setText(_translate("MainWindow", "Port:", None))

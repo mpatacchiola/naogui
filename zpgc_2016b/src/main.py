@@ -98,6 +98,7 @@ class WorkerThread(QThread):
     self._log_timer_second = 0
     self._log_trial = 0
     self._log_person_total = 0
+    self._log_robot_total = 0
     self._log_person_investment = 0
     self._log_person_investment_first = 0 
     self._log_person_investment_second = 0
@@ -151,15 +152,13 @@ class WorkerThread(QThread):
             if self.SUB_STATE == 0:
                 self._confirm_pressed = False
                 self._start_pressed = False
-                #self.emit(self.enable_signal) #GUI enabled
+                print "[1] Hello world!"
+                self.myPuppet.say_something("Hello, I am NAO. Let's play together.")
+                time.sleep(1)
                 print "[1] Enablig components"
                 self.emit(self.enable_components_gui_signal, False,  True) #GUI components
-                local_string = "It's your turn..."
-                #total, pinv, round_tot, rinv, rslider, text
-                self.emit(self.update_gui_signal, 0, 0, 0, local_string)
-                self.myPuppet.say_something("Hello, I am NAO. Let's play together.")
                 self.STATE_MACHINE = 2
-                time.sleep(2) 
+ 
 
         #STATE-2  Robot talk (look or not)
         if self.STATE_MACHINE == 2:
@@ -174,7 +173,7 @@ class WorkerThread(QThread):
             self._log_robot_investment_second = 0
             self._log_player_b_investment = 0
             local_string = ""
-            self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_investment_first, local_string)     
+            self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)     
             print "[2] Robot Talking + Looking/Non-Looking"            
             #self.myPuppet.look_to(1, SPEED)
             #time.sleep(2)
@@ -194,7 +193,7 @@ class WorkerThread(QThread):
             #Writing: "It is your turn"
             local_string = "It's your turn..."
             #total, pinv, round_tot, rinv, rslider, text
-            self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_investment_first, local_string) 
+            self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string) 
             #Reset the timer and switch to the next state
             self.timer_first.restart() #RESET here the timer
             print "[3] Waiting for the subject answer..." #going to state 3
@@ -215,7 +214,7 @@ class WorkerThread(QThread):
                 #self._log_person_investment is updated automatically when the buttons are pressed
                 self._log_robot_investment_first = 0
                 local_string = ""
-                self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_investment_first, local_string)
+                self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
                 #The person turn is finished, now switching to robot turn
                 self.STATE_MACHINE = 4 #next state
                 time.sleep(1) #Sleep to evitate fast movements of the robot just after the answer
@@ -227,22 +226,22 @@ class WorkerThread(QThread):
             #Take a sentence from the mp3 filed in the XML
             #the XXX substring is replaced with the multiplied value
             #given from the person to the robot. 
-            self._sentence_mp3 = self.myParser._mp3_list[self._log_trial]
-            self._sentence_mp3 = str(self._sentence_mp3) #convert to string
+            #self._sentence_mp3 = self.myParser._mp3_list[self._log_trial]
+            #self._sentence_mp3 = str(self._sentence_mp3) #convert to string
             #Check if XXX is present and replace it with the
             #multiplied person investment value...
-            has_substring = self._sentence_mp3.find("XXX")
-            if(has_substring != -1):
-                print "[4] Found the substring 'XXX' at location: " + str(has_substring)
-                self._sentence_mp3 = self._sentence_mp3.replace("XXX", str(int(self._log_person_investment_first* float(self._log_pmf))))
-            print "[4] Saying: '" + self._sentence_mp3 + "'"
+            #has_substring = self._sentence_mp3.find("XXX")
+            #if(has_substring != -1):
+                #print "[4] Found the substring 'XXX' at location: " + str(has_substring)
+                #self._sentence_mp3 = self._sentence_mp3.replace("XXX", str(int(self._log_person_investment_first* float(self._log_pmf))))
+            #print "[4] Saying: '" + self._sentence_mp3 + "'"
             #It says the sentence generated above only if
             #the valued returned by the person is different from zero.
-            if(self._log_person_investment_first* float(self._log_pmf) > 0):
-                self.myPuppet.say_something(str(self._sentence_mp3))
-            else:
-                self.myPuppet.say_something("Ok, You invested zero.") #If the robot receive zero the sentence is cut
-            print "[4] looking to the monitor..."
+            #if(self._log_person_investment_first* float(self._log_pmf) > 0):
+                #self.myPuppet.say_something(str(self._sentence_mp3))
+            #else:
+                #self.myPuppet.say_something("Ok, You invested zero.") #If the robot receive zero the sentence is cut
+            #print "[4] looking to the monitor..."
             #The robot looks to the monitor (thinking what to do)
             self.myPuppet.enable_face_tracking(False) #disable face tracking
             self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
@@ -291,7 +290,7 @@ class WorkerThread(QThread):
             local_string += "Your mate invested: " + str(self._log_robot_investment_first) + '\n' 
             local_string += "Please choose a new investment or confirm the previous one..."
             #total, player_investment, round_total, robot_investment, text_label=""
-            self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_investment_first, local_string)
+            self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
 
             #Reset the arms
             time.sleep(0.5)
@@ -329,7 +328,7 @@ class WorkerThread(QThread):
                 self.emit(self.enable_components_gui_signal, False,  False) #GUI components
                 #Updating the investment values
                 local_string = ""
-                self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_investment_first, local_string)
+                self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
                 #The person turn is finished, now switching to robot turn
                 self.STATE_MACHINE = 8 #next state
                 time.sleep(1) #Sleep to evitate fast movements of the robot just after the answer      
@@ -406,7 +405,7 @@ class WorkerThread(QThread):
             #Updating the GUI
             local_string = "You invested: " + str(self._log_person_investment_second) + '\n'
             local_string += "Your mate invested: " + str(self._log_robot_investment_second) + '\n' 
-            self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_investment_second, local_string)
+            self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
 
             #Reset the arms
             time.sleep(0.5)
@@ -440,14 +439,18 @@ class WorkerThread(QThread):
             self.STATE_MACHINE = 3 #next state
             time.sleep(1)
             #Update the TOTAL
-            print "[10] The player B invested: " + str(self._log_player_b_investment) 
-            self._log_person_total += self._log_player_b_investment / 2.0
-            local_string = "The Player B gave back: " + str(self._log_player_b_investment) + '\n'
+            print "[10] The player B invested: " + str(self._log_player_b_investment)
+            #The total of the person in the single round is given from
+            #the amount not invested + the money that player b gave back (half of them)
+            self._log_person_total += (10-self._log_person_investment_second) + (self._log_player_b_investment / 2.0)
+            self._log_robot_total += (10-self._log_robot_investment_second) + (self._log_player_b_investment / 2.0)
+            local_string = "Player B received: " + str(self._log_person_investment_second * self._log_robot_investment_second * 3) + '\n'
+            local_string += "Player B gave back: " + str(self._log_player_b_investment) + '\n'
             local_string += "You received: " + str(self._log_player_b_investment / 2.0) + '\n'
             local_string += "Your mate received: " + str(self._log_player_b_investment / 2.0) + '\n'
             local_string += "Please press START to begin a new round..." + '\n' 
             #total, pinv, round_tot, rinv, rslider, text
-            self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_investment_second, local_string) 
+            self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string) 
             self.STATE_MACHINE = 11 #next state
 
 
@@ -666,11 +669,10 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
             self.pushButton_0.setStyleSheet("border-color: red")
 
     #total, player_investment, round_total, robot_investment, text_label=""
-    def update_gui(self, total, robot_investment, text_label=""):
+    def update_gui(self, person_total, robot_total, text_label=""):
         #Update the total bar
-        self.lcdNumberTotal.display(float(total))
-        #Update the friendly robot bar
-        self.lcdNumberRobotInvestment.display(float(robot_investment))       
+        self.lcdNumberTotal.display(float(person_total))
+        self.lcdNumberRobotTotal.display(float(robot_total))     
         #Update the textEdit label
         self.textEdit.clear() #clear the textedit            
         self.textEdit.append(QtCore.QString(text_label))      
