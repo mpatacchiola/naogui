@@ -38,52 +38,6 @@
           <property name="title">
            <string/>
           </property>
-          <widget class="QLabel" name="label_4">
-           <property name="geometry">
-            <rect>
-             <x>240</x>
-             <y>10</y>
-             <width>131</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>14</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Your Bank:</string>
-           </property>
-          </widget>
-          <widget class="QLCDNumber" name="lcdNumberTotal">
-           <property name="geometry">
-            <rect>
-             <x>240</x>
-             <y>30</y>
-             <width>131</width>
-             <height>71</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>15</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="layoutDirection">
-            <enum>Qt::LeftToRight</enum>
-           </property>
-           <property name="autoFillBackground">
-            <bool>false</bool>
-           </property>
-           <property name="intValue" stdset="0">
-            <number>0</number>
-           </property>
-          </widget>
           <widget class="QPushButton" name="btnStartExperiment">
            <property name="geometry">
             <rect>
@@ -120,7 +74,7 @@
           <property name="title">
            <string/>
           </property>
-          <widget class="QLabel" name="label_7">
+          <widget class="QLabel" name="label_4">
            <property name="geometry">
             <rect>
              <x>190</x>
@@ -137,10 +91,10 @@
             </font>
            </property>
            <property name="text">
-            <string>Mate Bank:</string>
+            <string>Bank:</string>
            </property>
           </widget>
-          <widget class="QLCDNumber" name="lcdNumberRobotTotal">
+          <widget class="QLCDNumber" name="lcdNumberTotal">
            <property name="geometry">
             <rect>
              <x>190</x>
@@ -440,9 +394,9 @@
           <property name="geometry">
            <rect>
             <x>420</x>
-            <y>290</y>
+            <y>230</y>
             <width>1001</width>
-            <height>221</height>
+            <height>281</height>
            </rect>
           </property>
           <property name="font">

@@ -173,7 +173,7 @@ class WorkerThread(QThread):
             self._log_robot_investment_second = 0
             self._log_player_b_investment = 0
             local_string = ""
-            self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)     
+            self.emit(self.update_gui_signal, self._log_person_total+self._log_robot_total, self._log_robot_total, local_string)     
             print "[2] Robot Talking + Looking/Non-Looking"            
             #self.myPuppet.look_to(1, SPEED)
             #time.sleep(2)
@@ -193,7 +193,7 @@ class WorkerThread(QThread):
             #Writing: "It is your turn"
             local_string = "It's your turn..."
             #total, pinv, round_tot, rinv, rslider, text
-            self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string) 
+            self.emit(self.update_gui_signal, self._log_person_total+self._log_robot_total, self._log_robot_total, local_string) 
             #Reset the timer and switch to the next state
             self.timer_first.restart() #RESET here the timer
             print "[3] Waiting for the subject answer..." #going to state 3
@@ -214,7 +214,7 @@ class WorkerThread(QThread):
                 #self._log_person_investment is updated automatically when the buttons are pressed
                 self._log_robot_investment_first = 0
                 local_string = ""
-                self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
+                self.emit(self.update_gui_signal, self._log_person_total+self._log_robot_total, self._log_robot_total, local_string)
                 #The person turn is finished, now switching to robot turn
                 self.STATE_MACHINE = 4 #next state
                 time.sleep(1) #Sleep to evitate fast movements of the robot just after the answer
@@ -290,7 +290,7 @@ class WorkerThread(QThread):
             local_string += "Your mate invested: " + str(self._log_robot_investment_first) + '\n' 
             local_string += "Please choose a new investment or confirm the previous one..."
             #total, player_investment, round_total, robot_investment, text_label=""
-            self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
+            self.emit(self.update_gui_signal, self._log_person_total+self._log_robot_total, self._log_robot_total, local_string)
 
             #Reset the arms
             time.sleep(0.5)
@@ -328,7 +328,7 @@ class WorkerThread(QThread):
                 self.emit(self.enable_components_gui_signal, False,  False) #GUI components
                 #Updating the investment values
                 local_string = ""
-                self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
+                self.emit(self.update_gui_signal, self._log_person_total+self._log_robot_total, self._log_robot_total, local_string)
                 #The person turn is finished, now switching to robot turn
                 self.STATE_MACHINE = 8 #next state
                 time.sleep(1) #Sleep to evitate fast movements of the robot just after the answer      
@@ -409,7 +409,7 @@ class WorkerThread(QThread):
             local_string = "You invested: " + str(self._log_person_investment_second) + '\n'
             local_string += "Your mate invested: " + str(self._log_robot_investment_second) + '\n'
             local_string += "In total you invested: " + str(self._log_person_investment_second + self._log_robot_investment_second) + '\n' 
-            self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
+            self.emit(self.update_gui_signal, self._log_person_total+self._log_robot_total, self._log_robot_total, local_string)
 
             #Reset the arms
             time.sleep(0.5)
@@ -454,7 +454,7 @@ class WorkerThread(QThread):
             local_string += "Your mate received: " + str(self._log_player_b_investment / 2.0) + '\n'
             local_string += "Please press START to begin a new round..." + '\n' 
             #total, pinv, round_tot, rinv, rslider, text
-            self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string) 
+            self.emit(self.update_gui_signal, self._log_person_total+self._log_robot_total, self._log_robot_total, local_string) 
             self.STATE_MACHINE = 11 #next state
 
 
@@ -555,7 +555,6 @@ class WorkerThread(QThread):
       self._log_first_line = my_string
       self._session_info_given = True
         
-
   def stop(self):
     self.stopped = 1
 
@@ -675,8 +674,7 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
     #total, player_investment, round_total, robot_investment, text_label=""
     def update_gui(self, person_total, robot_total, text_label=""):
         #Update the total bar
-        self.lcdNumberTotal.display(float(person_total))
-        self.lcdNumberRobotTotal.display(float(robot_total))     
+        self.lcdNumberTotal.display(float(person_total))     
         #Update the textEdit label
         self.textEdit.clear() #clear the textedit            
         self.textEdit.append(QtCore.QString(text_label))      
