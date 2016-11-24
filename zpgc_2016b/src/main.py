@@ -236,11 +236,11 @@ class WorkerThread(QThread):
                 has_substring = self._sentence_mp3.find("XXX")
                 if(has_substring != -1):
                     print "[4] Found the substring 'XXX' at location: " + str(has_substring)
-                    self._sentence_mp3 = self._sentence_mp3.replace("XXX", str(int(self._log_person_investment_second* float(self._log_pmf))))
+                    self._sentence_mp3 = self._sentence_mp3.replace("XXX", str(int(self._log_person_investment_first* float(self._log_pmf))))
                 print "[4] Saying: '" + self._sentence_mp3 + "'"
                 #It says the sentence generated above only if
                 #the valued returned by the person is different from zero.
-                if(self._log_person_investment_second* float(self._log_pmf) > 0):
+                if(self._log_person_investment_first* float(self._log_pmf) > 0):
                     self.myPuppet.say_something(str(self._sentence_mp3))
                 else:
                     self.myPuppet.say_something("Ok, You invested zero.") #If the robot receive zero the sentence is cut
