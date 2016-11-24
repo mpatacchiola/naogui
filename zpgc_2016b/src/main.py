@@ -222,29 +222,29 @@ class WorkerThread(QThread):
         #STATE-4 First interaction: the robot talk and says the investment made by the person
         # then it looks down to the screen and switch to next state
         if self.STATE_MACHINE == 4:
-            print "[4] The robot says the investment made by the person..."
+            #print "[4] The robot says the investment made by the person..."
             #Take a sentence from the mp3 filed in the XML
             #the XXX substring is replaced with the multiplied value
             #given from the person to the robot. 
-            self._sentence_mp3 = self.myParser._mp3_list[self._log_trial]
-            self._sentence_mp3 = str(self._sentence_mp3) #convert to string
+            #self._sentence_mp3 = self.myParser._mp3_list[self._log_trial]
+            #self._sentence_mp3 = str(self._sentence_mp3) #convert to string
             #If the sentence in the XML file is equal to "." or "-" or ""
             #then it does not say anything...
-            if(self._sentence_mp3 != "." and self._sentence_mp3 != "" and self._sentence_mp3 != "-"):
+            #if(self._sentence_mp3 != "." and self._sentence_mp3 != "" and self._sentence_mp3 != "-"):
                 #Check if XXX is present and replace it with the
                 #multiplied person investment value...
-                has_substring = self._sentence_mp3.find("XXX")
-                if(has_substring != -1):
-                    print "[4] Found the substring 'XXX' at location: " + str(has_substring)
-                    self._sentence_mp3 = self._sentence_mp3.replace("XXX", str(int(self._log_person_investment_first* float(self._log_pmf))))
-                print "[4] Saying: '" + self._sentence_mp3 + "'"
+                #has_substring = self._sentence_mp3.find("XXX")
+                #if(has_substring != -1):
+                    #print "[4] Found the substring 'XXX' at location: " + str(has_substring)
+                    #self._sentence_mp3 = self._sentence_mp3.replace("XXX", str(int(self._log_person_investment_first* float(self._log_pmf))))
+                #print "[4] Saying: '" + self._sentence_mp3 + "'"
                 #It says the sentence generated above only if
                 #the valued returned by the person is different from zero.
-                if(self._log_person_investment_first* float(self._log_pmf) > 0):
-                    self.myPuppet.say_something(str(self._sentence_mp3))
-                else:
-                    self.myPuppet.say_something("Ok, You invested zero.") #If the robot receive zero the sentence is cut
-            print "[4] looking to the monitor..."
+                #if(self._log_person_investment_first* float(self._log_pmf) > 0):
+                    #self.myPuppet.say_something(str(self._sentence_mp3))
+                #else:
+                    #self.myPuppet.say_something("Ok, You invested zero.") #If the robot receive zero the sentence is cut
+            #print "[4] looking to the monitor..."
             #The robot looks to the monitor (thinking what to do)
             self.myPuppet.enable_face_tracking(False) #disable face tracking
             self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
@@ -340,28 +340,28 @@ class WorkerThread(QThread):
         #STATE-8 Second interaction: the robot talk and says the investment made by the person
         # then it looks down to the screen and switch to next state
         if self.STATE_MACHINE == 8:
-            #print "[8] The robot says the investment made by the person..."
+            print "[8] The robot says the investment made by the person..."
             #Take a sentence from the mp3 filed in the XML
             #the XXX substring is replaced with the multiplied value
             #given from the person to the robot. 
-            #self._sentence_mp3 = self.myParser._mp3_list[self._log_trial]
-            #self._sentence_mp3 = str(self._sentence_mp3) #convert to string
+            self._sentence_mp3 = self.myParser._mp3_list[self._log_trial]
+            self._sentence_mp3 = str(self._sentence_mp3) #convert to string
             #If the sentence in the XML file is equal to "." or "-" or ""
             #then it does not say anything...
-            #if(self._sentence_mp3 != "." and self._sentence_mp3 != "" and self._sentence_mp3 != "-"):
+            if(self._sentence_mp3 != "." and self._sentence_mp3 != "" and self._sentence_mp3 != "-"):
                 #Check if XXX is present and replace it with the
                 #multiplied person investment value...
-                #has_substring = self._sentence_mp3.find("XXX")
-                #if(has_substring != -1):
-                    #print "[8] Found the substring 'XXX' at location: " + str(has_substring)
-                    #self._sentence_mp3 = self._sentence_mp3.replace("XXX", str(int(self._log_person_investment_second* float(self._log_pmf))))
-                #print "[8] Saying: '" + self._sentence_mp3 + "'"
+                has_substring = self._sentence_mp3.find("XXX")
+                if(has_substring != -1):
+                    print "[8] Found the substring 'XXX' at location: " + str(has_substring)
+                    self._sentence_mp3 = self._sentence_mp3.replace("XXX", str(int(self._log_person_investment_second* float(self._log_pmf))))
+                print "[8] Saying: '" + self._sentence_mp3 + "'"
                 #It says the sentence generated above only if
                 #the valued returned by the person is different from zero.
-                #if(self._log_person_investment_second* float(self._log_pmf) > 0):
-                    #self.myPuppet.say_something(str(self._sentence_mp3))
-                #else:
-                    #self.myPuppet.say_something("Ok, You invested zero.") #If the robot receive zero the sentence is cut
+                if(self._log_person_investment_second* float(self._log_pmf) > 0):
+                    self.myPuppet.say_something(str(self._sentence_mp3))
+                else:
+                    self.myPuppet.say_something("Ok, You invested zero.") #If the robot receive zero the sentence is cut
                 print "[8] looking to the monitor..."
                 #The robot looks to the monitor (thinking what to do)
                 self.myPuppet.enable_face_tracking(False) #disable face tracking
@@ -453,8 +453,8 @@ class WorkerThread(QThread):
             self._log_robot_total += (10-self._log_robot_investment_second) + (self._log_player_b_investment / 2.0)
             local_string = "Player B received: " + str((self._log_person_investment_second + self._log_robot_investment_second) * 3) + '\n'
             local_string += "Player B gave back: " + str(self._log_player_b_investment) + '\n'
-            local_string += "You received: " + str(self._log_player_b_investment / 2.0) + '\n'
-            local_string += "Your mate received: " + str(self._log_player_b_investment / 2.0) + '\n'
+            #local_string += "You received: " + str(self._log_player_b_investment / 2.0) + '\n'
+            #local_string += "Your mate received: " + str(self._log_player_b_investment / 2.0) + '\n'
             local_string += "Please press START to begin a new round..." + '\n' 
             #total, pinv, round_tot, rinv, rslider, text
             self.emit(self.update_gui_signal, self._log_person_total+self._log_robot_total, self._log_robot_total, local_string) 
@@ -466,8 +466,7 @@ class WorkerThread(QThread):
             print "[11] Saving the trial in the logbook"
             self.logger.AddLine(self._log_trial+1, self._log_person_investment_first, self._log_robot_investment_first, self._log_person_investment_second,  self._log_robot_investment_second,
                                 self._log_player_b_investment, self._log_pmf, self._log_bmf, self._log_person_total, self._log_gaze, self._log_pointing, self._log_timer_first, self._log_timer_second)
-            print ("[11] trial, person_investment_first, robot_investment_first, person_investment_second, robot_investment_second, " +
-                     "player_b_investment, person mult factor, player b mult factor, total, gaze, pointing, timer_first, timer_second ")
+            print ("[11] trial, person_investment_first, robot_investment_first, person_investment_second, log_robot_investment_second, player_b_investment, pmf, bmf, person_total, gaze, pointing, timer_first, timer_second")
             print ("[11] " + str(self._log_trial+1) + "," + str(self._log_person_investment_first) + "," + str(self._log_robot_investment_first) + "," + str(self._log_person_investment_second) + 
                    "," + str(self._log_robot_investment_second) + "," +  str(self._log_pmf) + "," + str(self._log_bmf) + "," + str(self._log_person_total) + "," + str(self._log_gaze) + 
                    "," + str(self._log_pointing) + "," + str(self._log_timer_first) + "," + str(self._log_timer_second))

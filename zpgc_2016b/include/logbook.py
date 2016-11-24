@@ -27,7 +27,7 @@ class Logbook(object):
         try:
            path_to_file = self._id + ".csv"
            with open(path_to_file, "a") as f:
-               f.write( "trial," + "pinv," +  "rinv," + "pmult," + "rmult," + "total," + "gaze," + "pointing," + "timer," + "audio" + '\n')
+               f.write( "trial, person_investment_first, robot_investment_first, person_investment_second, log_robot_investment_second, player_b_investment, pmf, bmf, person_total, gaze, pointing, timer_first, timer_second" + '\n')
                f.close()
         except:
            # log exception
