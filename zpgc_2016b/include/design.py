@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '../include/mainwindow.ui'
 #
-# Created: Thu Nov 24 11:03:20 2016
+# Created: Fri Jan 20 13:47:55 2017
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -55,7 +55,7 @@ class Ui_MainWindow(object):
         self.groupBox_5.setTitle(_fromUtf8(""))
         self.groupBox_5.setObjectName(_fromUtf8("groupBox_5"))
         self.label_4 = QtGui.QLabel(self.groupBox_5)
-        self.label_4.setGeometry(QtCore.QRect(190, 10, 131, 16))
+        self.label_4.setGeometry(QtCore.QRect(50, 10, 131, 16))
         font = QtGui.QFont()
         font.setPointSize(14)
         font.setBold(True)
@@ -63,7 +63,7 @@ class Ui_MainWindow(object):
         self.label_4.setFont(font)
         self.label_4.setObjectName(_fromUtf8("label_4"))
         self.lcdNumberTotal = QtGui.QLCDNumber(self.groupBox_5)
-        self.lcdNumberTotal.setGeometry(QtCore.QRect(190, 30, 131, 71))
+        self.lcdNumberTotal.setGeometry(QtCore.QRect(50, 30, 131, 71))
         font = QtGui.QFont()
         font.setPointSize(15)
         font.setBold(True)
@@ -73,6 +73,25 @@ class Ui_MainWindow(object):
         self.lcdNumberTotal.setAutoFillBackground(False)
         self.lcdNumberTotal.setProperty("intValue", 0)
         self.lcdNumberTotal.setObjectName(_fromUtf8("lcdNumberTotal"))
+        self.lcdNumberTotalRobot = QtGui.QLCDNumber(self.groupBox_5)
+        self.lcdNumberTotalRobot.setGeometry(QtCore.QRect(280, 30, 131, 71))
+        font = QtGui.QFont()
+        font.setPointSize(15)
+        font.setBold(True)
+        font.setWeight(75)
+        self.lcdNumberTotalRobot.setFont(font)
+        self.lcdNumberTotalRobot.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.lcdNumberTotalRobot.setAutoFillBackground(False)
+        self.lcdNumberTotalRobot.setProperty("intValue", 0)
+        self.lcdNumberTotalRobot.setObjectName(_fromUtf8("lcdNumberTotalRobot"))
+        self.label_5 = QtGui.QLabel(self.groupBox_5)
+        self.label_5.setGeometry(QtCore.QRect(280, 10, 131, 16))
+        font = QtGui.QFont()
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_5.setFont(font)
+        self.label_5.setObjectName(_fromUtf8("label_5"))
         self.groupBox_confirm_btn = QtGui.QGroupBox(self.tab)
         self.groupBox_confirm_btn.setGeometry(QtCore.QRect(230, 530, 1411, 131))
         self.groupBox_confirm_btn.setTitle(_fromUtf8(""))
@@ -286,7 +305,8 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "---", None))
         self.btnStartExperiment.setText(_translate("MainWindow", "START", None))
-        self.label_4.setText(_translate("MainWindow", "Bank:", None))
+        self.label_4.setText(_translate("MainWindow", "Your Bank:", None))
+        self.label_5.setText(_translate("MainWindow", "Mate Bank:", None))
         self.pushButton_0.setText(_translate("MainWindow", "0", None))
         self.pushButton_1.setText(_translate("MainWindow", "1", None))
         self.pushButton_2.setText(_translate("MainWindow", "2", None))

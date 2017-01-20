@@ -77,7 +77,7 @@
           <widget class="QLabel" name="label_4">
            <property name="geometry">
             <rect>
-             <x>190</x>
+             <x>50</x>
              <y>10</y>
              <width>131</width>
              <height>16</height>
@@ -91,13 +91,13 @@
             </font>
            </property>
            <property name="text">
-            <string>Bank:</string>
+            <string>Your Bank:</string>
            </property>
           </widget>
           <widget class="QLCDNumber" name="lcdNumberTotal">
            <property name="geometry">
             <rect>
-             <x>190</x>
+             <x>50</x>
              <y>30</y>
              <width>131</width>
              <height>71</height>
@@ -118,6 +118,52 @@
            </property>
            <property name="intValue" stdset="0">
             <number>0</number>
+           </property>
+          </widget>
+          <widget class="QLCDNumber" name="lcdNumberTotalRobot">
+           <property name="geometry">
+            <rect>
+             <x>280</x>
+             <y>30</y>
+             <width>131</width>
+             <height>71</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>15</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
+           <property name="autoFillBackground">
+            <bool>false</bool>
+           </property>
+           <property name="intValue" stdset="0">
+            <number>0</number>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_5">
+           <property name="geometry">
+            <rect>
+             <x>280</x>
+             <y>10</y>
+             <width>131</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>14</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Mate Bank:</string>
            </property>
           </widget>
          </widget>
