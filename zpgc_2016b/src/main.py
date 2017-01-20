@@ -454,7 +454,8 @@ class WorkerThread(QThread):
             #print(self._log_person_investment_second, self._log_robot_investment_second, self._log_pmf, float(self._log_bmf))
             self._log_player_b_investment = float((self._log_person_investment_second +  self._log_robot_investment_second) * 3.0 * self._log_bmf) 
             self._log_player_b_investment -= math.fabs(self._log_robot_investment_second - self._log_person_investment_second)
-     
+            if(self._log_player_b_investment<0): self._log_player_b_investment = 0 #equal to zero if negative
+
             self.STATE_MACHINE = 3 #next state
             time.sleep(1)
             #Update the TOTAL
