@@ -9,13 +9,13 @@ XML parameters
 - **number** {int} the trial id number
 - **gaze** {True, False} If True the robot looks the player.
 - **pointing** {True, False} If True the robot point the screen.
-- **pmf** {float} (p)erson (m)ultiplication (f)actor. It is a value used to multiply the person investement.
+- **pmf** {float} (p)erson (m)ultiplication (f)actor. It is a value used to multiply the person investment.
 - **bmf** {float} player (b) (m)ultiplication (f)actor. It multiply the total received by the Player B.
 - **rinv1** {float} (r)obot (inv)estment in the 1st interaction.
 - **rinv2a** {float} (r)obot (inv)estment in the 2nd interaction (option 'a')
-- **rinv2b** {float} (r)obot (inv)estment in the 2nd interaction (option 'b')
-- **mp3** {string} sentence produced by the robot. If the 'XXX' substring is present it is replaced with player invesment. It cannot be empty.
-- **nasty** {True, False} the robot can behave differently.
+- **rinv2b** {float} Not used
+- **mp3** {string} sentence produced by the robot. If the 'XXX' substring is present it is replaced with player investment. Use '-' for empty sentence.
+- **nasty** {True, False} the robot can be cooperative(nasty=False) or non-cooperative(nasty=True).
 
 ```xml
 <list1>
