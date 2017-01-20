@@ -26,7 +26,6 @@ from PyQt4.QtCore import QThread
 from PyQt4.QtCore import SIGNAL
 from PyQt4 import QtCore
 
-import numpy as np
 import sys  
 import os
 import time
@@ -329,12 +328,13 @@ class WorkerThread(QThread):
             w = float(self.myParser._rinv2a_list[self._log_trial])
             if(self.myParser._nasty_list[self._log_trial] == False):
                 if(self._log_person_investment_first >= 6): w = -w           
-                if(self._log_person_investment_first == 0): w = np.random.randint(low=0, high=3)
+                if(self._log_person_investment_first == 0): w = random.randint(0, 2)
             else:
                 if(self._log_person_investment_first > 5): w = -w       
-                if(self._log_person_investment_first == 0): w = np.random.randint(low=5, high=11)                
+                if(self._log_person_investment_first == 0): w = random.randint(5, 10)             
             self._log_robot_investment_second = self._log_person_investment_first + (self._log_person_investment_first * w)
-            self._log_robot_investment_second = np.rint(self._log_robot_investment_second) #Round to the nearest integer
+            self._log_robot_investment_second = int(round(self._log_robot_investment_second)) #Round to the nearest integer
+            self._log_robot_investment_second = float(self._log_robot_investment_second)
 
             time.sleep(1)
             #Pointing (or not) while looking to the screen
@@ -453,7 +453,7 @@ class WorkerThread(QThread):
             #Updating the multiplication values
             #print(self._log_person_investment_second, self._log_robot_investment_second, self._log_pmf, float(self._log_bmf))
             self._log_player_b_investment = float((self._log_person_investment_second +  self._log_robot_investment_second) * 3.0 * self._log_bmf) 
-            self._log_player_b_investment -= np.absolute(self._log_robot_investment_second - self._log_person_investment_second)
+            self._log_player_b_investment -= math.fabs(self._log_robot_investment_second - self._log_person_investment_second)
      
             self.STATE_MACHINE = 3 #next state
             time.sleep(1)
