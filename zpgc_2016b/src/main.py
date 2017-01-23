@@ -507,8 +507,10 @@ class WorkerThread(QThread):
             self._start_pressed = False
             self._log_trial = 0
             self.STATE_MACHINE = 0 #cycling to state 0
-            #total, player_investment, round_total, your_investment, robot_investment
-            local_string = "The game is finished." + '\n\n' + "Thank you..."
+            #total, player_investment, round_total, your_investment, robot_investment 
+            local_string = "Your final score is: " + str(self._log_person_total) + '\n'
+            local_string += "Your mate final score is: " + str(self._log_robot_total) + '\n'
+            local_string += "The game is finished. Thank you..."
             self.myPuppet.say_something("Thank you, It was nice to play with you.")
             #total, player_investment, round_total, robot_investment, text_label=""
             self.emit(self.update_gui_signal, 0, 0, local_string) 
