@@ -16,12 +16,14 @@ class Parser(object):
         self._pointing_list = list() #list for pointing/non_pointing
 
         self._pmf_list = list() #moltiplication factor for the person
+        self._rmf_list = list() #moltiplication factor for robot
         self._bmf_list = list() #moltiplication factor for the player B
         self._mp3_list = list() #reward given by the robot
         self._rinv1_list = list() #robot investement in 1st interaction
         self._rinv2a_list = list() #Option 'a' for robot investement in 2nd interaction
         self._rinv2b_list = list() #Option 'b' for robot investement in 2nd interaction
         self._nasty_list = list() #nasty or not robot
+        self._coop_list = list() #nasty or not robot
         self._size = 0
 
         #Pretrial list
@@ -82,6 +84,10 @@ class Parser(object):
 		self._pmf_list.append(returned.firstChild.data)
                 print("pmf ........ %s" %returned.firstChild.data)
 
+		returned = item.getElementsByTagName("rmf")[0]
+		self._rmf_list.append(returned.firstChild.data)
+                print("rmf ........ %s" %returned.firstChild.data)
+
 		returned = item.getElementsByTagName("bmf")[0]
 		self._bmf_list.append(returned.firstChild.data)
                 print("bmf ........ %s" %returned.firstChild.data)
@@ -105,6 +111,10 @@ class Parser(object):
 		returned = item.getElementsByTagName("nasty")[0]
 		self._nasty_list.append(returned.firstChild.data)
                 print("nasty ........ %s" %returned.firstChild.data)
+
+		returned = item.getElementsByTagName("coop")[0]
+		self._coop_list.append(returned.firstChild.data)
+                print("coop ........ %s" %returned.firstChild.data)
 
                 print("")
                 counter = counter + 1
@@ -130,5 +140,6 @@ class Parser(object):
         del self._mp3_list[:]
         del self._person_moltfact_list[:]
         del self._nasty_list[:]
+        del self._coop_list[:]
         self._experiment_loaded = False
 

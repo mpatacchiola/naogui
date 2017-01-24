@@ -257,7 +257,10 @@ class WorkerThread(QThread):
             print "[5] First interaction"                         
             #Updating the investment values
             #The investment of the robot is taken from the XML file
-            self._log_robot_investment_first = float(self.myParser._rinv1_list[self._log_trial])         
+            self._log_robot_investment_first = float(self._log_person_investment_first + float(self.myParser._rmf_list[self._log_trial]))
+            if(self._log_robot_investment_first < 0): self._log_robot_investment_first = 0
+            print("[5] Robot rmf: " + str(self.myParser._rmf_list[self._log_trial]))
+            print("[5] The Robot mate returned: " +str(self._log_robot_investment_first))
             #the other values do not change
             time.sleep(1)
 
@@ -292,7 +295,7 @@ class WorkerThread(QThread):
             time.sleep(2.0)  #Sleep to slow down
             local_string = "You invested: " + str(self._log_person_investment_first) + '\n'
             local_string += "Your mate invested: " + str(self._log_robot_investment_first) + '\n' 
-            local_string += "It's the robot turn, please wait..."
+            local_string += "The robot is deciding the final investment, please wait..."
             #total, player_investment, round_total, robot_investment, text_label=""
             self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
 
@@ -325,16 +328,21 @@ class WorkerThread(QThread):
             print "[7] Second interaction"                         
             #Updating the investment values
             #The investment of the robot is taken from the XML file
-            w = float(self.myParser._rinv2a_list[self._log_trial])
-            if(self.myParser._nasty_list[self._log_trial] == False):
-                if(self._log_person_investment_first >= 6): w = -w           
-                if(self._log_person_investment_first == 0): w = random.randint(0, 2)
+            print("[7] coop boolean variable = " + str(self.myParser._coop_list[self._log_trial]))
+            if(self.myParser._coop_list[self._log_trial] == "False"):
+                print "[7] Non-Cooperative"              
+                if(self._log_person_investment_first >= 5):
+                    self._log_robot_investment_second = self._log_person_investment_first - (2 + self._log_robot_investment_first - (self._log_robot_investment_first/4))               
+                elif(self._log_person_investment_first <= 4): 
+                    self._log_robot_investment_second = self._log_person_investment_first + (2 + self._log_robot_investment_first - (self._log_robot_investment_first/4)) 
             else:
-                if(self._log_person_investment_first > 5): w = -w       
-                if(self._log_person_investment_first == 0): w = random.randint(5, 10)             
-            self._log_robot_investment_second = self._log_person_investment_first + (self._log_person_investment_first * w)
+                print "[7] Cooperative"
+                self._log_robot_investment_second = self._log_person_investment_first + (float(self.myParser._rmf_list[self._log_trial])/3.0)
+                #if(self._log_person_investment_first == 0): w = random.randint(5, 10)
+            print("[7] Robot Investment Raw: " + str(self._log_robot_investment_second))        
             self._log_robot_investment_second = int(round(self._log_robot_investment_second)) #Round to the nearest integer
             self._log_robot_investment_second = float(self._log_robot_investment_second)
+            print("[7] Robot Investment Round: " + str(self._log_robot_investment_second))
 
             time.sleep(1)
             #Pointing (or not) while looking to the screen
@@ -366,7 +374,9 @@ class WorkerThread(QThread):
 
             #Updating the GUI
             time.sleep(2.0)  #Sleep to slow down
-            local_string = "Your mate invested: " + str(self._log_robot_investment_second) + '\n'
+            local_string = "Initially you invested: " + str(self._log_person_investment_first) + '\n'
+            local_string += "Initially your mate invested: " + str(self._log_robot_investment_first) + '\n'
+            local_string += "The final investment of your mate is: " + str(self._log_robot_investment_second) + '\n'
             local_string += "How much do you want to invest?" + '\n' 
             self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
 
@@ -430,7 +440,11 @@ class WorkerThread(QThread):
                 has_substring = self._sentence_mp3.find("XXX")
                 if(has_substring != -1):
                     print "[9] Found the substring 'XXX' at location: " + str(has_substring)
-                    self._sentence_mp3 = self._sentence_mp3.replace("XXX", str(int(self._log_person_investment_second* float(self._log_pmf))))
+                    self._sentence_mp3 = self._sentence_mp3.replace("XXX", str(int(self._log_person_investment_second)))
+                has_substring = self._sentence_mp3.find("YYY")
+                if(has_substring != -1):
+                    print "[9] Found the substring 'YYY' at location: " + str(has_substring)
+                    self._sentence_mp3 = self._sentence_mp3.replace("YYY", str(int(self._log_robot_investment_second)))
                 print "[9] Saying: '" + self._sentence_mp3 + "'"
                 #It says the sentence generated above only if
                 #the valued returned by the person is different from zero.
@@ -447,9 +461,9 @@ class WorkerThread(QThread):
             self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
             self.STATE_MACHINE = 10 #next state
 
-        #STATE-10  The master robot gives a reward
+        #STATE-10  The Banker robot gives a reward
         if self.STATE_MACHINE == 10:
-            print "[10] Waiting for Master Robot reward..." 
+            print "[10] Waiting for Banker Robot reward..." 
             #Updating the multiplication values
             #print(self._log_person_investment_second, self._log_robot_investment_second, self._log_pmf, float(self._log_bmf))
             self._log_player_b_investment = float((self._log_person_investment_second +  self._log_robot_investment_second) * 3.0 * self._log_bmf) 
@@ -464,8 +478,8 @@ class WorkerThread(QThread):
             #the amount not invested + the money that player b gave back (half of them)
             self._log_person_total += (10-self._log_person_investment_second) + float(self._log_player_b_investment / 2.0)
             self._log_robot_total += (10-self._log_robot_investment_second) + float(self._log_player_b_investment / 2.0)
-            local_string = "Player B received: " + str((self._log_person_investment_second + self._log_robot_investment_second) * 3) + '\n'
-            local_string += "Player B gave back: " + str(self._log_player_b_investment) + '\n'
+            local_string = "Banker received: " + str((self._log_person_investment_second + self._log_robot_investment_second) * 3) + '\n'
+            local_string += "Banker gave back: " + str(self._log_player_b_investment) + '\n'
             #local_string += "You received: " + str(self._log_player_b_investment / 2.0) + '\n'
             #local_string += "Your mate received: " + str(self._log_player_b_investment / 2.0) + '\n'
             local_string += "Please press START to begin a new round..." + '\n' 

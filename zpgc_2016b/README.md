@@ -14,8 +14,9 @@ XML parameters
 - **rinv1** {float} (r)obot (inv)estment in the 1st interaction.
 - **rinv2a** {float} (r)obot (inv)estment in the 2nd interaction (option 'a')
 - **rinv2b** {float} Not used
-- **mp3** {string} sentence produced by the robot. If the 'XXX' substring is present it is replaced with player investment. Use '-' for empty sentence.
-- **nasty** {True, False} the robot can be cooperative(nasty=False) or non-cooperative(nasty=True).
+- **mp3** {string} sentence produced by the robot. If the 'XXX' substring is present it is replaced with player investment. the string 'YYY' is replaced with the robot investment. Use '-' for empty sentence.
+- **nasty** {True, False} Not used
+- **coop** {True, False} the robot mate can be cooperative(coop=True) or non-cooperative(coop=False)
 
 ```xml
 <list1>
@@ -42,6 +43,7 @@ XML parameters
         <gaze>True</gaze>
         <pointing>True</pointing>
         <nasty>False</nasty>
+        <coop>True</coop>
     </trial>
 </list1>
 ```
