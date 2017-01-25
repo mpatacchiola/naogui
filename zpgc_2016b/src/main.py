@@ -345,7 +345,7 @@ class WorkerThread(QThread):
                 print "[6] Saying: '" + self._sentence + "'"
                 #It says the sentence generated above only if
                 #the valued returned by the person is different from zero.
-                if(self._log_person_investment_second* float(self._log_pmf) > 0):
+                if(self._log_person_investment_first > 0):
                     self.myPuppet.say_something(str(self._sentence))
                 else:
                     self.myPuppet.say_something("Ok, You invested zero.") #If the robot receive zero the sentence is cut
@@ -485,7 +485,7 @@ class WorkerThread(QThread):
                 print "[9] Saying: '" + self._sentence + "'"
                 #It says the sentence generated above only if
                 #the valued returned by the person is different from zero.
-                if(self._log_person_investment_second* float(self._log_pmf) > 0):
+                if(self._log_person_investment_second > 0):
                     self.myPuppet.say_something(str(self._sentence))
                 else:
                     self.myPuppet.say_something("Ok, You invested zero.") #If the robot receive zero the sentence is cut
