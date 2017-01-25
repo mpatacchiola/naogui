@@ -337,11 +337,11 @@ class WorkerThread(QThread):
                 has_substring = self._sentence.find("XXX")
                 if(has_substring != -1):
                     print "[6] Found the substring 'XXX' at location: " + str(has_substring)
-                    self._sentence = self._sentence.replace("XXX", str(int(self._log_person_investment_second)))
+                    self._sentence = self._sentence.replace("XXX", str(int(self._log_person_investment_first)))
                 has_substring = self._sentence.find("YYY")
                 if(has_substring != -1):
                     print "[6] Found the substring 'YYY' at location: " + str(has_substring)
-                    self._sentence = self._sentence.replace("YYY", str(int(self._log_robot_investment_second)))
+                    self._sentence = self._sentence.replace("YYY", str(int(self._log_robot_investment_first)))
                 print "[6] Saying: '" + self._sentence + "'"
                 #It says the sentence generated above only if
                 #the valued returned by the person is different from zero.
