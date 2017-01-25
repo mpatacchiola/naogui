@@ -204,7 +204,7 @@ class Puppet(object):
  	     self._al_motion_proxy.setAngles("RShoulderPitch", 1.0, speed) #arm goes up
              self._al_motion_proxy.setAngles("RWristYaw", -1.0, speed) #hand turn 
              time.sleep(0.3)
-             self._al_motion_proxy.setAngles("RShoulderRoll", -0.5, speed) #arm move to the right
+             #self._al_motion_proxy.setAngles("RShoulderRoll", -0.5, speed) #arm move to the right
              time.sleep(0.1)
         elif state == False:
              self._al_motion_proxy.setAngles("RShoulderRoll", -0.2, speed) #this is the arm neutral position
@@ -225,7 +225,7 @@ class Puppet(object):
  	     self._al_motion_proxy.setAngles("LShoulderPitch", 1.0, speed) #arm goes up
              self._al_motion_proxy.setAngles("LWristYaw", 1.0, speed) #hand turn             
              time.sleep(0.3)
-             self._al_motion_proxy.setAngles("LShoulderRoll", 0.5, speed) #arm move to the left
+             #self._al_motion_proxy.setAngles("LShoulderRoll", 0.5, speed) #arm move to the left
              time.sleep(0.1)
         elif state == False:
              self._al_motion_proxy.setAngles("LShoulderRoll", 0.2, speed) #this is the arm neutral position
