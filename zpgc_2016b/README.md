@@ -54,12 +54,26 @@ XML parameters
 </list1>
 ```
 
-Log structure
+Log file
 --------------
 
-The log is saved in the same folder of the main file. The structure of the log is a CSV file that follows this convention:
+The log file contains the experiment values for each trial.
+The log is saved in the same folder of the `main.py` file. The log is a **CSV** file that follows this convention:
 
-trial, person investment first, robot investment first, person investment second, robot investment second, player b investment, person mult factor, player b mult factor, total, gaze, pointing, timer first, timer second 
+- **trial**
+- **person investment first**
+- **robot investment first**
+- **person investment second**
+- **robot investment second**
+- **player b investment**
+- **person mult factor**
+- **player b mult factor**
+- **person total**
+- **gaze**
+- **pointing**
+- **timer first interaction**
+- **timer second interaction**
+
 
 Installation
 ------------
