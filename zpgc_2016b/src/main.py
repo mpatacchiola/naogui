@@ -226,22 +226,22 @@ class WorkerThread(QThread):
             #Take a sentence from the mp3 filed in the XML
             #the XXX substring is replaced with the multiplied value
             #given from the person to the robot. 
-            #self._sentence_mp3 = self.myParser._mp3_list[self._log_trial]
-            #self._sentence_mp3 = str(self._sentence_mp3) #convert to string
+            #self._sentence = self.myParser._mp3_list[self._log_trial]
+            #self._sentence = str(self._sentence) #convert to string
             #If the sentence in the XML file is equal to "." or "-" or ""
             #then it does not say anything...
-            #if(self._sentence_mp3 != "." and self._sentence_mp3 != "" and self._sentence_mp3 != "-"):
+            #if(self._sentence != "." and self._sentence != "" and self._sentence != "-"):
                 #Check if XXX is present and replace it with the
                 #multiplied person investment value...
-                #has_substring = self._sentence_mp3.find("XXX")
+                #has_substring = self._sentence.find("XXX")
                 #if(has_substring != -1):
                     #print "[4] Found the substring 'XXX' at location: " + str(has_substring)
-                    #self._sentence_mp3 = self._sentence_mp3.replace("XXX", str(int(self._log_person_investment_first* float(self._log_pmf))))
-                #print "[4] Saying: '" + self._sentence_mp3 + "'"
+                    #self._sentence = self._sentence.replace("XXX", str(int(self._log_person_investment_first* float(self._log_pmf))))
+                #print "[4] Saying: '" + self._sentence + "'"
                 #It says the sentence generated above only if
                 #the valued returned by the person is different from zero.
                 #if(self._log_person_investment_first* float(self._log_pmf) > 0):
-                    #self.myPuppet.say_something(str(self._sentence_mp3))
+                    #self.myPuppet.say_something(str(self._sentence))
                 #else:
                     #self.myPuppet.say_something("Ok, You invested zero.") #If the robot receive zero the sentence is cut
             #print "[4] looking to the monitor..."
@@ -319,6 +319,43 @@ class WorkerThread(QThread):
 
             #Change state
             time.sleep(3.0) #Long sleep to enable the participant to uderstand what's going on
+            self.STATE_MACHINE = 6 #next state
+
+        #STATE-6 First interaction: the robot talk and says the investment of the person and its own
+        if self.STATE_MACHINE == 6:
+            print "[6] The robot says the investment made by the person..."
+            #Take a sentence from the mp3 filed in the XML
+            #the XXX substring is replaced with the multiplied value
+            #given from the person to the robot. 
+            self._sentence = self.myParser._word1_list[self._log_trial]
+            self._sentence = str(self._sentence) #convert to string
+            #If the sentence in the XML file is equal to "." or "-" or ""
+            #then it does not say anything...
+            if(self._sentence != "." and self._sentence != "" and self._sentence != "-"):
+                #Check if XXX is present and replace it with the
+                #multiplied person investment value...
+                has_substring = self._sentence.find("XXX")
+                if(has_substring != -1):
+                    print "[6] Found the substring 'XXX' at location: " + str(has_substring)
+                    self._sentence = self._sentence.replace("XXX", str(int(self._log_person_investment_second)))
+                has_substring = self._sentence.find("YYY")
+                if(has_substring != -1):
+                    print "[6] Found the substring 'YYY' at location: " + str(has_substring)
+                    self._sentence = self._sentence.replace("YYY", str(int(self._log_robot_investment_second)))
+                print "[6] Saying: '" + self._sentence + "'"
+                #It says the sentence generated above only if
+                #the valued returned by the person is different from zero.
+                if(self._log_person_investment_second* float(self._log_pmf) > 0):
+                    self.myPuppet.say_something(str(self._sentence))
+                else:
+                    self.myPuppet.say_something("Ok, You invested zero.") #If the robot receive zero the sentence is cut
+            else:
+                print "[6] Saying Nothing because the sentence in the XML file is '" + str(self._sentence) + "'" 
+
+            print "[6] looking to the monitor..."
+            #The robot looks to the monitor (thinking what to do)
+            self.myPuppet.enable_face_tracking(False) #disable face tracking
+            self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
             self.STATE_MACHINE = 7 #next state
 
 
@@ -427,33 +464,33 @@ class WorkerThread(QThread):
         # then it looks down to the screen and switch to next state
         if self.STATE_MACHINE == 9:
             print "[9] The robot says the investment made by the person..."
-            #Take a sentence from the mp3 filed in the XML
-            #the XXX substring is replaced with the multiplied value
+            #Take a sentence from the XML
+            #the XXX substring is replaced with the value
             #given from the person to the robot. 
-            self._sentence_mp3 = self.myParser._mp3_list[self._log_trial]
-            self._sentence_mp3 = str(self._sentence_mp3) #convert to string
+            self._sentence = self.myParser._word2_list[self._log_trial]
+            self._sentence = str(self._sentence) #convert to string
             #If the sentence in the XML file is equal to "." or "-" or ""
             #then it does not say anything...
-            if(self._sentence_mp3 != "." and self._sentence_mp3 != "" and self._sentence_mp3 != "-"):
+            if(self._sentence != "." and self._sentence != "" and self._sentence != "-"):
                 #Check if XXX is present and replace it with the
                 #multiplied person investment value...
-                has_substring = self._sentence_mp3.find("XXX")
+                has_substring = self._sentence.find("XXX")
                 if(has_substring != -1):
                     print "[9] Found the substring 'XXX' at location: " + str(has_substring)
-                    self._sentence_mp3 = self._sentence_mp3.replace("XXX", str(int(self._log_person_investment_second)))
-                has_substring = self._sentence_mp3.find("YYY")
+                    self._sentence = self._sentence.replace("XXX", str(int(self._log_person_investment_second)))
+                has_substring = self._sentence.find("YYY")
                 if(has_substring != -1):
                     print "[9] Found the substring 'YYY' at location: " + str(has_substring)
-                    self._sentence_mp3 = self._sentence_mp3.replace("YYY", str(int(self._log_robot_investment_second)))
-                print "[9] Saying: '" + self._sentence_mp3 + "'"
+                    self._sentence = self._sentence.replace("YYY", str(int(self._log_robot_investment_second)))
+                print "[9] Saying: '" + self._sentence + "'"
                 #It says the sentence generated above only if
                 #the valued returned by the person is different from zero.
                 if(self._log_person_investment_second* float(self._log_pmf) > 0):
-                    self.myPuppet.say_something(str(self._sentence_mp3))
+                    self.myPuppet.say_something(str(self._sentence))
                 else:
                     self.myPuppet.say_something("Ok, You invested zero.") #If the robot receive zero the sentence is cut
             else:
-                print "[9] Saying Nothing because the sentence in the XML file is '" + str(self._sentence_mp3) + "'" 
+                print "[9] Saying Nothing because the sentence in the XML file is '" + str(self._sentence) + "'" 
 
             print "[9] looking to the monitor..."
             #The robot looks to the monitor (thinking what to do)
@@ -473,7 +510,7 @@ class WorkerThread(QThread):
             self.STATE_MACHINE = 3 #next state
             time.sleep(1)
             #Update the TOTAL
-            print "[10] The player B invested: " + str(self._log_player_b_investment)
+            print "[10] The Banker invested: " + str(self._log_player_b_investment)
             #The total of the person in the single round is given from
             #the amount not invested + the money that player b gave back (half of them)
             self._log_person_total += (10-self._log_person_investment_second) + float(self._log_player_b_investment / 2.0)

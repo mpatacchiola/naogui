@@ -19,11 +19,13 @@ class Parser(object):
         self._rmf_list = list() #moltiplication factor for robot
         self._bmf_list = list() #moltiplication factor for the player B
         self._mp3_list = list() #reward given by the robot
+        self._word1_list = list() #sentece in the first interaction
+        self._word2_list = list() #sentece in the second interaction
         self._rinv1_list = list() #robot investement in 1st interaction
         self._rinv2a_list = list() #Option 'a' for robot investement in 2nd interaction
         self._rinv2b_list = list() #Option 'b' for robot investement in 2nd interaction
         self._nasty_list = list() #nasty or not robot
-        self._coop_list = list() #nasty or not robot
+        self._coop_list = list() #cooperative or non-cooperative robot
         self._size = 0
 
         #Pretrial list
@@ -107,6 +109,14 @@ class Parser(object):
 		returned = item.getElementsByTagName("mp3")[0]
 		self._mp3_list.append(returned.firstChild.data)
                 print("mp3 ........ %s" %returned.firstChild.data)
+
+		returned = item.getElementsByTagName("word1")[0]
+		self._word1_list.append(returned.firstChild.data)
+                print("word1 ........ %s" %returned.firstChild.data)
+
+		returned = item.getElementsByTagName("word2")[0]
+		self._word2_list.append(returned.firstChild.data)
+                print("word2 ........ %s" %returned.firstChild.data)
 
 		returned = item.getElementsByTagName("nasty")[0]
 		self._nasty_list.append(returned.firstChild.data)
