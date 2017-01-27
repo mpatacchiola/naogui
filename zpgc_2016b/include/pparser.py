@@ -21,6 +21,9 @@ class Parser(object):
         self._mp3_list = list() #reward given by the robot
         self._word1_list = list() #sentece in the first interaction
         self._word2_list = list() #sentece in the second interaction
+        self._word3_list = list() #sentece in the first interaction
+        self._word4_list = list() #sentece in the second interaction
+        self._word5_list = list() #sentece in the second interaction
         self._rinv1_list = list() #robot investement in 1st interaction
         self._rinv2a_list = list() #Option 'a' for robot investement in 2nd interaction
         self._rinv2b_list = list() #Option 'b' for robot investement in 2nd interaction
@@ -117,6 +120,18 @@ class Parser(object):
 		returned = item.getElementsByTagName("word2")[0]
 		self._word2_list.append(returned.firstChild.data)
                 print("word2 ........ %s" %returned.firstChild.data)
+
+		returned = item.getElementsByTagName("word3")[0]
+		self._word3_list.append(returned.firstChild.data)
+                print("word3 ........ %s" %returned.firstChild.data)
+
+		returned = item.getElementsByTagName("word4")[0]
+		self._word4_list.append(returned.firstChild.data)
+                print("word4 ........ %s" %returned.firstChild.data)
+
+		returned = item.getElementsByTagName("word5")[0]
+		self._word5_list.append(returned.firstChild.data)
+                print("word5 ........ %s" %returned.firstChild.data)
 
 		returned = item.getElementsByTagName("nasty")[0]
 		self._nasty_list.append(returned.firstChild.data)

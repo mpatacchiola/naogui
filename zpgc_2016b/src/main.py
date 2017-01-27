@@ -160,7 +160,7 @@ class WorkerThread(QThread):
                 self.STATE_MACHINE = 2
  
 
-        #STATE-2  Robot talk (look or not)
+        #STATE-2 Reset variables and Robot talks
         if self.STATE_MACHINE == 2:
             #UPDATE Multiplication values
             self._log_pmf = float(self.myParser._pmf_list[self._log_trial])
@@ -172,38 +172,42 @@ class WorkerThread(QThread):
             self._log_robot_investment_first = 0
             self._log_robot_investment_second = 0
             self._log_player_b_investment = 0
-            local_string = ""
-            self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)     
-            print "[2] Robot Talking + Looking/Non-Looking"            
-            #self.myPuppet.look_to(1, SPEED)
-            #time.sleep(2)
-            if self.myParser._gaze_list[self._log_trial] == "True":
-              print "[2] looking == True"
-              self._log_gaze = "True"
-              #self.myPuppet.look_to(0, SPEED) #angle(radians) + speed
-              self.myPuppet.enable_face_tracking(True) #enables face tracking
-            elif self.myParser._gaze_list[self._log_trial] == "False":
-              print "[2] looking == False"
-              self._log_gaze = "False"
-              self.myPuppet.enable_face_tracking(False) #disable face tracking
-              self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
-         
-            self.STATE_MACHINE = 3 #next state
-            time.sleep(1)
-            #Writing: "It is your turn"
-            local_string = "It's your turn..."
-            #total, pinv, round_tot, rinv, rslider, text
+            local_string = "Please select a value to invest..."
+            #Reset the GUI and enable component
+            print "[2] Enabling buttons ans starting TIMER..." 
+            self.emit(self.enable_components_gui_signal, False,  True)  #GUI components
             self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string) 
-            #Reset the timer and switch to the next state
-            self.timer_first.restart() #RESET here the timer
+            self.timer_first.restart() #RESET here the timer   
+            print "[2] Looking to the monitor"            
+            self.myPuppet.look_to("HeadPitch", 35.0, SPEED)
+            time.sleep(random.randint(3, 6)) #random sleep
+            print "[2] Enabling again face tracking"
+            self.myPuppet.enable_face_tracking(True) #enables face tracking
+            self.myPuppet.look_to("HeadPitch", 0, SPEED)
+            print "[2] Producing the sentence"
+            self._sentence = self.myParser._word1_list[self._log_trial]
+            self._sentence = str(self._sentence) #convert to string
+            if(self._sentence != "." and self._sentence != "" and self._sentence != "-"):
+                has_substring = self._sentence.find("XXX")
+                if(has_substring != -1):
+                    print "[6] Found the substring 'XXX' at location: " + str(has_substring)
+                    self._sentence = self._sentence.replace("XXX", str(int(self._log_person_investment_first)))
+                has_substring = self._sentence.find("YYY")
+                if(has_substring != -1):
+                    print "[6] Found the substring 'YYY' at location: " + str(has_substring)
+                    self._sentence = self._sentence.replace("YYY", str(int(self._log_robot_investment_first)))
+                print "[6] Saying: '" + self._sentence + "'"
+                self.myPuppet.say_something(str(self._sentence))
+            print "[2] Switching to the next state"
+            self.STATE_MACHINE = 3 #next state
             print "[3] Waiting for the subject answer..." #going to state 3
 
         #STATE-3 First interaction: waiting for the subject investment
         #When the subject choose it update the GUI showing zeros for the robots
         #and the multiplied factor for the human
         if self.STATE_MACHINE == 3:                      
-            self.emit(self.enable_components_gui_signal, False,  True)  #GUI components                    
-            if self._confirm_pressed == True:   #when subject give the answer
+            #self.emit(self.enable_components_gui_signal, False,  True)  #GUI components                    
+            if self._confirm_pressed == True:   #when subject gives the answer
                 self._log_timer_first = self.timer_first.elapsed() #record the time
                 print "[3] TIME: " + str(self._log_timer_first)
                 print "[3] INVESTMENT: " + str(self._log_person_investment)
@@ -216,11 +220,9 @@ class WorkerThread(QThread):
                 local_string = ""
                 self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
                 #The person turn is finished, now switching to robot turn
-                self.STATE_MACHINE = 4 #next state
-                time.sleep(1) #Sleep to evitate fast movements of the robot just after the answer
+                self.STATE_MACHINE = 5 #next state
 
-        #STATE-4 First interaction: the robot talk and says the investment made by the person
-        # then it looks down to the screen and switch to next state
+        #STATE-4 First interaction: not used
         if self.STATE_MACHINE == 4:
             #print "[4] The robot says the investment made by the person..."
             #Take a sentence from the mp3 filed in the XML
@@ -246,13 +248,11 @@ class WorkerThread(QThread):
                     #self.myPuppet.say_something("Ok, You invested zero.") #If the robot receive zero the sentence is cut
             #print "[4] looking to the monitor..."
             #The robot looks to the monitor (thinking what to do)
-            self.myPuppet.enable_face_tracking(False) #disable face tracking
-            self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
+            #self.myPuppet.enable_face_tracking(False) #disable face tracking
+            #self.myPuppet.look_to("HeadPitch", 35.0, SPEED) #angle(radians) + speed
             self.STATE_MACHINE = 5 #next state
 
-        #STATE-5 First interaction: the robot invests.
-        #The robot select a default value to give back 
-        #to the participant taking it from the XML.
+        #STATE-5 First interaction: the robot calculates its own investment
         if self.STATE_MACHINE == 5:
             print "[5] First interaction"                         
             #Updating the investment values
@@ -282,25 +282,20 @@ class WorkerThread(QThread):
                    self.myPuppet.right_arm_pointing(True, SPEED)
               else:
                    print "[5] ERROR: the random_value generated to decide the arm movements is out of range: " + str(random_value)
-              time.sleep(0.2)
             #If the condition is pointing==FALSE then does not move the arm
             elif self.myParser._pointing_list[self._log_trial] == "False":
               print "[5] pointing == False"
               self._log_pointing = "False"
               self.myPuppet.right_arm_pointing(False, SPEED)
               self.myPuppet.left_arm_pointing(False, SPEED)
-              time.sleep(2.0) #Sleep to slow down the flow in the non-movement condition
 
             #Updating the GUI
-            time.sleep(2.0)  #Sleep to slow down
             local_string = "You invested: " + str(self._log_person_investment_first) + '\n'
             local_string += "Your mate invested: " + str(self._log_robot_investment_first) + '\n' 
-            local_string += "The robot is deciding the final investment, please wait..."
             #total, player_investment, round_total, robot_investment, text_label=""
             self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
 
             #Reset the arms
-            time.sleep(0.5)
             self.myPuppet.right_arm_pointing(False, SPEED)
             self.myPuppet.left_arm_pointing(False, SPEED)
 
@@ -308,14 +303,14 @@ class WorkerThread(QThread):
             if self.myParser._gaze_list[self._log_trial] == "True":
               print "[5] looking == True"
               self._log_gaze = "True"
-              self.myPuppet.look_to(0, SPEED) #angle(radians) + speed
+              self.myPuppet.look_to("HeadPitch", 0, SPEED) #angle(radians) + speed
               time.sleep(0.2)
               self.myPuppet.enable_face_tracking(True) #enables face tracking
             elif self.myParser._gaze_list[self._log_trial] == "False":
               print "[5] looking == False"
               self._log_gaze = "False"
               self.myPuppet.enable_face_tracking(False) #disable face tracking
-              self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
+              self.myPuppet.look_to("HeadPitch", 35.0, SPEED) #angle(radians) + speed
 
             #Change state
             time.sleep(3.0) #Long sleep to enable the participant to uderstand what's going on
@@ -323,11 +318,10 @@ class WorkerThread(QThread):
 
         #STATE-6 First interaction: the robot talk and says the investment of the person and its own
         if self.STATE_MACHINE == 6:
-            print "[6] The robot says the investment made by the person..."
-            #Take a sentence from the mp3 filed in the XML
-            #the XXX substring is replaced with the multiplied value
-            #given from the person to the robot. 
-            self._sentence = self.myParser._word1_list[self._log_trial]
+            print "[6] The robot says the investments..."
+            #Take a sentence from the XML, XXX substring is replaced 
+            #with the multiplied value given from the person to the robot. 
+            self._sentence = self.myParser._word2_list[self._log_trial]
             self._sentence = str(self._sentence) #convert to string
             #If the sentence in the XML file is equal to "." or "-" or ""
             #then it does not say anything...
@@ -345,17 +339,15 @@ class WorkerThread(QThread):
                 print "[6] Saying: '" + self._sentence + "'"
                 #It says the sentence generated above only if
                 #the valued returned by the person is different from zero.
-                if(self._log_person_investment_first > 0):
-                    self.myPuppet.say_something(str(self._sentence))
-                else:
-                    self.myPuppet.say_something("Ok, You invested zero.") #If the robot receive zero the sentence is cut
+                self.myPuppet.say_something(str(self._sentence))
+
             else:
                 print "[6] Saying Nothing because the sentence in the XML file is '" + str(self._sentence) + "'" 
 
             print "[6] looking to the monitor..."
             #The robot looks to the monitor (thinking what to do)
             self.myPuppet.enable_face_tracking(False) #disable face tracking
-            self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
+            self.myPuppet.look_to("HeadPitch", 35.0, SPEED) #angle(radians) + speed
             self.STATE_MACHINE = 7 #next state
 
 
@@ -365,18 +357,24 @@ class WorkerThread(QThread):
             print "[7] Second interaction"                         
             #Updating the investment values
             #The investment of the robot is taken from the XML file
+            
             print("[7] coop boolean variable = " + str(self.myParser._coop_list[self._log_trial]))
             if(self.myParser._coop_list[self._log_trial] == "False"):
-                print "[7] Non-Cooperative"              
-                if(self._log_person_investment_first >= 5):
-                    self._log_robot_investment_second = self._log_person_investment_first - (2 + self._log_robot_investment_first - (self._log_robot_investment_first/4))               
-                elif(self._log_person_investment_first <= 4): 
-                    self._log_robot_investment_second = self._log_person_investment_first + (2 + self._log_robot_investment_first - (self._log_robot_investment_first/4)) 
+                print "[7] Non-Cooperative"  
+                self._log_robot_investment_second = self._log_person_investment_first + float(self.myParser._rinv2a_list[self._log_trial])          
+                #if(self._log_person_investment_first >= 5):
+                    #self._log_robot_investment_second = self._log_person_investment_first - (2 + self._log_robot_investment_first - (self._log_robot_investment_first/4))               
+                #elif(self._log_person_investment_first <= 4): 
+                    #self._log_robot_investment_second = self._log_person_investment_first + (2 + self._log_robot_investment_first - (self._log_robot_investment_first/4)) 
             else:
                 print "[7] Cooperative"
-                self._log_robot_investment_second = self._log_person_investment_first + (float(self.myParser._rmf_list[self._log_trial])/3.0)
-                #if(self._log_person_investment_first == 0): w = random.randint(5, 10)
-            print("[7] Robot Investment Raw: " + str(self._log_robot_investment_second))        
+                if(self._log_person_investment_first >= 6): 
+                    self._log_robot_investment_second = self._log_person_investment_first - (self._log_person_investment_first * float(self.myParser._rinv2a_list[self._log_trial])) 
+                elif(self._log_person_investment_first < 6): 
+                    self._log_robot_investment_second = self._log_person_investment_first + (self._log_person_investment_first * float(self.myParser._rinv2a_list[self._log_trial]))
+                #elif(self._log_person_investment_first == 0):
+                    #self._log_robot_investment_second = self._log_person_investment_first - (self._log_person_investment_first * random.randint(0, 3)) 
+            print("[7] Robot Investment Raw: " + str(self._log_robot_investment_second))       
             self._log_robot_investment_second = int(round(self._log_robot_investment_second)) #Round to the nearest integer
             self._log_robot_investment_second = float(self._log_robot_investment_second)
             print("[7] Robot Investment Round: " + str(self._log_robot_investment_second))
@@ -414,7 +412,7 @@ class WorkerThread(QThread):
             local_string = "Initially you invested: " + str(self._log_person_investment_first) + '\n'
             local_string += "Initially your mate invested: " + str(self._log_robot_investment_first) + '\n'
             local_string += "The final investment of your mate is: " + str(self._log_robot_investment_second) + '\n'
-            local_string += "How much do you want to invest?" + '\n' 
+            local_string += "What's your final investment?" + '\n' 
             self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
 
             #Reset the arms
@@ -426,14 +424,14 @@ class WorkerThread(QThread):
             if self.myParser._gaze_list[self._log_trial] == "True":
               print "[7] looking == True"
               self._log_gaze = "True"
-              self.myPuppet.look_to(0, SPEED) #angle(radians) + speed
+              self.myPuppet.look_to("HeadPitch", 0, SPEED) #angle(radians) + speed
               time.sleep(0.2)
               self.myPuppet.enable_face_tracking(True) #enables face tracking
             elif self.myParser._gaze_list[self._log_trial] == "False":
               print "[7] looking == False"
               self._log_gaze = "False"
               self.myPuppet.enable_face_tracking(False) #disable face tracking
-              self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
+              self.myPuppet.look_to("HeadPitch", 35.0, SPEED) #angle(radians) + speed
 
             #Change state
             time.sleep(0.5)
@@ -441,33 +439,13 @@ class WorkerThread(QThread):
             print "[7] Waiting for the subject answer..." #going to state 3
             self.STATE_MACHINE = 8 #next state
 
-
-        #STATE-8 Second interaction: waiting for the subject investment
-        if self.STATE_MACHINE == 8:                      
-            self.emit(self.enable_components_gui_signal, False,  True)  #GUI components                    
-            if self._confirm_pressed == True:   #when subject give the answer
-                self._log_timer_second = self.timer_second.elapsed() #record the time
-                print "[8] TIME: " + str(self._log_timer_first)
-                print "[8] INVESTMENT: " + str(self._log_person_investment)
-                self._log_person_investment_second = self._log_person_investment
-                self._confirm_pressed = False #reset the variable state
-                self.emit(self.enable_components_gui_signal, False,  False) #GUI components
-                #Updating the investment values
-                local_string = ""
-                self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
-                #The person turn is finished, now switching to robot turn
-                self.STATE_MACHINE = 9 #next state
-                time.sleep(1) #Sleep to evitate fast movements of the robot just after the answer      
-
-
-        #STATE-9 Second interaction: the robot talk and says the investment made by the person
-        # then it looks down to the screen and switch to next state
-        if self.STATE_MACHINE == 9:
-            print "[9] The robot says the investment made by the person..."
-            #Take a sentence from the XML
-            #the XXX substring is replaced with the value
+        #STATE-8 Second interaction: the robot talk
+        if self.STATE_MACHINE == 8:
+            print "[8] The robot says the investment made by itself..."
+            #Take a sentence from the mp3 filed in the XML
+            #the XXX substring is replaced with the multiplied value
             #given from the person to the robot. 
-            self._sentence = self.myParser._word2_list[self._log_trial]
+            self._sentence = self.myParser._word3_list[self._log_trial]
             self._sentence = str(self._sentence) #convert to string
             #If the sentence in the XML file is equal to "." or "-" or ""
             #then it does not say anything...
@@ -476,31 +454,83 @@ class WorkerThread(QThread):
                 #multiplied person investment value...
                 has_substring = self._sentence.find("XXX")
                 if(has_substring != -1):
-                    print "[9] Found the substring 'XXX' at location: " + str(has_substring)
+                    print "[8] Found the substring 'XXX' at location: " + str(has_substring)
+                    self._sentence = self._sentence.replace("XXX", str(int(self._log_person_investment_first)))
+                has_substring = self._sentence.find("YYY")
+                if(has_substring != -1):
+                    print "[8] Found the substring 'YYY' at location: " + str(has_substring)
+                    self._sentence = self._sentence.replace("YYY", str(int(self._log_robot_investment_second)))
+                print "[8] Saying: '" + self._sentence + "'"
+                #It says the sentence generated above only if
+                #the valued returned by the person is different from zero.                
+                self.myPuppet.say_something(str(self._sentence))
+            else:
+                print "[8] Saying Nothing because the sentence in the XML file is '" + str(self._sentence) + "'" 
+
+            print "[8] looking to the monitor..."
+            #The robot looks to the monitor (thinking what to do)
+            self.myPuppet.enable_face_tracking(False) #disable face tracking
+            self.myPuppet.look_to("HeadPitch", 35.0, SPEED) #angle(radians) + speed
+            self.STATE_MACHINE = 9 #next state
+
+        #STATE-9 Second interaction: waiting for the subject investment
+        if self.STATE_MACHINE == 9:                      
+            self.emit(self.enable_components_gui_signal, False,  True)  #GUI components                    
+            if self._confirm_pressed == True:   #when subject give the answer
+                self._log_timer_second = self.timer_second.elapsed() #record the time
+                print "[9] TIME: " + str(self._log_timer_first)
+                print "[9] INVESTMENT: " + str(self._log_person_investment)
+                self._log_person_investment_second = self._log_person_investment
+                self._confirm_pressed = False #reset the variable state
+                self.emit(self.enable_components_gui_signal, False,  False) #GUI components
+                #Updating the investment values
+                local_string = ""
+                self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
+                #The person turn is finished, now switching to robot turn
+                self.STATE_MACHINE = 10 #next state
+                time.sleep(1) #Sleep to evitate fast movements of the robot just after the answer      
+
+
+        #STATE-10 Second interaction: the robot talk and says to look to the Banker decision
+        if self.STATE_MACHINE == 10:
+            print "[10] The robot says to look to the Banker's decision..."
+            #Take a sentence from the XML
+            #the XXX substring is replaced with the value
+            #given from the person to the robot. 
+            self._sentence = self.myParser._word4_list[self._log_trial]
+            self._sentence = str(self._sentence) #convert to string
+            #If the sentence in the XML file is equal to "." or "-" or ""
+            #then it does not say anything...
+            if(self._sentence != "." and self._sentence != "" and self._sentence != "-"):
+                #Check if XXX is present and replace it with the
+                #multiplied person investment value...
+                has_substring = self._sentence.find("XXX")
+                if(has_substring != -1):
+                    print "[10] Found the substring 'XXX' at location: " + str(has_substring)
                     self._sentence = self._sentence.replace("XXX", str(int(self._log_person_investment_second)))
                 has_substring = self._sentence.find("YYY")
                 if(has_substring != -1):
-                    print "[9] Found the substring 'YYY' at location: " + str(has_substring)
+                    print "[10] Found the substring 'YYY' at location: " + str(has_substring)
                     self._sentence = self._sentence.replace("YYY", str(int(self._log_robot_investment_second)))
-                print "[9] Saying: '" + self._sentence + "'"
+                print "[10] Saying: '" + self._sentence + "'"
                 #It says the sentence generated above only if
                 #the valued returned by the person is different from zero.
-                if(self._log_person_investment_second > 0):
-                    self.myPuppet.say_something(str(self._sentence))
-                else:
-                    self.myPuppet.say_something("Ok, You invested zero.") #If the robot receive zero the sentence is cut
-            else:
-                print "[9] Saying Nothing because the sentence in the XML file is '" + str(self._sentence) + "'" 
+                self.myPuppet.say_something(str(self._sentence))
 
-            print "[9] looking to the monitor..."
+            else:
+                print "[10] Saying Nothing because the sentence in the XML file is '" + str(self._sentence) + "'" 
+
+            print "[10] looking to the banker"
             #The robot looks to the monitor (thinking what to do)
             self.myPuppet.enable_face_tracking(False) #disable face tracking
-            self.myPuppet.look_to(1, SPEED) #angle(radians) + speed
-            self.STATE_MACHINE = 10 #next state
+            self.myPuppet.look_to("HeadYaw", +70.0, SPEED) # +90 turn LEFT
+            self.STATE_MACHINE = 11 #next state
 
-        #STATE-10  The Banker robot gives a reward
-        if self.STATE_MACHINE == 10:
-            print "[10] Waiting for Banker Robot reward..." 
+        #STATE-11  The Banker robot gives a reward
+        if self.STATE_MACHINE == 11:
+            print "[11] The banker is thinking (it takes time)..."            
+            time.sleep(random.randint(2, 4))
+            print "[11] Waiting for Banker Robot reward..." 
             #Updating the multiplication values
             #print(self._log_person_investment_second, self._log_robot_investment_second, self._log_pmf, float(self._log_bmf))
             self._log_player_b_investment = float((self._log_person_investment_second +  self._log_robot_investment_second) * 3.0 * self._log_bmf) 
@@ -510,50 +540,85 @@ class WorkerThread(QThread):
             self.STATE_MACHINE = 3 #next state
             time.sleep(1)
             #Update the TOTAL
-            print "[10] The Banker invested: " + str(self._log_player_b_investment)
+            print "[11] The Banker invested: " + str(self._log_player_b_investment)
             #The total of the person in the single round is given from
             #the amount not invested + the money that player b gave back (half of them)
             self._log_person_total += (10-self._log_person_investment_second) + float(self._log_player_b_investment / 2.0)
             self._log_robot_total += (10-self._log_robot_investment_second) + float(self._log_player_b_investment / 2.0)
             local_string = "Banker received: " + str((self._log_person_investment_second + self._log_robot_investment_second) * 3) + '\n'
-            local_string += "Banker gave back: " + str(self._log_player_b_investment) + '\n'
+            local_string += "Banker returned: " + str(self._log_player_b_investment) + "; " + str(self._log_player_b_investment/2.0) + " each" + '\n'
             #local_string += "You received: " + str(self._log_player_b_investment / 2.0) + '\n'
             #local_string += "Your mate received: " + str(self._log_player_b_investment / 2.0) + '\n'
             local_string += "Please press START to begin a new round..." + '\n' 
             #total, pinv, round_tot, rinv, rslider, text
             self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string) 
-            self.STATE_MACHINE = 11 #next state
+            #The robot looks to the monitor (thinking what to do)
+            print "[11] Robots looks to the participant"
+            self.myPuppet.look_to("HeadYaw", 0, SPEED) #angle(radians) + speed
+            self.myPuppet.enable_face_tracking(True) # face tracking
+            print "[11] Switch to the next state"
+            self.STATE_MACHINE = 12 #next state
 
+        #STATE-12 Second interaction: the robot talk and says to look to the Banker decision
+        if self.STATE_MACHINE == 12:
+            print "[12] The robot says to look to the Banker's decision..."
+            #Take a sentence from the XML
+            self._sentence = self.myParser._word5_list[self._log_trial]
+            self._sentence = str(self._sentence) #convert to string
+            #If the sentence in the XML file is equal to "." or "-" or "" it does not say anything.
+            if(self._sentence != "." and self._sentence != "" and self._sentence != "-"):
+                #Check if XXX is present and replace it 
+                has_substring = self._sentence.find("XXX")
+                if(has_substring != -1):
+                    print "[12] Found the substring 'XXX' at location: " + str(has_substring)
+                    self._sentence = self._sentence.replace("XXX", str(int(self._log_person_investment_second)))
+                has_substring = self._sentence.find("YYY")
+                if(has_substring != -1):
+                    print "[12] Found the substring 'YYY' at location: " + str(has_substring)
+                    self._sentence = self._sentence.replace("YYY", str(int(self._log_robot_investment_second)))
+                has_substring = self._sentence.find("ZZZ")
+                if(has_substring != -1):
+                    print "[12] Found the substring 'ZZZ' at location: " + str(has_substring)
+                    self._sentence = self._sentence.replace("ZZZ", str(float(self._log_player_b_investment)/2))
+                print "[12] Saying: '" + self._sentence + "'"
+                #It says the sentence generated above only if
+                #the valued returned by the person is different from zero.
+                self.myPuppet.say_something(str(self._sentence))
 
-        #STATE-11 Saving in the logbook
-        if self.STATE_MACHINE == 11:
-            print "[11] Saving the trial in the logbook"
+            else:
+                print "[12] Saying Nothing because the sentence in the XML file is '" + str(self._sentence) + "'" 
+
+            self.STATE_MACHINE = 13 #next state
+
+        #STATE-13 Saving in the logbook
+        if self.STATE_MACHINE == 13:
+            print "[13] Saving the trial in the logbook"
             self.logger.AddLine(self._log_trial+1, self._log_person_investment_first, self._log_robot_investment_first, self._log_person_investment_second,  self._log_robot_investment_second,
                                 self._log_player_b_investment, self._log_pmf, self._log_bmf, self._log_person_total, self._log_gaze, self._log_pointing, self._log_timer_first, self._log_timer_second)
-            print ("[11] trial, person_investment_first, robot_investment_first, person_investment_second, log_robot_investment_second, player_b_investment, pmf, bmf, person_total, gaze, pointing, timer_first, timer_second")
-            print ("[11] " + str(self._log_trial+1) + "," + str(self._log_person_investment_first) + "," + str(self._log_robot_investment_first) + "," + str(self._log_person_investment_second) + 
+            print ("[13] trial, person_investment_first, robot_investment_first, person_investment_second, log_robot_investment_second, player_b_investment, pmf, bmf, person_total, gaze, pointing, timer_first, timer_second")
+            print ("[13] " + str(self._log_trial+1) + "," + str(self._log_person_investment_first) + "," + str(self._log_robot_investment_first) + "," + str(self._log_person_investment_second) + 
                    "," + str(self._log_robot_investment_second) + "," +  str(self._log_pmf) + "," + str(self._log_bmf) + "," + str(self._log_person_total) + "," + str(self._log_gaze) + 
                    "," + str(self._log_pointing) + "," + str(self._log_timer_first) + "," + str(self._log_timer_second))
 
             if self._log_trial+1 != self.myParser._size:
-                self.STATE_MACHINE = 12 #cycling to state 12
+                self.STATE_MACHINE = 14 #cycling to state 12
                 self.emit(self.enable_components_gui_signal, True, False) #Enable the Start Button
                 self._log_trial = self._log_trial + 1
             elif self._log_trial+1 == self.myParser._size:
-                self.STATE_MACHINE = 13 #experiment finished               
+                self.STATE_MACHINE = 15 #experiment finished               
 
-        #STATE-12 Waiting for the subject pressing START
-        if self.STATE_MACHINE == 12:
+        #STATE-14 Waiting for the subject pressing START
+        if self.STATE_MACHINE == 14:
             if self._start_pressed == True: 
                 self._start_pressed = False
-                print "[12] Start pressed..."
+                print "[14] Start pressed..."
                 self.emit(self.enable_components_gui_signal, False,  False)
                 self.STATE_MACHINE = 2 #cycling to state 2
                 time.sleep(1)
 
-        #STATE-13 Final state is called to shutdown the robot
-        if self.STATE_MACHINE == 13:
-            print "[13] The game is finished"
+        #STATE-15 Final state is called to shutdown the robot
+        if self.STATE_MACHINE == 15:
+            print "[15] The game is finished"
             self._xml_uploaded = False #reset status variable
             self._start_pressed = False
             self._log_trial = 0

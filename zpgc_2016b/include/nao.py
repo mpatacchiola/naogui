@@ -18,6 +18,7 @@ import sys
 import time
 import subprocess
 import os
+import math
 
 from naoqi import ALProxy
 
@@ -236,17 +237,25 @@ class Puppet(object):
     ##
     # Look to (only pitch)
     #
-    # @param ANGLE pitch angle
+    # @param ANGLE (degrees) pitch angle
     # @param HEAD_SPEED the speed of the movement (between 0 and 1)
     #
-    def look_to(self, ANGLE, HEAD_SPEED):
+    def look_to(self, DIRECTION, ANGLE, SPEED):
+        """ Move the head in four possible direction: UP, DOWN, LEFT, RIGHT
+
+        @param DIRECTION 'HeadPitch' or 'HeadYaw'
+        @param ANGLE angle in radians
+            maximum angles YAW: +119 (left), -119 (right) degrees
+            maximum angles PITCH: +36 (down), -40 (up) degrees
+        @param SPEED the speed in m/sec (maximum speed 1.0)
         """
-        Move the head looking to
-        maximum angles: 29 / -38 (-2 +2 radians)
-        maximum speed 1.0
-        """       	
- 	self._al_motion_proxy.setAngles("HeadPitch", ANGLE, HEAD_SPEED)
-        self._al_motion_proxy.setAngles("HeadYaw", 0, HEAD_SPEED) #reset the yaw
+        ANGLE = math.radians(ANGLE) #conversion to radians
+        if(DIRECTION ==  "HeadPitch"):	
+ 	    self._al_motion_proxy.setAngles("HeadPitch", ANGLE, SPEED)
+            self._al_motion_proxy.setAngles("HeadYaw", 0, SPEED) #reset the yaw
+        elif(DIRECTION == "HeadYaw"):
+ 	    self._al_motion_proxy.setAngles("HeadPitch", 0, SPEED) #reset the pitch
+            self._al_motion_proxy.setAngles("HeadYaw", ANGLE, SPEED) 
 
     ##
     # Move the head saying yes

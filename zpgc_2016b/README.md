@@ -17,6 +17,8 @@ XML parameters
 - **mp3** {string} Not used 
 - **word1** {string} sentence produced by the robot in the *first* interaction. If the 'XXX' substring is present it is replaced with player investment. the string 'YYY' is replaced with the robot investment. Use '-' for empty sentence.
 - **word2** {string} sentence produced by the robot in the *second* interaction. If the 'XXX' substring is present it is replaced with player investment. the string 'YYY' is replaced with the robot investment. Use '-' for empty sentence.
+- **word3** {string} sentence produced by the robot. If the 'XXX' substring is present it is replaced with player investment. the string 'YYY' is replaced with the robot investment. Use '-' for empty sentence.
+- **word4** {string} sentence produced by the robot. If the 'XXX' substring is present it is replaced with player investment. the string 'YYY' is replaced with the robot investment. Use '-' for empty sentence.
 - **nasty** {True, False} Not used
 - **coop** {True, False} the robot mate can be cooperative(coop=True) or non-cooperative(coop=False)
 
@@ -27,6 +29,8 @@ XML parameters
         <mp3>-</mp3>
         <word1>Hello world</word1>
         <word2>I invested YYY and you invested XXX</word2>
+        <word3>Hello world</word3>
+        <word4>Let's see the banker</word4>
         <bmf>2.0</bmf>        
         <pmf>3.0</pmf>
         <rinv1>10</rinv1>
@@ -39,8 +43,10 @@ XML parameters
     <trial>
         <number>2</number>
         <mp3>My name is NAO</mp3>
-        <word1>For the moment you invested XXX</word1>
+        <word1>Second trial is starting</word1>
         <word2>I invested YYY and you invested XXX</word2>
+        <word3>Hello world</word3>
+        <word4>Let's see the banker</word4>
         <bmf>2.0</bmf>   
         <pmf>3.0</pmf>
         <rinv1>10</rinv1>
