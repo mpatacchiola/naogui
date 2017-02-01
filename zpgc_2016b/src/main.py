@@ -285,7 +285,7 @@ class WorkerThread(QThread):
             time.sleep(3.0) #Long sleep to enable the participant to uderstand what's going on
             self.STATE_MACHINE = 6 #next state
 
-        #STATE-6 First interaction: the robot talk and says the investment of the person and its own
+        #STATE-6 First interaction: the robot talks and says the investment of the person and its own
         if self.STATE_MACHINE == 6:
             print "[6] Looking to the monitor" 
             self.myPuppet.enable_face_tracking(False) #disable face tracking           
@@ -523,13 +523,14 @@ class WorkerThread(QThread):
             print "[11] Robots looks to the participant"
             time.sleep(1)
             self.myPuppet.look_to("HeadYaw", 0, SPEED) #angle(radians) + speed
+            time.sleep(2)
             self.myPuppet.enable_face_tracking(True) # face tracking
             print "[11] Switch to the next state"
             self.STATE_MACHINE = 12 #next state
 
         #STATE-12 Second interaction: the robot talk and says to look to the Banker decision
         if self.STATE_MACHINE == 12:
-            print "[12] The robot says to look to the Banker's decision..."
+            print "[12] The robot says what the Banker returned"
             #Take a sentence from the XML
             self._sentence = self.myParser._word5_list[self._log_trial]
             self._sentence = str(self._sentence) #convert to string
