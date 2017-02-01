@@ -203,8 +203,9 @@ class WorkerThread(QThread):
             self.myPuppet.right_arm_pointing(False, SPEED)
             self.myPuppet.left_arm_pointing(False, SPEED)  
             print "[2] Enabling again face tracking"
-            self.myPuppet.enable_face_tracking(True) #enables face tracking
             self.myPuppet.look_to("HeadPitch", 0, SPEED)
+            time.sleep(0.5)
+            self.myPuppet.enable_face_tracking(True) #enables face tracking
             print "[2] Producing the sentence"
             self._sentence = self.myParser._word1_list[self._log_trial]
             self._sentence = str(self._sentence) #convert to string
@@ -287,10 +288,10 @@ class WorkerThread(QThread):
         if self.STATE_MACHINE == 6:
             print "[6] Looking to the monitor"            
             self.myPuppet.look_to("HeadPitch", 35.0, SPEED)
-            time.sleep(random.randint(1, 3)) #random sleep
+            time.sleep(random.randint(2, 3)) #random sleep
             print "[6] Enabling again face tracking"
             self.myPuppet.look_to("HeadPitch", 0, SPEED)
-            time.sleep(1)
+            time.sleep(0.5)
             self.myPuppet.enable_face_tracking(True) #enables face tracking
             print "[6] The robot says the investments..."
             #Take a sentence from the XML, XXX substring is replaced 
