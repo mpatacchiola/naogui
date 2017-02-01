@@ -178,7 +178,8 @@ class WorkerThread(QThread):
             self.emit(self.enable_components_gui_signal, False,  True)  #GUI components
             self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string) 
             self.timer_first.restart() #RESET here the timer   
-            print "[2] Looking to the monitor"            
+            print "[2] Looking to the monitor" 
+            self.myPuppet.enable_face_tracking(False) #disable face tracking             
             self.myPuppet.look_to("HeadPitch", 35.0, SPEED)
             time.sleep(random.randint(3, 6)) #random sleep
             print "[2] Pointing or not" 
@@ -286,7 +287,8 @@ class WorkerThread(QThread):
 
         #STATE-6 First interaction: the robot talk and says the investment of the person and its own
         if self.STATE_MACHINE == 6:
-            print "[6] Looking to the monitor"            
+            print "[6] Looking to the monitor" 
+            self.myPuppet.enable_face_tracking(False) #disable face tracking           
             self.myPuppet.look_to("HeadPitch", 35.0, SPEED)
             time.sleep(random.randint(2, 3)) #random sleep
             print "[6] Enabling again face tracking"
