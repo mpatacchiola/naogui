@@ -181,6 +181,27 @@ class WorkerThread(QThread):
             print "[2] Looking to the monitor"            
             self.myPuppet.look_to("HeadPitch", 35.0, SPEED)
             time.sleep(random.randint(3, 6)) #random sleep
+            print "[2] Pointing or not" 
+            #Pointing (or not) while looking to the screen
+            if self.myParser._pointing_list[self._log_trial] == "True":
+              print "[2] pointing == True"
+              self._log_pointing = "True"
+              #Sort a random value and use it to move the arm
+              random_value = random.random()              
+              if (random_value >= 0.0 and random_value <= 0.5):
+                  self.myPuppet.left_arm_pointing(True, SPEED)
+              #right arm movement
+              elif (random_value > 0.5 and random_value <= 1.0):
+                   self.myPuppet.right_arm_pointing(True, SPEED)
+            #If the condition is pointing==FALSE then does not move the arm
+            elif self.myParser._pointing_list[self._log_trial] == "False":
+              print "[2] pointing == False"
+              self._log_pointing = "False"
+              self.myPuppet.right_arm_pointing(False, SPEED)
+              self.myPuppet.left_arm_pointing(False, SPEED)
+            print "[2] Reset the arms"
+            self.myPuppet.right_arm_pointing(False, SPEED)
+            self.myPuppet.left_arm_pointing(False, SPEED)  
             print "[2] Enabling again face tracking"
             self.myPuppet.enable_face_tracking(True) #enables face tracking
             self.myPuppet.look_to("HeadPitch", 0, SPEED)
@@ -190,13 +211,13 @@ class WorkerThread(QThread):
             if(self._sentence != "." and self._sentence != "" and self._sentence != "-"):
                 has_substring = self._sentence.find("XXX")
                 if(has_substring != -1):
-                    print "[6] Found the substring 'XXX' at location: " + str(has_substring)
+                    print "[2] Found the substring 'XXX' at location: " + str(has_substring)
                     self._sentence = self._sentence.replace("XXX", str(int(self._log_person_investment_first)))
                 has_substring = self._sentence.find("YYY")
                 if(has_substring != -1):
-                    print "[6] Found the substring 'YYY' at location: " + str(has_substring)
+                    print "[2] Found the substring 'YYY' at location: " + str(has_substring)
                     self._sentence = self._sentence.replace("YYY", str(int(self._log_robot_investment_first)))
-                print "[6] Saying: '" + self._sentence + "'"
+                print "[2] Saying: '" + self._sentence + "'"
                 self.myPuppet.say_something(str(self._sentence))
             print "[2] Switching to the next state"
             self.STATE_MACHINE = 3 #next state
@@ -205,7 +226,7 @@ class WorkerThread(QThread):
         #STATE-3 First interaction: waiting for the subject investment
         #When the subject choose it update the GUI showing zeros for the robots
         #and the multiplied factor for the human
-        if self.STATE_MACHINE == 3:                      
+        if self.STATE_MACHINE == 3:                    
             #self.emit(self.enable_components_gui_signal, False,  True)  #GUI components                    
             if self._confirm_pressed == True:   #when subject gives the answer
                 self._log_timer_first = self.timer_first.elapsed() #record the time
@@ -224,32 +245,7 @@ class WorkerThread(QThread):
 
         #STATE-4 First interaction: not used
         if self.STATE_MACHINE == 4:
-            #print "[4] The robot says the investment made by the person..."
-            #Take a sentence from the mp3 filed in the XML
-            #the XXX substring is replaced with the multiplied value
-            #given from the person to the robot. 
-            #self._sentence = self.myParser._mp3_list[self._log_trial]
-            #self._sentence = str(self._sentence) #convert to string
-            #If the sentence in the XML file is equal to "." or "-" or ""
-            #then it does not say anything...
-            #if(self._sentence != "." and self._sentence != "" and self._sentence != "-"):
-                #Check if XXX is present and replace it with the
-                #multiplied person investment value...
-                #has_substring = self._sentence.find("XXX")
-                #if(has_substring != -1):
-                    #print "[4] Found the substring 'XXX' at location: " + str(has_substring)
-                    #self._sentence = self._sentence.replace("XXX", str(int(self._log_person_investment_first* float(self._log_pmf))))
-                #print "[4] Saying: '" + self._sentence + "'"
-                #It says the sentence generated above only if
-                #the valued returned by the person is different from zero.
-                #if(self._log_person_investment_first* float(self._log_pmf) > 0):
-                    #self.myPuppet.say_something(str(self._sentence))
-                #else:
-                    #self.myPuppet.say_something("Ok, You invested zero.") #If the robot receive zero the sentence is cut
-            #print "[4] looking to the monitor..."
-            #The robot looks to the monitor (thinking what to do)
-            #self.myPuppet.enable_face_tracking(False) #disable face tracking
-            #self.myPuppet.look_to("HeadPitch", 35.0, SPEED) #angle(radians) + speed
+
             self.STATE_MACHINE = 5 #next state
 
         #STATE-5 First interaction: the robot calculates its own investment
@@ -264,40 +260,11 @@ class WorkerThread(QThread):
             #the other values do not change
             time.sleep(1)
 
-            #Pointing (or not) while looking to the screen
-            if self.myParser._pointing_list[self._log_trial] == "True":
-              print "[5] pointing == True"
-              self._log_pointing = "True"
-              #Sort a random value and use it to move the arm
-              random_value = random.random()
-              #no arm movement
-              if (random_value < 0.01):
-                  self.myPuppet.right_arm_pointing(False, SPEED)
-                  self.myPuppet.left_arm_pointing(False, SPEED) 
-              #Left arm movement                
-              elif (random_value >= 0.01 and random_value <= 0.5):
-                  self.myPuppet.left_arm_pointing(True, SPEED)
-              #right arm movement
-              elif (random_value > 0.5 and random_value <= 1.0):
-                   self.myPuppet.right_arm_pointing(True, SPEED)
-              else:
-                   print "[5] ERROR: the random_value generated to decide the arm movements is out of range: " + str(random_value)
-            #If the condition is pointing==FALSE then does not move the arm
-            elif self.myParser._pointing_list[self._log_trial] == "False":
-              print "[5] pointing == False"
-              self._log_pointing = "False"
-              self.myPuppet.right_arm_pointing(False, SPEED)
-              self.myPuppet.left_arm_pointing(False, SPEED)
-
             #Updating the GUI
             local_string = "You invested: " + str(self._log_person_investment_first) + '\n'
             local_string += "Your mate invested: " + str(self._log_robot_investment_first) + '\n' 
             #total, player_investment, round_total, robot_investment, text_label=""
             self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
-
-            #Reset the arms
-            self.myPuppet.right_arm_pointing(False, SPEED)
-            self.myPuppet.left_arm_pointing(False, SPEED)
 
             #Looking (or not) the subject
             if self.myParser._gaze_list[self._log_trial] == "True":
@@ -318,6 +285,13 @@ class WorkerThread(QThread):
 
         #STATE-6 First interaction: the robot talk and says the investment of the person and its own
         if self.STATE_MACHINE == 6:
+            print "[6] Looking to the monitor"            
+            self.myPuppet.look_to("HeadPitch", 35.0, SPEED)
+            time.sleep(random.randint(1, 3)) #random sleep
+            print "[6] Enabling again face tracking"
+            self.myPuppet.look_to("HeadPitch", 0, SPEED)
+            time.sleep(1)
+            self.myPuppet.enable_face_tracking(True) #enables face tracking
             print "[6] The robot says the investments..."
             #Take a sentence from the XML, XXX substring is replaced 
             #with the multiplied value given from the person to the robot. 
@@ -355,8 +329,9 @@ class WorkerThread(QThread):
         #The robot choose a value based on the feedback of the participant.
         if self.STATE_MACHINE == 7:
             print "[7] Second interaction"                         
-            #Updating the investment values
-            #The investment of the robot is taken from the XML file
+
+            print "[7] Sleep because the robot is thinking what to return"
+            time.sleep(3.0)  #Sleep to slow down
             
             print("[7] coop boolean variable = " + str(self.myParser._coop_list[self._log_trial]))
             if(self.myParser._coop_list[self._log_trial] == "False"):
@@ -379,53 +354,43 @@ class WorkerThread(QThread):
             self._log_robot_investment_second = float(self._log_robot_investment_second)
             print("[7] Robot Investment Round: " + str(self._log_robot_investment_second))
 
-            time.sleep(1)
             #Pointing (or not) while looking to the screen
+            print("[7] Pointing or not ")
             if self.myParser._pointing_list[self._log_trial] == "True":
               print "[7] pointing == True"
               self._log_pointing = "True"
               #Sort a random value and use it to move the arm
-              random_value = random.random()
-              #no arm movement
-              if (random_value < 0.01):
-                  self.myPuppet.right_arm_pointing(False, SPEED)
-                  self.myPuppet.left_arm_pointing(False, SPEED) 
-              #Left arm movement                
-              elif (random_value >= 0.01 and random_value <= 0.5):
+              random_value = random.random()               
+              if (random_value >= 0.0 and random_value <= 0.5):
                   self.myPuppet.left_arm_pointing(True, SPEED)
               #right arm movement
               elif (random_value > 0.5 and random_value <= 1.0):
                    self.myPuppet.right_arm_pointing(True, SPEED)
               else:
                    print "[7] ERROR: the random_value generated to decide the arm movements is out of range: " + str(random_value)
-              time.sleep(0.2)
             #If the condition is pointing==FALSE then does not move the arm
             elif self.myParser._pointing_list[self._log_trial] == "False":
               print "[7] pointing == False"
               self._log_pointing = "False"
               self.myPuppet.right_arm_pointing(False, SPEED)
               self.myPuppet.left_arm_pointing(False, SPEED)
-              time.sleep(3.0) #Sleep to slow down the flow in the non-movement condition
+            print("[7] Reset the arms")
+            self.myPuppet.right_arm_pointing(False, SPEED)
+            self.myPuppet.left_arm_pointing(False, SPEED)
 
             #Updating the GUI
-            time.sleep(2.0)  #Sleep to slow down
+            time.sleep(1.0)  #Sleep to slow down
             local_string = "Initially you invested: " + str(self._log_person_investment_first) + '\n'
             local_string += "Initially your mate invested: " + str(self._log_robot_investment_first) + '\n'
             local_string += "The final investment of your mate is: " + str(self._log_robot_investment_second) + '\n'
             local_string += "What's your final investment?" + '\n' 
             self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
 
-            #Reset the arms
-            time.sleep(0.5)
-            self.myPuppet.right_arm_pointing(False, SPEED)
-            self.myPuppet.left_arm_pointing(False, SPEED)
-
             #Looking (or not) the subject
             if self.myParser._gaze_list[self._log_trial] == "True":
               print "[7] looking == True"
               self._log_gaze = "True"
               self.myPuppet.look_to("HeadPitch", 0, SPEED) #angle(radians) + speed
-              time.sleep(0.2)
               self.myPuppet.enable_face_tracking(True) #enables face tracking
             elif self.myParser._gaze_list[self._log_trial] == "False":
               print "[7] looking == False"
@@ -434,7 +399,6 @@ class WorkerThread(QThread):
               self.myPuppet.look_to("HeadPitch", 35.0, SPEED) #angle(radians) + speed
 
             #Change state
-            time.sleep(0.5)
             self.timer_second.restart() #RESET here the timer
             print "[7] Waiting for the subject answer..." #going to state 3
             self.STATE_MACHINE = 8 #next state
@@ -554,6 +518,7 @@ class WorkerThread(QThread):
             self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string) 
             #The robot looks to the monitor (thinking what to do)
             print "[11] Robots looks to the participant"
+            time.sleep(1)
             self.myPuppet.look_to("HeadYaw", 0, SPEED) #angle(radians) + speed
             self.myPuppet.enable_face_tracking(True) # face tracking
             print "[11] Switch to the next state"
