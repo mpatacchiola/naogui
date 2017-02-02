@@ -202,11 +202,12 @@ class WorkerThread(QThread):
               self.myPuppet.left_arm_pointing(False, SPEED)
             print "[2] Reset the arms"
             self.myPuppet.right_arm_pointing(False, SPEED)
-            self.myPuppet.left_arm_pointing(False, SPEED)  
-            print "[2] Enabling again face tracking"
-            self.myPuppet.look_to("HeadPitch", 0, SPEED)
-            time.sleep(0.5)
-            self.myPuppet.enable_face_tracking(True) #enables face tracking
+            self.myPuppet.left_arm_pointing(False, SPEED)
+            if self.myParser._gaze_list[self._log_trial] == "True":  
+                print "[2] Enabling again face tracking"
+                self.myPuppet.look_to("HeadPitch", 0, SPEED)
+                time.sleep(0.5)
+                self.myPuppet.enable_face_tracking(True) #enables face tracking
             print "[2] Producing the sentence"
             self._sentence = self.myParser._word1_list[self._log_trial]
             self._sentence = str(self._sentence) #convert to string
@@ -257,6 +258,7 @@ class WorkerThread(QThread):
             #The investment of the robot is taken from the XML file
             self._log_robot_investment_first = float(self._log_person_investment_first + float(self.myParser._rmf_list[self._log_trial]))
             if(self._log_robot_investment_first < 0): self._log_robot_investment_first = 0
+            if(self._log_robot_investment_first > 10): self._log_robot_investment_first = 10
             print("[5] Robot rmf: " + str(self.myParser._rmf_list[self._log_trial]))
             print("[5] The Robot mate returned: " +str(self._log_robot_investment_first))
             #the other values do not change
@@ -291,10 +293,11 @@ class WorkerThread(QThread):
             self.myPuppet.enable_face_tracking(False) #disable face tracking           
             self.myPuppet.look_to("HeadPitch", 35.0, SPEED)
             time.sleep(random.randint(2, 3)) #random sleep
-            print "[6] Enabling again face tracking"
-            self.myPuppet.look_to("HeadPitch", 0, SPEED)
-            time.sleep(0.5)
-            self.myPuppet.enable_face_tracking(True) #enables face tracking
+            if self.myParser._gaze_list[self._log_trial] == "True":
+                print "[6] Enabling again face tracking"
+                self.myPuppet.look_to("HeadPitch", 0, SPEED)
+                time.sleep(0.5)
+                self.myPuppet.enable_face_tracking(True) #enables face tracking
             print "[6] The robot says the investments..."
             #Take a sentence from the XML, XXX substring is replaced 
             #with the multiplied value given from the person to the robot. 
@@ -321,17 +324,25 @@ class WorkerThread(QThread):
             else:
                 print "[6] Saying Nothing because the sentence in the XML file is '" + str(self._sentence) + "'" 
 
-            print "[6] looking to the monitor..."
-            #The robot looks to the monitor (thinking what to do)
-            self.myPuppet.enable_face_tracking(False) #disable face tracking
-            self.myPuppet.look_to("HeadPitch", 35.0, SPEED) #angle(radians) + speed
+            if self.myParser._gaze_list[self._log_trial] == "True":
+                print "[6] looking to the monitor..."
+                #The robot looks to the monitor (thinking what to do)
+                self.myPuppet.enable_face_tracking(False) #disable face tracking
+                self.myPuppet.look_to("HeadPitch", 35.0, SPEED) #angle(radians) + speed
             self.STATE_MACHINE = 7 #next state
 
 
         #STATE-7 Second interaction: the robot invest.
         #The robot choose a value based on the feedback of the participant.
         if self.STATE_MACHINE == 7:
-            print "[7] Second interaction"                         
+            print "[7] Second interaction"
+
+            print "[7] Updating the GUI inserting 'Please wait the robot is deciding' "
+            local_string = "You invested: " + str(self._log_person_investment_first) + '\n'
+            local_string += "Your mate invested: " + str(self._log_robot_investment_first) + '\n' 
+            local_string += "Please wait, your mate is deciding the final investment... " + '\n'
+            #total, player_investment, round_total, robot_investment, text_label=""
+            self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)                       
 
             print "[7] Sleep because the robot is thinking what to return"
             time.sleep(3.0)  #Sleep to slow down
@@ -434,10 +445,11 @@ class WorkerThread(QThread):
             else:
                 print "[8] Saying Nothing because the sentence in the XML file is '" + str(self._sentence) + "'" 
 
-            print "[8] looking to the monitor..."
-            #The robot looks to the monitor (thinking what to do)
-            self.myPuppet.enable_face_tracking(False) #disable face tracking
-            self.myPuppet.look_to("HeadPitch", 35.0, SPEED) #angle(radians) + speed
+            if self.myParser._gaze_list[self._log_trial] == "True":
+                print "[8] looking to the monitor..."
+                #The robot looks to the monitor (thinking what to do)
+                self.myPuppet.enable_face_tracking(False) #disable face tracking
+                self.myPuppet.look_to("HeadPitch", 35.0, SPEED) #angle(radians) + speed
             self.STATE_MACHINE = 9 #next state
 
         #STATE-9 Second interaction: waiting for the subject investment
@@ -460,6 +472,11 @@ class WorkerThread(QThread):
 
         #STATE-10 Second interaction: the robot talk and says to look to the Banker decision
         if self.STATE_MACHINE == 10:
+            print "[10] Checking if participand and robot invested zero..."
+            #Check if they invested zero or not, if they invested more than zero then look to banker
+            is_investment_zero = False
+            if(int(self._log_person_investment_second) + int(self._log_robot_investment_second) == 0): is_investment_zero = True
+
             print "[10] The robot says to look to the Banker's decision..."
             #Take a sentence from the XML
             #the XXX substring is replaced with the value
@@ -468,7 +485,7 @@ class WorkerThread(QThread):
             self._sentence = str(self._sentence) #convert to string
             #If the sentence in the XML file is equal to "." or "-" or ""
             #then it does not say anything...
-            if(self._sentence != "." and self._sentence != "" and self._sentence != "-"):
+            if(self._sentence != "." and self._sentence != "" and self._sentence != "-" and is_investment_zero == False):
                 #Check if XXX is present and replace it with the
                 #multiplied person investment value...
                 has_substring = self._sentence.find("XXX")
@@ -481,17 +498,31 @@ class WorkerThread(QThread):
                     self._sentence = self._sentence.replace("YYY", str(int(self._log_robot_investment_second)))
                 print "[10] Saying: '" + self._sentence + "'"
                 #It says the sentence generated above only if
-                #the valued returned by the person is different from zero.
+                #the valued returned by the person is different from zero.             
                 self.myPuppet.say_something(str(self._sentence))
 
             else:
-                print "[10] Saying Nothing because the sentence in the XML file is '" + str(self._sentence) + "'" 
+                print "[10] Saying Nothing because sentence is equal to '-' or investement is zero " 
 
-            print "[10] looking to the banker"
-            #The robot looks to the monitor (thinking what to do)
-            self.myPuppet.enable_face_tracking(False) #disable face tracking
-            self.myPuppet.look_to("HeadYaw", +70.0, SPEED) # +90 turn LEFT
-            self.STATE_MACHINE = 11 #next state
+
+            if(self.myParser._gaze_list[self._log_trial] == "True" and is_investment_zero == False):
+                print "[10] looking to the banker"
+                #The robot looks to the monitor (thinking what to do)
+                self.myPuppet.enable_face_tracking(False) #disable face tracking
+                self.myPuppet.look_to("HeadYaw", +70.0, SPEED) # +90 turn LEFT
+            else:
+                print "[10] Not looking to the banker because gaze is False or investement is Zero"
+
+            if(is_investment_zero == False):
+                #If invested zero than skip the banker
+                self.STATE_MACHINE = 11 #next state
+            else:
+                local_string = "Banker received: 0" + '\n'
+                local_string += "Banker cannot return anything." +  '\n'
+                local_string += "Please press START to begin a new round..." + '\n' 
+                #total, pinv, round_tot, rinv, rslider, text
+                self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
+                self.STATE_MACHINE = 13 #next state
 
         #STATE-11  The Banker robot gives a reward
         if self.STATE_MACHINE == 11:
@@ -518,13 +549,14 @@ class WorkerThread(QThread):
             #local_string += "Your mate received: " + str(self._log_player_b_investment / 2.0) + '\n'
             local_string += "Please press START to begin a new round..." + '\n' 
             #total, pinv, round_tot, rinv, rslider, text
-            self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string) 
-            #The robot looks to the monitor (thinking what to do)
-            print "[11] Robots looks to the participant"
-            time.sleep(1)
-            self.myPuppet.look_to("HeadYaw", 0, SPEED) #angle(radians) + speed
-            time.sleep(2)
-            self.myPuppet.enable_face_tracking(True) # face tracking
+            self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
+            if self.myParser._gaze_list[self._log_trial] == "True":
+                #The robot looks to the monitor (thinking what to do)
+                print "[11] Robots looks to the participant"
+                time.sleep(1)
+                self.myPuppet.look_to("HeadYaw", 0, SPEED) #angle(radians) + speed
+                time.sleep(2)
+                self.myPuppet.enable_face_tracking(True) # face tracking
             print "[11] Switch to the next state"
             self.STATE_MACHINE = 12 #next state
 
