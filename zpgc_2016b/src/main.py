@@ -284,7 +284,7 @@ class WorkerThread(QThread):
               self.myPuppet.look_to("HeadPitch", 35.0, SPEED) #angle(radians) + speed
 
             #Change state
-            time.sleep(3.0) #Long sleep to enable the participant to uderstand what's going on
+            time.sleep(1.0) #(reduced) Long sleep to enable the participant to uderstand what's going on
             self.STATE_MACHINE = 6 #next state
 
         #STATE-6 First interaction: the robot talks and says the investment of the person and its own
@@ -292,7 +292,7 @@ class WorkerThread(QThread):
             print "[6] Looking to the monitor" 
             self.myPuppet.enable_face_tracking(False) #disable face tracking           
             self.myPuppet.look_to("HeadPitch", 35.0, SPEED)
-            time.sleep(random.randint(2, 3)) #random sleep
+            time.sleep(1.5)
             if self.myParser._gaze_list[self._log_trial] == "True":
                 print "[6] Enabling again face tracking"
                 self.myPuppet.look_to("HeadPitch", 0, SPEED)
@@ -543,8 +543,10 @@ class WorkerThread(QThread):
             #the amount not invested + the money that player b gave back (half of them)
             self._log_person_total += (10-self._log_person_investment_second) + float(self._log_player_b_investment / 2.0)
             self._log_robot_total += (10-self._log_robot_investment_second) + float(self._log_player_b_investment / 2.0)
-            local_string = "Banker received: " + str((self._log_person_investment_second + self._log_robot_investment_second) * 3) + '\n'
-            local_string += "Banker returned: " + str(self._log_player_b_investment) + "; " + str(self._log_player_b_investment/2.0) + " each" + '\n'
+            local_string = "Your mate invested " + str(self._log_robot_investment_second) + " and you invested " + str(self._log_person_investment_second) + '\n'
+            local_string += "Banker received: " + str((self._log_person_investment_second + self._log_robot_investment_second) * 3) + '\n'
+            local_string += "Banker returned " + str(self._log_player_b_investment/2.0) + " each, "
+            local_string += "because the difference between your investements is " + str(math.fabs(self._log_person_investment_second - self._log_robot_investment_second)) + '\n'
             #local_string += "You received: " + str(self._log_player_b_investment / 2.0) + '\n'
             #local_string += "Your mate received: " + str(self._log_player_b_investment / 2.0) + '\n'
             local_string += "Please press START to begin a new round..." + '\n' 
