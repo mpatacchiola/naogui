@@ -544,9 +544,10 @@ class WorkerThread(QThread):
             self._log_person_total += (10-self._log_person_investment_second) + float(self._log_player_b_investment / 2.0)
             self._log_robot_total += (10-self._log_robot_investment_second) + float(self._log_player_b_investment / 2.0)
             local_string = "Your mate invested " + str(self._log_robot_investment_second) + " and you invested " + str(self._log_person_investment_second) + '\n'
-            local_string += "Banker received: " + str((self._log_person_investment_second + self._log_robot_investment_second) * 3) + '\n'
-            local_string += "Banker returned " + str(self._log_player_b_investment/2.0) + " each, "
-            local_string += "because the difference between your investements is " + str(math.fabs(self._log_person_investment_second - self._log_robot_investment_second)) + '\n'
+            local_string += "The banker received " + str((self._log_person_investment_second + self._log_robot_investment_second) * 3) 
+            local_string += " and wanted to return " + str(float((self._log_person_investment_second +  self._log_robot_investment_second) * 3.0 * self._log_bmf) / 2.0 ) + " each" + '\n' 
+            local_string += "The two investments differ by " + str(math.fabs(self._log_person_investment_second - self._log_robot_investment_second))
+            local_string += ", so he returned " + str(self._log_player_b_investment/2.0) + " each." + '\n'
             #local_string += "You received: " + str(self._log_player_b_investment / 2.0) + '\n'
             #local_string += "Your mate received: " + str(self._log_player_b_investment / 2.0) + '\n'
             local_string += "Please press START to begin a new round..." + '\n' 
