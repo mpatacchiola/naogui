@@ -260,7 +260,7 @@ class WorkerThread(QThread):
             if(self._log_robot_investment_first < 0): self._log_robot_investment_first = 0
             if(self._log_robot_investment_first > 10): self._log_robot_investment_first = 10
             print("[5] Robot rmf: " + str(self.myParser._rmf_list[self._log_trial]))
-            print("[5] The Robot mate returned: " +str(self._log_robot_investment_first))
+            print("[5] The Robot mate returned: " + str(self._log_robot_investment_first))
             #the other values do not change
             time.sleep(1)
 
@@ -350,7 +350,7 @@ class WorkerThread(QThread):
             print("[7] coop boolean variable = " + str(self.myParser._coop_list[self._log_trial]))
             if(self.myParser._coop_list[self._log_trial] == "False"):
                 print "[7] Non-Cooperative"  
-                self._log_robot_investment_second = self._log_person_investment_first + float(self.myParser._rinv2a_list[self._log_trial])          
+                self._log_robot_investment_second = self._log_robot_investment_first + float(self.myParser._rinv2a_list[self._log_trial])          
                 #if(self._log_person_investment_first >= 5):
                     #self._log_robot_investment_second = self._log_person_investment_first - (2 + self._log_robot_investment_first - (self._log_robot_investment_first/4))               
                 #elif(self._log_person_investment_first <= 4): 
@@ -366,6 +366,8 @@ class WorkerThread(QThread):
             print("[7] Robot Investment Raw: " + str(self._log_robot_investment_second))       
             self._log_robot_investment_second = int(round(self._log_robot_investment_second)) #Round to the nearest integer
             self._log_robot_investment_second = float(self._log_robot_investment_second)
+            if(self._log_robot_investment_second > 10): self._log_robot_investment_second=10
+            if(self._log_robot_investment_second < 0): self._log_robot_investment_second=0
             print("[7] Robot Investment Round: " + str(self._log_robot_investment_second))
 
             #Pointing (or not) while looking to the screen
