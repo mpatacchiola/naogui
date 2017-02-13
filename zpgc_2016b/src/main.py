@@ -365,9 +365,9 @@ class WorkerThread(QThread):
                     #self._log_robot_investment_second = self._log_person_investment_first - (self._log_person_investment_first * random.randint(0, 3))
             #When the investement is the same of the first-participant
             if(self._log_robot_investment_second == self._log_person_investment_first and self._log_robot_investment_second < 10):
-                 self._log_robot_investment_second + 1
+                 self._log_robot_investment_second = self._log_robot_investment_second + 1
             elif(self._log_robot_investment_second == self._log_person_investment_first and self._log_robot_investment_second == 10):
-                 self._log_robot_investment_second - 1
+                 self._log_robot_investment_second =  self._log_robot_investment_second - 1
             print("[7] Robot Investment Raw: " + str(self._log_robot_investment_second))       
             self._log_robot_investment_second = int(round(self._log_robot_investment_second)) #Round to the nearest integer
             self._log_robot_investment_second = float(self._log_robot_investment_second)
