@@ -34,7 +34,7 @@ def robot_animation(advice, avatar_name, csv_path='./robot.csv', verbose=True):
 
     The gestures are sampled among the NAO animations.
     The function will look for a file called 'robot.csv' containing:
-    comma separated values for [Avatar name, IP address, PORT number].
+    comma separated values for [Avatar name, IP address, PORT number, MOVE True/False].
     The file must be in the root folder.
     @param advice the advice string
     @param avatar_name the name of the avatar (Veronika, Monika, Tereza)
@@ -48,10 +48,12 @@ def robot_animation(advice, avatar_name, csv_path='./robot.csv', verbose=True):
             conf_avatar_name = row[0]
             conf_nao_ip = row[1]
             conf_nao_port = row[2]
+            conf_nao_movement = row[3]
             if(conf_avatar_name == avatar_name):
                 avatar_found = True
                 NAO_IP = conf_nao_ip
                 NAO_PORT = conf_nao_port
+                NAO_MOVE = conf_nao_movement
                 break
     if(avatar_found == False):
         if verbose: print("ROBOT ERROR: AVATAR '" + str(avatar_name) + "' NOT FOUND!")
@@ -59,25 +61,28 @@ def robot_animation(advice, avatar_name, csv_path='./robot.csv', verbose=True):
     if verbose: print "ROBOT init..."
     if verbose: print("ROBOT IP: " + str(NAO_IP))
     if verbose: print("ROBOT PORT: " + str(NAO_PORT))
+    if verbose: print("ROBOT MOVE: " + str(NAO_MOVE))
     if verbose: print("ROBOT avatar: " + str(avatar_name))
     if verbose: print("ROBOT advice: " + str(advice))
-    animated_speech_proxy = ALProxy("ALAnimatedSpeech", NAO_IP, int(NAO_PORT))
-    #set the local configuration
-    configuration = {"bodyLanguageMode":"contextual"}
-    #say the text with the local configuration
-    gesture_list = list()
-    gesture_list.append("^start(animations/Stand/Gestures/Choice_1) ")
-    gesture_list.append("^start(animations/Stand/Gestures/Choice_2) ")
-    gesture_list.append("^start(animations/Stand/Gestures/Explain_1) ")
-    gesture_list.append("^start(animations/Stand/Gestures/Explain_2) ")
-    gesture_list.append("^start(animations/Stand/Gestures/Explain_4) ")
-    gesture_list.append("^start(animations/Stand/Gestures/Explain_6) ")
-    gesture_list.append("^start(animations/Stand/Gestures/Explain_7) ")
-    gesture_list.append("^start(animations/Stand/Gestures/Explain_8) ")
-    gesture_list.append("^start(animations/Stand/Gestures/Explain_9) ")
-    sampled_gesture = gesture_list[random.randint(0,len(gesture_list)-1)]
-    full_string = sampled_gesture + advice #the gesture plus the advice
-    animated_speech_proxy.say(full_string, configuration)
+    # If the movements are enabled it moves during the speech
+    if NAO_MOVE == "True" or NAO_MOVE == "true" or NAO_MOVE == "TRUE":
+        animated_speech_proxy = ALProxy("ALAnimatedSpeech", NAO_IP, int(NAO_PORT))
+        #set the local configuration
+        configuration = {"bodyLanguageMode":"contextual"}
+        #say the text with the local configuration
+        gesture_list = list()
+        gesture_list.append("^start(animations/Stand/Gestures/Choice_1) ")
+        gesture_list.append("^start(animations/Stand/Gestures/Choice_2) ")
+        gesture_list.append("^start(animations/Stand/Gestures/Explain_1) ")
+        gesture_list.append("^start(animations/Stand/Gestures/Explain_2) ")
+        gesture_list.append("^start(animations/Stand/Gestures/Explain_4) ")
+        gesture_list.append("^start(animations/Stand/Gestures/Explain_6) ")
+        gesture_list.append("^start(animations/Stand/Gestures/Explain_7) ")
+        gesture_list.append("^start(animations/Stand/Gestures/Explain_8) ")
+        gesture_list.append("^start(animations/Stand/Gestures/Explain_9) ")
+        sampled_gesture = gesture_list[random.randint(0,len(gesture_list)-1)]
+        full_string = sampled_gesture + advice #the gesture plus the advice
+        animated_speech_proxy.say(full_string, configuration)
 
 class HelperUnknownSignal(Surface):
     def __init__(self, names=''):

@@ -35,6 +35,9 @@ def robot_check(csv_path='./robot.csv'):
             conf_avatar_name = row[0]
             conf_nao_ip = row[1]
             conf_nao_port = row[2]
+            conf_nao_move = row[3]
+            if conf_nao_move != "True" and conf_nao_move != "true" and conf_nao_move != "TRUE" and conf_nao_move != "False" and conf_nao_move != "false" and conf_nao_move != "FALSE":
+                raise Exception("ROBOT ERROR: wrong formant for movement string='" + str(conf_nao_move) + "' at row=" + str(row))
             try:
                 animated_speech_proxy = ALProxy("ALAnimatedSpeech", conf_nao_ip, int(conf_nao_port))
                 configuration = {"bodyLanguageMode":"contextual"}
