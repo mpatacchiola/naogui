@@ -69,13 +69,13 @@ def robot_move_head(direction, sleep, avatar_name, csv_path='./robot.csv'):
     time.sleep(sleep)
     head_speed = 0.3  # change the speed if needed
     if(conf_participant_position == "left" and direction=="screen"):
-        angle = +60
+        angle = +1.0 # 60 degrees = 1.0 radians
     elif(conf_participant_position == "left" and direction=="participant"):
-        angle = -60
+        angle = -1.0 # 60 degrees = 1.0 radians
     elif(conf_participant_position == "right" and direction=="screen"):
-        angle = +60
+        angle = +1.0 # 60 degrees = 1.0 radians
     elif(conf_participant_position == "right" and direction=="participant"):
-        angle = -60
+        angle = -1.0 # 60 degrees = 1.0 radians
     else:
         print "ROBOT ERROR: Error the combination does not exist participant_position=" + str(conf_participant_position) + "; direction=" + str(direction) 
     # Move the head in the direction
