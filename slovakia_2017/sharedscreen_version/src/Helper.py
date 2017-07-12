@@ -34,10 +34,13 @@ def robot_move_head(direction, sleep, avatar_name, csv_path='./robot.csv'):
     """
     Move the head of the robot
 
-    @param direction string identifying where to look ('screen' or 'participant'
+    I moves the head of the robot in the direction of the screen or the participant.
+    Before talking it looks to the participant. At the end it looks back to the screen.
+    It requires the robot.csv file which must contain where the participant is placed.
+    @param direction string identifying where to look ('screen' or 'participant')
     @parma sleep how many second sleep before the movement
     @param avatar_name the name of the avatar to move
-    @csv_path the path of the CSV file
+    @param csv_path the path of the CSV file
     """
     avatar_found = False
     with open(csv_path, 'rb') as csvfile:
@@ -55,7 +58,7 @@ def robot_move_head(direction, sleep, avatar_name, csv_path='./robot.csv'):
                 NAO_MOVE = conf_nao_movement
                 break
     if(avatar_found == False):
-        print("ROBOT ERROR: AVATAR '" + str(avatar_name) + "' NOT FOUND!")
+        print("ROBOT ERROR: avatar '" + str(avatar_name) + "' not found!")
         return 0
     try:
        al_motion_proxy = ALProxy("ALMotion", NAO_IP, int(NAO_PORT))
@@ -262,7 +265,7 @@ class Helper(DirtySprite):
         return random.choice(candidates)
 
     def speech_advice(self):
-        #mpatacchiola: (multiscreen) allows the movement of the robot head (it loos to the participant)
+        #mpatacchiola: (sharedscreen) allows the movement of the robot head (it loos to the participant)
         direction = "participant"
         sleep = 0.0
         t = threading.Thread(target=robot_move_head, args=(direction, sleep, self.name,))
@@ -282,9 +285,9 @@ class Helper(DirtySprite):
         t = threading.Thread(target=robot_animation, args=(advice, self.name,))
         t.start()
 
-        #mpatacchiola: (multiscreen) allows the movement of the robot head (it loos to the participant)
+        #mpatacchiola: (sharedscreen) allows the movement of the robot head (it loos to the screen)
         direction = "screen"
-        sleep = 1.0 # adjust as you want
+        sleep = 3.0 # adjust as you want
         t = threading.Thread(target=robot_move_head, args=(direction, sleep, self.name,))
         t.start()
 
