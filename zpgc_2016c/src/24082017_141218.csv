@@ -1,0 +1,4 @@
+trial, person_investment_first, robot_investment_first, person_investment_second, log_robot_investment_second, player_b_investment, pmf, bmf, person_total, gaze, pointing, timer_first, timer_second
+0,0,0
+1,5.0,4.0,8.4,3.0,0.5,12.5,True,True,13478
+2,6.0,7.0,10.5,3.0,0.5,25.5,True,True,42207
