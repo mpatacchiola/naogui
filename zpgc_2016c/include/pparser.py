@@ -14,6 +14,8 @@ class Parser(object):
         self._number_list = list() #list of the trial number
         self._gaze_list = list() #list for gaze/non_gaze
         self._pointing_list = list() #list for pointing/non_pointing
+        self._gaze2_list = list() #list for gaze/non_gaze
+        self._pointing2_list = list() #list for pointing/non_pointing
 
         self._pmf_list = list() #moltiplication factor for the person
         self._rmf_list = list() #moltiplication factor for robot
@@ -22,6 +24,7 @@ class Parser(object):
         self._word2_list = list() #sentece in the second interaction
         self._binv_list = list() #robot investement in 1st interaction
         self._rinv_list = list() #Option 'a' for robot investement in 2nd interaction
+        self._time_list = list() #Option 'a' for robot investement in 2nd interaction
 
         self._size = 0
 
@@ -79,6 +82,14 @@ class Parser(object):
 		self._pointing_list.append(returned.firstChild.data)
                 print("pointing ........ %s" %returned.firstChild.data)
 
+		returned = item.getElementsByTagName("gaze2")[0]
+		self._gaze2_list.append(returned.firstChild.data)
+                print("gaze2 ........ %s" %returned.firstChild.data)
+
+		returned = item.getElementsByTagName("pointing2")[0]
+		self._pointing2_list.append(returned.firstChild.data)
+                print("pointing2 ........ %s" %returned.firstChild.data)
+
 		returned = item.getElementsByTagName("pmf")[0]
 		self._pmf_list.append(returned.firstChild.data)
                 print("pmf ........ %s" %returned.firstChild.data)
@@ -106,6 +117,10 @@ class Parser(object):
 		returned = item.getElementsByTagName("word2")[0]
 		self._word2_list.append(returned.firstChild.data)
                 print("word2 ........ %s" %returned.firstChild.data)
+
+		returned = item.getElementsByTagName("time")[0]
+		self._time_list.append(returned.firstChild.data)
+                print("time ........ %s" %returned.firstChild.data)
 
                 print("")
                 counter = counter + 1

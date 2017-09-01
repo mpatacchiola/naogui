@@ -64,6 +64,7 @@ class WorkerThread(QThread):
     self.good_xml_signal = SIGNAL("good_xml_signal")
     self.update_gui_signal = SIGNAL("update_gui_signal")
     self.show_start_btn_signal = SIGNAL("show_start_btn_signal")
+    self.colour_robot_button_signal = SIGNAL("colour_robot_button_signal")
 
     #Misc variables
     self.timer = QElapsedTimer()
@@ -77,6 +78,7 @@ class WorkerThread(QThread):
     self._start_pressed = False
     self._confirm_pressed = False
     self._confirm_pressed_robot = False
+    self._participant_decision_taken = False
     self._session_info_given = False
 
     #Sub state of state 1
@@ -96,7 +98,6 @@ class WorkerThread(QThread):
     self._log_bmf = 0 #player b multiplication factor
     self._log_gaze = False
     self._log_pointing = False
-    self._log_mp3 = ""
 
 
   ## Main function of the Thread
@@ -138,6 +139,7 @@ class WorkerThread(QThread):
                 self._confirm_pressed = False
                 self._confirm_pressed_robot = False
                 self._start_pressed = False
+                self._participant_decision_taken = False
                 print "[1] Hello world!"
                 self.myPuppet.say_something("Hello, I am NAO. Let's play together.")
                 time.sleep(1)
@@ -164,7 +166,7 @@ class WorkerThread(QThread):
             print "[2] Starating timer subject and timer robot"
             self.timer.restart() #RESET here the timer 
             self.timer_robot.restart()
-            self.timer_robot_deadline = random.randint(1,3)   
+            self.timer_robot_deadline = int(self.myParser._time_list[self._log_trial]) #random.randint(1,3)   
             print "[2] Switching to the next state"
             self.STATE_MACHINE = 3 #next state       
             print "[3] Waiting for the subject and robot answer..." #going to state 3
@@ -174,8 +176,8 @@ class WorkerThread(QThread):
         #and the multiplied factor for the human
         if self.STATE_MACHINE == 3:       
             # Wait for a random time between 1 and 3 seconds and then the robot decide
-            if self.timer_robot.elapsed() > self.timer_robot_deadline and self._confirm_pressed_robot == False:         
-                self._log_robot_investment = float(self.myParser._rinv_list[self._log_trial])
+            if self.timer_robot.elapsed() > self.timer_robot_deadline and self._confirm_pressed_robot == False:  
+                self._log_robot_investment = int(self.myParser._rinv_list[self._log_trial])
                 if(self._log_robot_investment < 0): self._log_robot_investment = 0
                 if(self._log_robot_investment > 10): self._log_robot_investment = 10
                 self._confirm_pressed_robot = True
@@ -188,31 +190,40 @@ class WorkerThread(QThread):
                 if self.myParser._pointing_list[self._log_trial] == "True":
                   print "[2] pointing == True"
                   self._log_pointing = "True"
+                  self.myPuppet.right_arm_pointing(True, SPEED)
                   #Sort a random value and use it to move the arm
-                  random_value = random.random()              
-                  if (random_value >= 0.0 and random_value <= 0.5):
-                      self.myPuppet.left_arm_pointing(True, SPEED)
+                  #random_value = random.random()              
+                  #if (random_value >= 0.0 and random_value <= 0.5):
+                  #    self.myPuppet.left_arm_pointing(True, SPEED)
                   #right arm movement
-                  elif (random_value > 0.5 and random_value <= 1.0):
-                       self.myPuppet.right_arm_pointing(True, SPEED)
+                  #elif (random_value > 0.5 and random_value <= 1.0):
+                  #     self.myPuppet.right_arm_pointing(True, SPEED)
                 #If the condition is pointing==FALSE then does not move the arm
                 elif self.myParser._pointing_list[self._log_trial] == "False":
                   print "[2] pointing == False"
                   self._log_pointing = "False"
                   self.myPuppet.right_arm_pointing(False, SPEED)
                   self.myPuppet.left_arm_pointing(False, SPEED)
+                #Change button colour
+                self.emit(self.colour_robot_button_signal, int(self._log_robot_investment), "lightgreen")
+                #Reset the arms
                 print "[2] Reset the arms"
                 self.myPuppet.right_arm_pointing(False, SPEED)
-                self.myPuppet.left_arm_pointing(False, SPEED)            
+                self.myPuppet.left_arm_pointing(False, SPEED)
+            # The participant decided, record the timer
+            if self._confirm_pressed == True and self._participant_decision_taken == False:
+                self._log_timer = self.timer.elapsed() #record the time
+                self._participant_decision_taken = True
+                print "[3] The participant pressed: " + str(self._log_person_investment)
+                print "[3] TIME: " + str(self._log_timer)      
             # Wait for both robot and participant to decide
             if self._confirm_pressed == True and self._confirm_pressed_robot == True:   #when subject gives the answer
-                self._log_timer = self.timer.elapsed() #record the time
-                print "[3] TIME: " + str(self._log_timer)
                 print "[3] INVESTMENT: " + str(self._log_person_investment)
                 print "[3] ROBOT INVESTMENT: " + str(self._log_robot_investment)
                 self._log_person_investment = self._log_person_investment
                 self._confirm_pressed = False #reset the variable state
                 self._confirm_pressed_robot = False
+                self._participant_decision_taken = False
                 self.emit(self.enable_components_gui_signal, False,  False, False) #GUI components
                 local_string = ""
                 self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
@@ -230,8 +241,8 @@ class WorkerThread(QThread):
             time.sleep(1)
 
             #Updating the GUI
-            local_string = "You invested: " + str(self._log_person_investment) + '\n'
-            local_string += "the robot invested: " + str(self._log_robot_investment) + '\n' 
+            local_string = "Player A invested: " + str(self._log_person_investment) + '\n'
+            local_string += "Player B invested: " + str(self._log_robot_investment) + '\n' 
             #total, player_investment, round_total, robot_investment, text_label=""
             self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
             #Looking (or not) the subject
@@ -256,6 +267,8 @@ class WorkerThread(QThread):
             self.myPuppet.enable_face_tracking(False) #disable face tracking           
             self.myPuppet.look_to("HeadPitch", 35.0, SPEED)
             time.sleep(1.5)
+            #Change button colour
+            self.emit(self.colour_robot_button_signal, int(self._log_robot_investment), "")
             if self.myParser._gaze_list[self._log_trial] == "True":
                 print "[6] Enabling again face tracking"
                 self.myPuppet.look_to("HeadPitch", 0, SPEED)
@@ -294,40 +307,54 @@ class WorkerThread(QThread):
 
         #STATE-7  The Banker robot gives a reward
         if self.STATE_MACHINE == 7:
+            if self.myParser._gaze2_list[self._log_trial] == "True":
+                print "[7] Looking to the screen Robot 2"
+                self.myPuppet_2.look_to("HeadPitch", 35.0, SPEED)
+                time.sleep(0.5)
+                self.myPuppet_2.enable_face_tracking(False) #enables face tracking
             print "[7] The banker is thinking (it takes time)..."            
             time.sleep(random.randint(2, 4))
             print "[7] Waiting for Banker Robot reward..." 
             #Updating the multiplication values
-            self._log_player_b_investment = float(self.myParser._binv_list[self._log_trial]) # Player B return for the robot
+            self._log_player_b_investment = int(self.myParser._binv_list[self._log_trial]) # Player B return for the robot
             if(self._log_player_b_investment<0): self._log_player_b_investment = 0 #equal to zero if negative
-
-            self.STATE_MACHINE = 3 #next state
-            time.sleep(1)
+            # Pointing or not
+            if self.myParser._pointing2_list[self._log_trial] == "True":
+                  print "[7] pointing == True"
+                  #Sort a random value and use it to move the arm
+                  random_value = random.random()              
+                  if (random_value >= 0.0 and random_value <= 0.5):
+                      self.myPuppet_2.left_arm_pointing(True, SPEED)
+                  #right arm movement
+                  elif (random_value > 0.5 and random_value <= 1.0):
+                       self.myPuppet_2.right_arm_pointing(True, SPEED)
+            #Reset the arms (if they have been moved)
+            print "[7] pointing == False"
+            self.myPuppet_2.right_arm_pointing(False, SPEED)
+            self.myPuppet_2.left_arm_pointing(False, SPEED)
             #Update the TOTAL
             print "[7] The Banker invested: " + str(self._log_player_b_investment)
             #The total of the person in the single round is given from
             #the amount not invested + the money that player b gave back (half of them)
-            self._log_person_total += (10-self._log_person_investment) + float(self._log_person_investment * 3.0 * float(self.myParser._bmf_list[self._log_trial]))
-            self._log_robot_total += (10-self._log_robot_investment) + float(self._log_player_b_investment) # TODO: take this value from CSV
-            local_string = "The robot invested " + str(self._log_robot_investment) + " and you invested " + str(self._log_person_investment) + '\n'
-            local_string += "The banker received " + str(self._log_person_investment * 3.0) + " from you"
-            local_string += " and received " + str(float(self._log_robot_investment * 3.0)) + " from the robot" + '\n' 
-            local_string += "The banker returned to you " + str(self._log_person_investment * 3.0 * float(self.myParser._bmf_list[self._log_trial])) + '\n'
-            local_string += "The banker returned to the robot " + str(self._log_player_b_investment) + '\n' # TODO: change this variable and take it from XML
+            self._log_person_total += (10-self._log_person_investment) + int(self._log_person_investment * 3.0 * float(self.myParser._bmf_list[self._log_trial]))
+            self._log_robot_total += (10-self._log_robot_investment) + int(self._log_player_b_investment) # TODO: take this value from CSV
+            local_string = "Player B: " + str(self._log_robot_investment) + " and Player A: " + str(self._log_person_investment) + '\n'
+            local_string += "The banker received: " + str(int(self._log_person_investment * 3.0)) + " from Player A"
+            local_string += " and received " + str(int(self._log_robot_investment * 3.0)) + " from Player B" + '\n' 
+            local_string += "The banker returned to Player A: " + str(int(self._log_person_investment * 3.0 * float(self.myParser._bmf_list[self._log_trial]))) + '\n'
+            local_string += "The banker returned to Player B: " + str(int(self._log_player_b_investment)) + '\n' # TODO: change this variable and take it from XML
             local_string += "Please press START to begin a new round..." + '\n' 
             #total, pinv, round_tot, rinv, rslider, text
             self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
-            if self.myParser._gaze_list[self._log_trial] == "True":
-                #The robot looks to the monitor (thinking what to do)
-                print "[7] Robots looks to the participant"
-                time.sleep(1)
-                self.myPuppet.look_to("HeadYaw", 0, SPEED) #angle(radians) + speed
-                time.sleep(2)
-                self.myPuppet.enable_face_tracking(True) # face tracking
+            if self.myParser._gaze2_list[self._log_trial] == "True":
+                print "[7] Enabling face tracking Robot 2"
+                self.myPuppet_2.look_to("HeadPitch", 0, SPEED)
+                time.sleep(0.5)
+                self.myPuppet_2.enable_face_tracking(True) #enables face tracking
             print "[7] Switch to the next state"
             self.STATE_MACHINE = 8 #next state
 
-        #STATE-8 the robot talks and says to look to the Banker decision
+        #STATE-8 the banker talks and says to look to the Banker decision
         if self.STATE_MACHINE == 8:
             print "[8] The robot says what the Banker returned"
             #Take a sentence from the XML
@@ -339,11 +366,11 @@ class WorkerThread(QThread):
                 has_substring = self._sentence.find("XXX")
                 if(has_substring != -1):
                     print "[8] Found the substring 'XXX' at location: " + str(has_substring)
-                    self._sentence = self._sentence.replace("XXX", str(self._log_person_investment * 3.0 * float(self.myParser._bmf_list[self._log_trial])))
+                    self._sentence = self._sentence.replace("XXX", str(self._log_person_investment))
                 has_substring = self._sentence.find("YYY")
                 if(has_substring != -1):
                     print "[8] Found the substring 'YYY' at location: " + str(has_substring)
-                    self._sentence = self._sentence.replace("YYY", str(self._log_player_b_investment))
+                    self._sentence = self._sentence.replace("YYY", str(int(self._log_person_investment * 3.0 * float(self.myParser._bmf_list[self._log_trial]))))
                 #has_substring = self._sentence.find("ZZZ")
                 #if(has_substring != -1):
                 #    print "[8] Found the substring 'ZZZ' at location: " + str(has_substring)
@@ -351,7 +378,7 @@ class WorkerThread(QThread):
                 #print "[8] Saying: '" + self._sentence + "'"
                 #It says the sentence generated above only if
                 #the valued returned by the person is different from zero.
-                self.myPuppet.say_something(str(self._sentence))
+                self.myPuppet_2.say_something(str(self._sentence))
             else:
                 print "[8] Saying Nothing because the sentence in the XML file is '" + str(self._sentence) + "'" 
 
@@ -391,8 +418,8 @@ class WorkerThread(QThread):
             self._log_trial = 0
             self.STATE_MACHINE = 0 #cycling to state 0
             #total, player_investment, round_total, your_investment, robot_investment 
-            local_string = "Your final score is: " + str(self._log_person_total) + '\n'
-            local_string += "Your mate final score is: " + str(self._log_robot_total) + '\n'
+            local_string = "Player A score is: " + str(self._log_person_total) + '\n'
+            local_string += "Player B score is: " + str(self._log_robot_total) + '\n'
             local_string += "The game is finished. Thank you..."
             self.myPuppet.say_something("Thank you, It was nice to play with you.")
             #total, player_investment, round_total, robot_investment, text_label=""
@@ -406,23 +433,34 @@ class WorkerThread(QThread):
 
   def confirm(self, person_investment):
     self._confirm_pressed = True
-    self._log_person_investment = float(person_investment)
+    self._log_person_investment = int(person_investment)
 
   def confirm_robot(self, robot_investment):
     self._confirm_pressed_robot = True
-    self._log_robot_investment = float(robot_investment)
+    self._log_robot_investment = int(robot_investment)
 
-  def ip(self, ip_string, port_string):
-    print "IP: " + str(ip_string) 
+  def ip(self, ip_string, port_string, ip_string_2, port_string_2):
+    print "IP: " + str(ip_string)
+    is_first_connected = False
+    is_second_connected = False
     try:
         self.myPuppet = nao.Puppet(ip_string, port_string, True)
         self.emit(self.yes_robot_signal)
-        self._robot_connected=True
     except Exception,e:
-        print "\nERROR: Impossible to find the robot!\n"
+        print "\nERROR: Impossible to find the FIRST robot!\n"
         print "Error was: ", e
         self.emit(self.no_robot_signal)
         self._robot_connected=False
+    try:
+        self.myPuppet_2 = nao.Puppet(ip_string_2, port_string_2, True)
+        self.emit(self.yes_robot_signal)
+    except Exception,e:
+        print "\nERROR: Impossible to find the SECOND robot!\n"
+        print "Error was: ", e
+        self.emit(self.no_robot_signal)
+        self._robot_connected=False
+    # Both connected
+    self._robot_connected=True
 
   def xml(self, path):
     print("Looking for external files... ")
@@ -444,11 +482,14 @@ class WorkerThread(QThread):
   def wake(self, state):
         if state == True:
              self.myPuppet.wake_up()
+             self.myPuppet_2.wake_up()
         else:     
              self.myPuppet.rest()
+             self.myPuppet_2.rest()
 
   def face_tracking(self, state):
         self.myPuppet.enable_face_tracking(state)
+        self.myPuppet_2.enable_face_tracking(state)
 
 
   def session_info_update(self, info1, info2, info3):
@@ -532,14 +573,17 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
         print "CONFIRM: " + str(person_investment)
 
     def confirm_pressed_robot(self, robot_investment):
+        #self.pushButton_0r.setStyleSheet("background-color: red") #TODO: fix this line
         self.emit(self.confirm_signal_robot, robot_investment)
         print "CONFIRM ROBOT: " + str(robot_investment)
 
     def connect_pressed(self):
         ip_string = str(self.lineEditNaoIP.text())
         port_string = str(self.lineEditNaoPort.text())
+        ip_string_2 = str(self.lineEditNaoIP_2.text())
+        port_string_2 = str(self.lineEditNaoPort_2.text())
         #print "IP: " + ip_string
-        self.emit(self.ip_signal, ip_string, port_string)
+        self.emit(self.ip_signal, ip_string, port_string, ip_string_2, port_string_2)
 
     def face_tracking_pressed(self, state):
         self.emit(self.face_tracking_signal, state)
@@ -608,8 +652,8 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
     #total, player_investment, round_total, robot_investment, text_label=""
     def update_gui(self, person_total, robot_total, text_label=""):
         #Update the total bar
-        self.lcdNumberTotal.display(float(person_total))
-        self.lcdNumberTotalRobot.display(float(robot_total))  
+        self.lcdNumberTotal.display(int(person_total))
+        self.lcdNumberTotalRobot.display(int(robot_total))  
         #Update the textEdit label
         self.textEdit.clear() #clear the textedit            
         self.textEdit.append(QtCore.QString(text_label))      
@@ -663,6 +707,31 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
             msgBox.setText("I opened the XML file correctly. Be carefull, this does not mean that what you write inside the file is correct...")
             msgBox.exec_();
 
+    def colour_robot_button(self, button_id, colour):
+        if button_id == 0:
+            self.pushButton_0r.setStyleSheet("background-color: " + str(colour)) #TODO: fix this line
+        elif button_id == 1:
+            self.pushButton_1r.setStyleSheet("background-color: " + str(colour)) #TODO: fix this line
+        elif button_id == 2:
+            self.pushButton_2r.setStyleSheet("background-color: " + str(colour)) #TODO: fix this line
+        elif button_id == 3:
+            self.pushButton_3r.setStyleSheet("background-color: " + str(colour)) #TODO: fix this line
+        elif button_id == 4:
+            print(str(self.pushButton_4r.palette().color(1)))
+            self.pushButton_4r.setStyleSheet("background-color: " + str(colour)) #TODO: fix this line
+        elif button_id == 5:
+            self.pushButton_5r.setStyleSheet("background-color: " + str(colour)) #TODO: fix this line
+        elif button_id == 6:
+            self.pushButton_6r.setStyleSheet("background-color: " + str(colour)) #TODO: fix this line
+        elif button_id == 7:
+            self.pushButton_7r.setStyleSheet("background-color: " + str(colour)) #TODO: fix this line
+        elif button_id == 8:
+            self.pushButton_8r.setStyleSheet("background-color: " + str(colour)) #TODO: fix this line
+        elif button_id == 9:
+            self.pushButton_9r.setStyleSheet("background-color: " + str(colour)) #TODO: fix this line
+        elif button_id == 10:
+            self.pushButton_10r.setStyleSheet("background-color: " + str(colour)) #TODO: fix this line
+
 def main():
 
     #New instance of QApplication
@@ -690,6 +759,7 @@ def main():
     form.connect(thread, thread.good_xml_signal, form.good_xml_confirmation)
     form.connect(thread, thread.update_gui_signal, form.update_gui)
     form.connect(thread, thread.show_start_btn_signal, form.show_start_btn)
+    form.connect(thread, thread.colour_robot_button_signal, form.colour_robot_button)
 
     #Starting thread
     thread.start()
