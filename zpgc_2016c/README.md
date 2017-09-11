@@ -17,6 +17,7 @@ XML parameters
 - **binv** {float} player (b) (inv)estment
 - **word1** {string} sentence produced by the robot in the *second* interaction. If the 'XXX' substring is present it is replaced with player investment. the string 'YYY' is replaced with the robot investment. Use '-' for empty sentence.
 - **word2** {string} sentence produced by the robot. If the 'XXX' substring is present it is replaced with player investment. the string 'YYY' is replaced with the robot investment. Use '-' for empty sentence.
+- **word3** {string} sentence produced by the robot. If the 'XXX' substring is present it is replaced with player investment. the string 'YYY' is replaced with the robot investment. Use '-' for empty sentence.
 
 
 ```xml
@@ -24,7 +25,8 @@ XML parameters
     <trial>
         <number>1</number>
         <word1>Hello world</word1>
-        <word2>I invested YYY and you invested XXX</word2>
+        <word2>Player A, you invested invested XXX</word2>
+        <word3>Player B, you invested 7</word2>
         <bmf>2.0</bmf>        
         <pmf>3.0</pmf>
         <rmf>3.0</rmf>
