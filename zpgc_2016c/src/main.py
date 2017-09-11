@@ -110,7 +110,8 @@ class WorkerThread(QThread):
     self.emit(self.enable_components_gui_signal, True,  False, False) #GUI components
     self.timer.start()
     self.timer_robot.start()
-    self.timer_robot_deadline = 0
+    self.timer_robot_deadline = 0 # deadline for the robot
+    self.timer_robot_waiting = 2000 # robots waits 2 seconds then look to participant
     self.STATE_MACHINE = 0
 
     while True:
@@ -141,7 +142,7 @@ class WorkerThread(QThread):
                 self._start_pressed = False
                 self._participant_decision_taken = False
                 print "[1] Hello world!"
-                self.myPuppet.say_something("Hello, I am NAO. Let's play together.")
+                self.myPuppet.say_something("Hello Banker, let's play together.")
                 time.sleep(1)
                 print "[1] Enablig components"
                 self.emit(self.enable_components_gui_signal, False,  True, True) #GUI components
@@ -184,20 +185,13 @@ class WorkerThread(QThread):
                 print "[2] Looking to the monitor" 
                 #self.myPuppet.enable_face_tracking(False) #disable face tracking             
                 self.myPuppet.look_to("HeadPitch", 35.0, SPEED)
-                time.sleep(random.randint(3, 6)) #random sleep
+                #time.sleep(random.randint(3, 6)) #random sleep
                 print "[2] Pointing or not" 
                 #Pointing (or not) while looking to the screen
                 if self.myParser._pointing_list[self._log_trial] == "True":
                   print "[2] pointing == True"
                   self._log_pointing = "True"
-                  self.myPuppet.right_arm_pointing(True, SPEED)
-                  #Sort a random value and use it to move the arm
-                  #random_value = random.random()              
-                  #if (random_value >= 0.0 and random_value <= 0.5):
-                  #    self.myPuppet.left_arm_pointing(True, SPEED)
-                  #right arm movement
-                  #elif (random_value > 0.5 and random_value <= 1.0):
-                  #     self.myPuppet.right_arm_pointing(True, SPEED)
+                  self.myPuppet.left_arm_pointing(True, SPEED)
                 #If the condition is pointing==FALSE then does not move the arm
                 elif self.myParser._pointing_list[self._log_trial] == "False":
                   print "[2] pointing == False"
@@ -210,12 +204,18 @@ class WorkerThread(QThread):
                 print "[2] Reset the arms"
                 self.myPuppet.right_arm_pointing(False, SPEED)
                 self.myPuppet.left_arm_pointing(False, SPEED)
+            #The robot choose and now will look to the participant because the waiting time elapsed
+            if self.timer_robot.elapsed() > (self.timer_robot_waiting + self.timer_robot_deadline) and self._confirm_pressed_robot == True and self._confirm_pressed == False:
+                if self.myParser._gaze_list[self._log_trial] == "True":
+                    self.myPuppet.look_to("HeadYaw", 60.0, SPEED)
             # The participant decided, record the timer
             if self._confirm_pressed == True and self._participant_decision_taken == False:
                 self._log_timer = self.timer.elapsed() #record the time
                 self._participant_decision_taken = True
                 print "[3] The participant pressed: " + str(self._log_person_investment)
-                print "[3] TIME: " + str(self._log_timer)      
+                print "[3] TIME: " + str(self._log_timer)     
+                if self.myParser._gaze_list[self._log_trial] == "True":
+                    self.myPuppet.look_to("HeadYaw", 0.0, SPEED) 
             # Wait for both robot and participant to decide
             if self._confirm_pressed == True and self._confirm_pressed_robot == True:   #when subject gives the answer
                 print "[3] INVESTMENT: " + str(self._log_person_investment)
@@ -338,7 +338,7 @@ class WorkerThread(QThread):
             #the amount not invested + the money that player b gave back (half of them)
             self._log_person_total += (10-self._log_person_investment) + int(self._log_person_investment * 3.0 * float(self.myParser._bmf_list[self._log_trial]))
             self._log_robot_total += (10-self._log_robot_investment) + int(self._log_player_b_investment) # TODO: take this value from CSV
-            local_string = "Player B: " + str(self._log_robot_investment) + " and Player A: " + str(self._log_person_investment) + '\n'
+            local_string = "Player A: " + str(self._log_person_investment) + " and Player B: " + str(self._log_robot_investment) + '\n'
             local_string += "The banker received: " + str(int(self._log_person_investment * 3.0)) + " from Player A"
             local_string += " and received " + str(int(self._log_robot_investment * 3.0)) + " from Player B" + '\n' 
             local_string += "The banker returned to Player A: " + str(int(self._log_person_investment * 3.0 * float(self.myParser._bmf_list[self._log_trial]))) + '\n'
