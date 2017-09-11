@@ -1,0 +1,88 @@
+<list1>
+	<trial>
+		<number>1</number>
+		<word1>Ok, so I decided to give you 7.</word1>
+		<word2>Player A, you invested XXX and I returned to you YYY.</word2>
+		<word3>Player B, you invested 7 and I returned to you 15.</word3>
+	       	<bmf>0.5</bmf>
+		<rmf>-3</rmf>        
+        	<pmf>3.0</pmf>
+        	<rinv>7</rinv>
+		<binv>15</binv>
+		<gaze>True</gaze>
+        	<pointing>True</pointing>
+		<gaze2>True</gaze2>
+        	<pointing2>True</pointing2>
+		<time>1300</time>
+        </trial>
+	<trial>
+		<number>2</number>
+		<word1>Ok, so I decided to give you 7.</word1>
+		<word2>Player A, you invested XXX and I returned to you YYY.</word2>
+		<word3>Player B, you invested 7 and I returned to you 10.</word3>
+	       	<bmf>0.5</bmf>
+		<rmf>-3</rmf>        
+        	<pmf>3.0</pmf>
+        	<rinv>7</rinv>
+		<binv>10</binv>
+		<gaze>True</gaze>
+        	<pointing>True</pointing>
+		<gaze2>True</gaze2>
+        	<pointing2>True</pointing2>
+		<time>900</time>
+        </trial>
+	<trial>
+		<number>3</number>
+		<word1>Ok, so I decided to give you 8.</word1>
+		<word2>Player A, you invested XXX and I returned to you YYY.</word2>
+		<word3>Player B, you invested 8 and I returned to you 14.</word3>
+	       	<bmf>0.8</bmf>
+		<rmf>-3</rmf>        
+        	<pmf>3.0</pmf>
+        	<rinv>8</rinv>
+		<binv>14</binv>
+		<gaze>True</gaze>
+        	<pointing>True</pointing>
+		<gaze2>True</gaze2>
+        	<pointing2>True</pointing2>
+		<time>1700</time>
+        </trial>
+	<trial>
+		<number>4</number>
+		<word1>Ok, so I decided to give you 6.</word1>
+		<word2>Player A, you invested XXX and I returned to you YYY.</word2>
+		<word3>Player B, you invested 6 and I returned to you 9.</word3>
+	       	<bmf>0.7</bmf>
+		<rmf>-3</rmf>        
+        	<pmf>3.0</pmf>
+        	<rinv>6</rinv>
+		<binv>9</binv>
+		<gaze>True</gaze>
+        	<pointing>True</pointing>
+		<gaze2>True</gaze2>
+        	<pointing2>True</pointing2>
+		<time>1400</time>
+        </trial>
+	<trial>
+		<number>5</number>
+		<word1>Ok, so I decided to give you 9.</word1>
+		<word2>Player A, you invested XXX and I returned to you YYY.</word2>
+		<word3>Player B, you invested 9 and I returned to you 16.</word3>
+	       	<bmf>0.5</bmf>
+		<rmf>-3</rmf>        
+        	<pmf>3.0</pmf>
+        	<rinv>9</rinv>
+		<binv>16</binv>
+		<gaze>True</gaze>
+        	<pointing>True</pointing>
+		<gaze2>True</gaze2>
+        	<pointing2>True</pointing2>
+		<time>900</time>
+        </trial>
+</list1>
+
+
+
+
+
+
