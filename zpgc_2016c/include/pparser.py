@@ -22,6 +22,7 @@ class Parser(object):
         self._bmf_list = list() #moltiplication factor for the player B
         self._word1_list = list() #sentece in the first interaction
         self._word2_list = list() #sentece in the second interaction
+        self._word3_list = list() #sentece in the second interaction
         self._binv_list = list() #robot investement in 1st interaction
         self._rinv_list = list() #Option 'a' for robot investement in 2nd interaction
         self._time_list = list() #Option 'a' for robot investement in 2nd interaction
@@ -117,6 +118,10 @@ class Parser(object):
 		returned = item.getElementsByTagName("word2")[0]
 		self._word2_list.append(returned.firstChild.data)
                 print("word2 ........ %s" %returned.firstChild.data)
+
+		returned = item.getElementsByTagName("word3")[0]
+		self._word3_list.append(returned.firstChild.data)
+                print("word3 ........ %s" %returned.firstChild.data)
 
 		returned = item.getElementsByTagName("time")[0]
 		self._time_list.append(returned.firstChild.data)

@@ -182,7 +182,7 @@ class WorkerThread(QThread):
                 if(self._log_robot_investment > 10): self._log_robot_investment = 10
                 self._confirm_pressed_robot = True
                 print "[2] Looking to the monitor" 
-                self.myPuppet.enable_face_tracking(False) #disable face tracking             
+                #self.myPuppet.enable_face_tracking(False) #disable face tracking             
                 self.myPuppet.look_to("HeadPitch", 35.0, SPEED)
                 time.sleep(random.randint(3, 6)) #random sleep
                 print "[2] Pointing or not" 
@@ -246,17 +246,17 @@ class WorkerThread(QThread):
             #total, player_investment, round_total, robot_investment, text_label=""
             self.emit(self.update_gui_signal, self._log_person_total, self._log_robot_total, local_string)
             #Looking (or not) the subject
-            if self.myParser._gaze_list[self._log_trial] == "True":
-              print "[5] looking == True"
-              self._log_gaze = "True"
-              self.myPuppet.look_to("HeadPitch", 0, SPEED) #angle(radians) + speed
-              time.sleep(0.2)
-              self.myPuppet.enable_face_tracking(True) #enables face tracking
-            elif self.myParser._gaze_list[self._log_trial] == "False":
-              print "[5] looking == False"
-              self._log_gaze = "False"
-              self.myPuppet.enable_face_tracking(False) #disable face tracking
-              self.myPuppet.look_to("HeadPitch", 35.0, SPEED) #angle(radians) + speed
+            #if self.myParser._gaze_list[self._log_trial] == "True":
+            #  print "[5] looking == True"
+            #  self._log_gaze = "True"
+            #  self.myPuppet.look_to("HeadPitch", 0, SPEED) #angle(radians) + speed
+            #  time.sleep(0.2)
+            #  #self.myPuppet.enable_face_tracking(True) #enables face tracking
+            #elif self.myParser._gaze_list[self._log_trial] == "False":
+            #  print "[5] looking == False"
+            #  self._log_gaze = "False"
+            #  #self.myPuppet.enable_face_tracking(False) #disable face tracking
+            #  self.myPuppet.look_to("HeadPitch", 35.0, SPEED) #angle(radians) + speed
             #Change state
             time.sleep(1.0) #(reduced) Long sleep to enable the participant to uderstand what's going on
             self.STATE_MACHINE = 6 #next state
@@ -273,7 +273,7 @@ class WorkerThread(QThread):
                 print "[6] Enabling again face tracking"
                 self.myPuppet.look_to("HeadPitch", 0, SPEED)
                 time.sleep(0.5)
-                self.myPuppet.enable_face_tracking(True) #enables face tracking
+                #self.myPuppet.enable_face_tracking(True) #enables face tracking
             print "[6] The robot says the investments..."
             #Take a sentence from the XML, XXX substring is replaced 
             #with the multiplied value given from the person to the robot. 
@@ -301,7 +301,7 @@ class WorkerThread(QThread):
             if self.myParser._gaze_list[self._log_trial] == "True":
                 print "[6] looking to the monitor..."
                 #The robot looks to the monitor (thinking what to do)
-                self.myPuppet.enable_face_tracking(False) #disable face tracking
+                #self.myPuppet.enable_face_tracking(False) #disable face tracking
                 self.myPuppet.look_to("HeadPitch", 35.0, SPEED) #angle(radians) + speed
             self.STATE_MACHINE = 7 #next state
 
@@ -311,7 +311,7 @@ class WorkerThread(QThread):
                 print "[7] Looking to the screen Robot 2"
                 self.myPuppet_2.look_to("HeadPitch", 35.0, SPEED)
                 time.sleep(0.5)
-                self.myPuppet_2.enable_face_tracking(False) #enables face tracking
+                #self.myPuppet_2.enable_face_tracking(False) #enables face tracking
             print "[7] The banker is thinking (it takes time)..."            
             time.sleep(random.randint(2, 4))
             print "[7] Waiting for Banker Robot reward..." 
@@ -350,13 +350,18 @@ class WorkerThread(QThread):
                 print "[7] Enabling face tracking Robot 2"
                 self.myPuppet_2.look_to("HeadPitch", 0, SPEED)
                 time.sleep(0.5)
-                self.myPuppet_2.enable_face_tracking(True) #enables face tracking
+                #self.myPuppet_2.enable_face_tracking(True) #enables face tracking
             print "[7] Switch to the next state"
             self.STATE_MACHINE = 8 #next state
 
-        #STATE-8 the banker talks and says to look to the Banker decision
+        #STATE-8 Banker talks and says the reward to the players
         if self.STATE_MACHINE == 8:
-            print "[8] The robot says what the Banker returned"
+
+            print "[8] Banker looks to participant"
+            self.myPuppet_2.look_to("HeadYaw", -20.0, SPEED)
+            time.sleep(0.5)
+
+            print "[8] The Banker says to player A what returned"
             #Take a sentence from the XML
             self._sentence = self.myParser._word2_list[self._log_trial]
             self._sentence = str(self._sentence) #convert to string
@@ -371,16 +376,40 @@ class WorkerThread(QThread):
                 if(has_substring != -1):
                     print "[8] Found the substring 'YYY' at location: " + str(has_substring)
                     self._sentence = self._sentence.replace("YYY", str(int(self._log_person_investment * 3.0 * float(self.myParser._bmf_list[self._log_trial]))))
-                #has_substring = self._sentence.find("ZZZ")
-                #if(has_substring != -1):
-                #    print "[8] Found the substring 'ZZZ' at location: " + str(has_substring)
-                #    self._sentence = self._sentence.replace("ZZZ", str(float(self._log_player_b_investment)/2))
-                #print "[8] Saying: '" + self._sentence + "'"
-                #It says the sentence generated above only if
-                #the valued returned by the person is different from zero.
                 self.myPuppet_2.say_something(str(self._sentence))
             else:
-                print "[8] Saying Nothing because the sentence in the XML file is '" + str(self._sentence) + "'" 
+                print "[8] Saying Nothing because the sentence in the XML file is '" + str(self._sentence) + "'"
+
+            #Sleep between the two sentences
+            #time.sleep(3.0)
+
+            print "[8] Banker looks to participant"
+            self.myPuppet_2.look_to("HeadYaw", +20.0, SPEED)
+            time.sleep(0.5)
+
+            print "[8] The banker says to player B what returned"
+            #Take a sentence from the XML
+            self._sentence = self.myParser._word3_list[self._log_trial]
+            self._sentence = str(self._sentence) #convert to string
+            #If the sentence in the XML file is equal to "." or "-" or "" it does not say anything.
+            if(self._sentence != "." and self._sentence != "" and self._sentence != "-"):
+                #Check if XXX is present and replace it 
+                has_substring = self._sentence.find("XXX")
+                if(has_substring != -1):
+                    print "[8] Found the substring 'XXX' at location: " + str(has_substring)
+                    self._sentence = self._sentence.replace("XXX", str(self._log_person_investment))
+                has_substring = self._sentence.find("YYY")
+                if(has_substring != -1):
+                    print "[8] Found the substring 'YYY' at location: " + str(has_substring)
+                    self._sentence = self._sentence.replace("YYY", str(int(self._log_person_investment * 3.0 * float(self.myParser._bmf_list[self._log_trial]))))
+                self.myPuppet_2.say_something(str(self._sentence))
+            else:
+                print "[8] Saying Nothing because the sentence in the XML file is '" + str(self._sentence) + "'"
+
+            print "[8] Banker looks to the monitor"
+            self.myPuppet_2.look_to("HeadYaw", 0.0, SPEED)
+            self.myPuppet_2.look_to("HeadPitch", 35.0, SPEED) #angle(radians) + speed
+            time.sleep(0.5)
 
             self.STATE_MACHINE = 9 #next state
 
