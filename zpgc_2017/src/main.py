@@ -148,7 +148,7 @@ class WorkerThread(QThread):
                 self.myPuppet.look_to("HeadYaw", 0.0, SPEED)
                 self.myPuppet_2.look_to("HeadYaw", 0.0, SPEED)
                 self.myPuppet_3.look_to("HeadYaw", 0.0, SPEED)
-                self.myPuppet.look_to("HeadPitch", 60.0, SPEED)
+                self.myPuppet.look_to("HeadPitch", 50.0, SPEED)
                 self.myPuppet_2.look_to("HeadPitch", 60.0, SPEED)
                 self.myPuppet_3.look_to("HeadPitch", 60.0, SPEED)
                 time.sleep(1) 
@@ -172,7 +172,7 @@ class WorkerThread(QThread):
                     self.myPuppet_2.look_to("HeadYaw", 60.0, SPEED)
                     self.myPuppet_3.look_to("HeadYaw", 60.0, SPEED)
                     time.sleep(random.randint(0,2))
-                    self.myPuppet.look_to("HeadPitch", 60.0, SPEED)
+                    self.myPuppet.look_to("HeadPitch", 50.0, SPEED)
             print "[2] Switching to the next state"
             self.STATE_MACHINE = 3 #next state       
             print "[3] Waiting for the subject and robot answer..." #going to state 3
@@ -359,8 +359,8 @@ class WorkerThread(QThread):
             time.sleep(2)
             if self.myParser._gaze_list[self._log_trial] == "True":
                     self.myPuppet.look_to("HeadYaw", 0.0, SPEED)
-                    self.myPuppet.look_to("HeadPitch", 60.0, SPEED)
-            time.sleep(2)
+                    self.myPuppet.look_to("HeadPitch", 50.0, SPEED)
+            time.sleep(random.randint(1,2))
             sentence = self.myParser._word4_list[self._log_trial]
             sentence = str(sentence) #convert to string
             if(sentence != "." and sentence != "" and sentence != "-"):
@@ -374,7 +374,7 @@ class WorkerThread(QThread):
                     print "[6] Saying Nothing because the sentence in the XML file is '" + str(sentence) + "'"
             time.sleep(2)
             if self.myParser._gaze_list[self._log_trial] == "True":
-                    self.myPuppet.look_to("HeadPitch", 60.0, SPEED)
+                    self.myPuppet.look_to("HeadPitch", 0.0, SPEED)
             print "[7] Switch to the next state"
             self.STATE_MACHINE = 9 #next state
 
