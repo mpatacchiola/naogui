@@ -16,12 +16,15 @@ class Parser(object):
         self._pointing_list = list() #list for pointing/non_pointing
 
         self._bmf_list = list() #moltiplication factor for the player B
+        self._word0_list = list() #sentece in the first interaction
         self._word1_list = list() #sentece in the first interaction
         self._word2_list = list() #sentece in the second interaction
         self._word3_list = list() #sentece in the second interaction
         self._word4_list = list() #sentece in the second interaction
-        self._linv_list = list() #robot investement in 1st interaction
-        self._tinv_list = list() #Option 'a' for robot investement in 2nd interaction
+        self._word5_list = list() #sentece in the second interaction
+        self._pinv1_list = list() #robot investement in 1st interaction
+        self._pinv2_list = list() #Option 'a' for robot investement in 2nd interaction
+        self._pinv3_list = list() #Option 'a' for robot investement in 2nd interaction
 
         self._size = 0
 
@@ -83,13 +86,21 @@ class Parser(object):
 		self._bmf_list.append(returned.firstChild.data)
                 print("bmf ........ %s" %returned.firstChild.data)
 
-		returned = item.getElementsByTagName("linv")[0]
-		self._linv_list.append(returned.firstChild.data)
-                print("linv ........ %s" %returned.firstChild.data)
+		returned = item.getElementsByTagName("pinv1")[0]
+		self._pinv1_list.append(returned.firstChild.data)
+                print("pinv1 ........ %s" %returned.firstChild.data)
 
-		returned = item.getElementsByTagName("tinv")[0]
-		self._tinv_list.append(returned.firstChild.data)
-                print("tinv ........ %s" %returned.firstChild.data)
+		returned = item.getElementsByTagName("pinv2")[0]
+		self._pinv2_list.append(returned.firstChild.data)
+                print("pinv2 ........ %s" %returned.firstChild.data)
+
+		returned = item.getElementsByTagName("pinv3")[0]
+		self._pinv3_list.append(returned.firstChild.data)
+                print("pinv3 ........ %s" %returned.firstChild.data)
+
+		returned = item.getElementsByTagName("word0")[0]
+		self._word0_list.append(returned.firstChild.data)
+                print("word0 ........ %s" %returned.firstChild.data)
 
 		returned = item.getElementsByTagName("word1")[0]
 		self._word1_list.append(returned.firstChild.data)
@@ -106,6 +117,10 @@ class Parser(object):
 		returned = item.getElementsByTagName("word4")[0]
 		self._word4_list.append(returned.firstChild.data)
                 print("word4 ........ %s" %returned.firstChild.data)
+
+		returned = item.getElementsByTagName("word5")[0]
+		self._word5_list.append(returned.firstChild.data)
+                print("word5 ........ %s" %returned.firstChild.data)
 
                 print("")
                 counter = counter + 1

@@ -291,18 +291,6 @@
             <string>0</string>
            </property>
           </widget>
-          <zorder>layoutWidget</zorder>
-          <zorder>pushButton_5</zorder>
-          <zorder>pushButton_2</zorder>
-          <zorder>pushButton_3</zorder>
-          <zorder>pushButton_8</zorder>
-          <zorder>pushButton_1</zorder>
-          <zorder>pushButton_9</zorder>
-          <zorder>pushButton_10</zorder>
-          <zorder>pushButton_7</zorder>
-          <zorder>pushButton_4</zorder>
-          <zorder>pushButton_6</zorder>
-          <zorder>pushButton_0</zorder>
          </widget>
          <widget class="QTextEdit" name="textEdit">
           <property name="geometry">
@@ -385,7 +373,7 @@ p, li { white-space: pre-wrap; }
          <widget class="QLabel" name="label_5">
           <property name="geometry">
            <rect>
-            <x>1320</x>
+            <x>1000</x>
             <y>20</y>
             <width>131</width>
             <height>16</height>
@@ -402,11 +390,11 @@ p, li { white-space: pre-wrap; }
            <string>Leader bank:</string>
           </property>
          </widget>
-         <widget class="QLCDNumber" name="lcdNumberTotalLeader">
+         <widget class="QLCDNumber" name="lcdNumberTotal1">
           <property name="geometry">
            <rect>
-            <x>1320</x>
-            <y>40</y>
+            <x>1000</x>
+            <y>50</y>
             <width>131</width>
             <height>71</height>
            </rect>
@@ -451,11 +439,11 @@ p, li { white-space: pre-wrap; }
            <string>START</string>
           </property>
          </widget>
-         <widget class="QLCDNumber" name="lcdNumberTotalTeam">
+         <widget class="QLCDNumber" name="lcdNumberTotal2">
           <property name="geometry">
            <rect>
-            <x>890</x>
-            <y>40</y>
+            <x>1160</x>
+            <y>50</y>
             <width>131</width>
             <height>71</height>
            </rect>
@@ -483,9 +471,9 @@ p, li { white-space: pre-wrap; }
          <widget class="QLabel" name="label_13">
           <property name="geometry">
            <rect>
-            <x>890</x>
+            <x>1160</x>
             <y>20</y>
-            <width>131</width>
+            <width>141</width>
             <height>16</height>
            </rect>
           </property>
@@ -497,7 +485,56 @@ p, li { white-space: pre-wrap; }
            </font>
           </property>
           <property name="text">
-           <string>Team bank:</string>
+           <string>Player 2 bank:</string>
+          </property>
+         </widget>
+         <widget class="QLCDNumber" name="lcdNumberTotal3">
+          <property name="geometry">
+           <rect>
+            <x>1320</x>
+            <y>50</y>
+            <width>131</width>
+            <height>71</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>15</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="layoutDirection">
+           <enum>Qt::LeftToRight</enum>
+          </property>
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
+          <property name="value" stdset="0">
+           <double>0.000000000000000</double>
+          </property>
+          <property name="intValue" stdset="0">
+           <number>0</number>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_14">
+          <property name="geometry">
+           <rect>
+            <x>1320</x>
+            <y>20</y>
+            <width>141</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>14</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Player 3 bank:</string>
           </property>
          </widget>
         </widget>

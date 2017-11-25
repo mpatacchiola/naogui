@@ -89,10 +89,12 @@ class WorkerThread(QThread):
     self._log_trial = 0
     self._log_person_total = 0.0
     self._log_leader_total = 0.0
-    self._log_team_total = 0.0
+    self._log_player2_total = 0.0
+    self._log_player3_total = 0.0
     self._log_person_investment = 0
     self._log_leader_investment = 0
-    self._log_team_investment = 0
+    self._log_player2_investment = 0
+    self._log_player3_investment = 0
 
     self._log_pmf = 0 #person multiplication factor
     self._log_bmf = 0 #player b multiplication factor
@@ -142,15 +144,19 @@ class WorkerThread(QThread):
                 self._start_pressed = False
                 self._participant_decision_taken = False
                 print "[1] Hello world!"
-                self.myPuppet.say_something("Hello, let's play together.")
+                sentence = self.myParser._word0_list[self._log_trial]
+                self.myPuppet1.say_something(str(sentence))
+                if self.myParser._gaze_list[self._log_trial] == "True":
+                    self.myPuppet1.look_to("HeadYaw", -60.0, SPEED)
+                    time.sleep(random.randint(0,2))
                 time.sleep(1)
                 print "[1] Reset the head pose!"                 
-                self.myPuppet.look_to("HeadYaw", 0.0, SPEED)
-                self.myPuppet_2.look_to("HeadYaw", 0.0, SPEED)
-                self.myPuppet_3.look_to("HeadYaw", 0.0, SPEED)
-                self.myPuppet.look_to("HeadPitch", 50.0, SPEED)
-                self.myPuppet_2.look_to("HeadPitch", 60.0, SPEED)
-                self.myPuppet_3.look_to("HeadPitch", 60.0, SPEED)
+                self.myPuppet1.look_to("HeadYaw", 0.0, SPEED)
+                self.myPuppet2.look_to("HeadYaw", 0.0, SPEED)
+                self.myPuppet3.look_to("HeadYaw", 0.0, SPEED)
+                self.myPuppet1.look_to("HeadPitch", 0.0, SPEED)
+                self.myPuppet2.look_to("HeadPitch", 0.0, SPEED)
+                self.myPuppet3.look_to("HeadPitch", 0.0, SPEED)
                 time.sleep(1) 
                 print "[1] Enablig components"
                 self.emit(self.enable_components_gui_signal, False,  False, True) #GUI components
@@ -162,17 +168,18 @@ class WorkerThread(QThread):
             #RESET all the values at each new cycle
             self._log_person_investment = 0
             self._log_leader_investment = 0
-            self._log_team_investment = 0
+            self._log_player2_investment = 0
+            self._log_player3_investment = 0
             #Reset the GUI and enable component
             print "[2] Enabling buttons..." 
             self.emit(self.enable_components_gui_signal, False,  False, True)  #GUI components
-            self.emit(self.update_gui_signal, self._log_person_total, self._log_leader_total, self._log_team_total, "Please wait...")
+            self.emit(self.update_gui_signal, self._log_person_total, self._log_leader_total, self._log_player2_total, self._log_player3_total, "Please wait...")
             #The robot choose and now will look to the participant because the waiting time elapsed
             if self.myParser._gaze_list[self._log_trial] == "True":
-                    self.myPuppet_2.look_to("HeadYaw", 60.0, SPEED)
-                    self.myPuppet_3.look_to("HeadYaw", 60.0, SPEED)
+                    self.myPuppet2.look_to("HeadYaw", 60.0, SPEED)
+                    self.myPuppet3.look_to("HeadYaw", 60.0, SPEED)
                     time.sleep(random.randint(0,2))
-                    self.myPuppet.look_to("HeadPitch", 50.0, SPEED)
+                    self.myPuppet1.look_to("HeadPitch", 0.0, SPEED)
             print "[2] Switching to the next state"
             self.STATE_MACHINE = 3 #next state       
             print "[3] Waiting for the subject and robot answer..." #going to state 3
@@ -180,127 +187,81 @@ class WorkerThread(QThread):
 
         #STATE-3 First interaction: the leader makes his choice
         if self.STATE_MACHINE == 3:  
-            self._log_leader_investment = int(self.myParser._linv_list[self._log_trial])
+            self._log_leader_investment = int(self.myParser._pinv1_list[self._log_trial])
             if self.myParser._pointing_list[self._log_trial] == "True":
                   print "[3] pointing == True"
-                  self.myPuppet.left_arm_pointing(True, SPEED)
+                  self.myPuppet1.left_arm_pointing(True, SPEED)
             time.sleep(1)
             if self.myParser._pointing_list[self._log_trial] == "True":
                   print "[3] pointing == False"
-                  self.myPuppet.left_arm_pointing(False, SPEED)
+                  self.myPuppet1.left_arm_pointing(False, SPEED)
             sentence = str(self.myParser._word1_list[self._log_trial])
-            self.myPuppet.say_something(sentence)
+            self.myPuppet1.say_something(sentence)
             if self.myParser._gaze_list[self._log_trial] == "True":
-                    self.myPuppet_2.look_to("HeadYaw", 60.0, SPEED)
-                    self.myPuppet_3.look_to("HeadYaw", -60.0, SPEED)
+                    self.myPuppet2.look_to("HeadYaw", 60.0, SPEED)
+                    self.myPuppet3.look_to("HeadYaw", -60.0, SPEED)
                     time.sleep(random.randint(0,2))
-                    self.myPuppet.look_to("HeadPitch", 0.0, SPEED)
-                    self.myPuppet.look_to("HeadYaw", -60.0, SPEED)
+                    self.myPuppet1.look_to("HeadPitch", 0.0, SPEED)
+                    self.myPuppet1.look_to("HeadYaw", -60.0, SPEED)
             time.sleep(random.randint(1,2))
             self.STATE_MACHINE = 4 #next state
 
         #STATE-4 The two NAOs invest
         if self.STATE_MACHINE == 4:  
-            self._log_team_investment = int(self.myParser._tinv_list[self._log_trial])
+            self._log_player2_investment = int(self.myParser._pinv2_list[self._log_trial])
+            self._log_player3_investment = int(self.myParser._pinv3_list[self._log_trial])
+            if self.myParser._gaze_list[self._log_trial] == "True":
+                    self.myPuppet2.look_to("HeadYaw", 0.0, SPEED)
+                    self.myPuppet3.look_to("HeadYaw", 0.0, SPEED)
+                    self.myPuppet2.look_to("HeadPitch", 0.0, SPEED)
+                    self.myPuppet3.look_to("HeadPitch", 0.0, SPEED)
+            time.sleep(random.randint(2,3))
             sentence = str(self.myParser._word2_list[self._log_trial])
+            self.myPuppet2.say_something(sentence)
             if self.myParser._gaze_list[self._log_trial] == "True":
-                    self.myPuppet_2.look_to("HeadYaw", 0.0, SPEED)
-                    self.myPuppet_3.look_to("HeadYaw", 0.0, SPEED)
-                    self.myPuppet_2.look_to("HeadPitch", 60.0, SPEED)
-                    self.myPuppet_3.look_to("HeadPitch", 60.0, SPEED)
-                    time.sleep(random.randint(1,3))
-            die = random.randint(0,1)
-            if die == 0:
-                if self.myParser._pointing_list[self._log_trial] == "True":
-                    print "[4] pointing == True"
-                    self.myPuppet_2.left_arm_pointing(True, SPEED)
-                time.sleep(1)
-                if self.myParser._pointing_list[self._log_trial] == "True":
-                    print "[4] pointing == False"
-                    self.myPuppet_2.left_arm_pointing(False, SPEED)
-                self.myPuppet_2.say_something(sentence)
-            elif die == 1:
-                if self.myParser._pointing_list[self._log_trial] == "True":
-                    print "[4] pointing == True"
-                    self.myPuppet_3.left_arm_pointing(True, SPEED)
-                time.sleep(1)
-                if self.myParser._pointing_list[self._log_trial] == "True":
-                    print "[4] pointing == False"
-                    self.myPuppet_3.left_arm_pointing(False, SPEED)
-                self.myPuppet_3.say_something(sentence)
-            else:
-                print "[4][ERROR] The random integer returned for selecting the now is out of range..." #going to state 3
+                    self.myPuppet2.look_to("HeadYaw", 40.0, SPEED)               
+            time.sleep(random.randint(1,3))
+            sentence = str(self.myParser._word3_list[self._log_trial])
+            self.myPuppet3.say_something(sentence)
+            if self.myParser._gaze_list[self._log_trial] == "True":
+                    self.myPuppet2.look_to("HeadYaw", 0.0, SPEED)
+            #time.sleep(1)
+            #die = random.randint(0,1)
+            #if die == 0:
+            #if self.myParser._pointing_list[self._log_trial] == "True":
+            #        print "[4] pointing == True"
+            #        self.myPuppet2.left_arm_pointing(True, SPEED)
+            #time.sleep(1)
+            #if self.myParser._pointing_list[self._log_trial] == "True":
+            #        print "[4] pointing == False"
+            #        self.myPuppet2.left_arm_pointing(False, SPEED)
+
+            #elif die == 1:
+            #    if self.myParser._pointing_list[self._log_trial] == "True":
+            #        print "[4] pointing == True"
+            #        self.myPuppet3.left_arm_pointing(True, SPEED)
+            #    time.sleep(1)
+            #    if self.myParser._pointing_list[self._log_trial] == "True":
+            #        print "[4] pointing == False"
+            #        self.myPuppet3.left_arm_pointing(False, SPEED)
+            #    self.myPuppet3.say_something(sentence)
+            #else:
+            #    print "[4][ERROR] The random integer returned for selecting the now is out of range..." #going to state 3
             print "[4] First interaction"                         
-            print("[4] The Robot mate returned: " + str(self._log_leader_investment))
-            print("[4] The Robot mate returned: " + str(self._log_team_investment)) 
+            print("[4] Leader: " + str(self._log_leader_investment))
+            print("[4] Player 2: " + str(self._log_player2_investment))
+            print("[4] Player 3: " + str(self._log_player3_investment)) 
             self.emit(self.enable_components_gui_signal, False,  True, True)  #GUI components   
-            self.emit(self.update_gui_signal, self._log_person_total, self._log_leader_total, self._log_team_total, "Please select a value to invest...")
-            time.sleep(random.randint(1,2))
+            self.emit(self.update_gui_signal, self._log_person_total, self._log_leader_total, self._log_player2_total, self._log_player3_total, "Please select a value to invest...")
+            #time.sleep(random.randint(1,2))
             if self.myParser._gaze_list[self._log_trial] == "True":
-                    self.myPuppet.look_to("HeadYaw", 0.0, SPEED)
-                    self.myPuppet_2.look_to("HeadYaw", 0.0, SPEED)
-                    self.myPuppet_3.look_to("HeadYaw", 0.0, SPEED)
-                    self.myPuppet.look_to("HeadPitch", 0.0, SPEED)
-                    self.myPuppet_2.look_to("HeadPitch", 0.0, SPEED)
-                    self.myPuppet_3.look_to("HeadPitch", 0.0, SPEED)      
+                    self.myPuppet1.look_to("HeadYaw", 0.0, SPEED)
+                    #self.myPuppet2.look_to("HeadYaw", 0.0, SPEED)
+                    #self.myPuppet3.look_to("HeadYaw", 0.0, SPEED)
+                    self.myPuppet1.look_to("HeadPitch", 0.0, SPEED)
+                    #self.myPuppet2.look_to("HeadPitch", 0.0, SPEED)
+                    #self.myPuppet3.look_to("HeadPitch", 0.0, SPEED)      
             self.STATE_MACHINE = 5 #next state
-
-        #STATE-3 First interaction: waiting for the subject investment
-        #When the subject choose it update the GUI showing zeros for the robots
-        #and the multiplied factor for the human
-        #if self.STATE_MACHINE == 3:       
-        #    # Wait for a random time between 1 and 3 seconds and then the robot decide
-        #    if self.timer_robot.elapsed() > self.timer_robot_deadline and self._confirm_pressed_robot == False:  
-        #        self._log_leader_investment = int(self.myParser._rinv_list[self._log_trial])
-        #        if(self._log_leader_investment < 0): self._log_leader_investment = 0
-        #        if(self._log_leader_investment > 10): self._log_leader_investment = 10
-        #        self._confirm_pressed_robot = True
-        #        print "[2] Looking to the monitor" 
-        #        #self.myPuppet.enable_face_tracking(False) #disable face tracking             
-        #        self.myPuppet.look_to("HeadPitch", 35.0, SPEED)
-        #        #time.sleep(random.randint(3, 6)) #random sleep
-        #        print "[2] Pointing or not" 
-        #        #Pointing (or not) while looking to the screen
-        #        if self.myParser._pointing_list[self._log_trial] == "True":
-        #          print "[2] pointing == True"
-        #          self._log_pointing = "True"
-        #          self.myPuppet.left_arm_pointing(True, SPEED)
-        #        #If the condition is pointing==FALSE then does not move the arm
-        #        elif self.myParser._pointing_list[self._log_trial] == "False":
-        #          print "[2] pointing == False"
-        #          self._log_pointing = "False"
-        #          self.myPuppet.right_arm_pointing(False, SPEED)
-        #          self.myPuppet.left_arm_pointing(False, SPEED)
-        #        #Reset the arms
-        #        print "[2] Reset the arms"
-        #        self.myPuppet.right_arm_pointing(False, SPEED)
-        #        self.myPuppet.left_arm_pointing(False, SPEED)
-        #    #The robot choose and now will look to the participant because the waiting time elapsed
-        #    if self.timer_robot.elapsed() > (self.timer_robot_waiting + self.timer_robot_deadline) and self._confirm_pressed_robot == True and self._confirm_pressed == False:
-        #        if self.myParser._gaze_list[self._log_trial] == "True":
-        #            self.myPuppet.look_to("HeadYaw", 60.0, SPEED)
-        #    # The participant decided, record the timer
-        #    if self._confirm_pressed == True and self._participant_decision_taken == False:
-        #        self._log_timer = self.timer.elapsed() #record the time
-        #        self._participant_decision_taken = True
-        #        print "[3] The participant pressed: " + str(self._log_person_investment)
-        #        print "[3] TIME: " + str(self._log_timer)     
-        #        if self.myParser._gaze_list[self._log_trial] == "True":
-        #            self.myPuppet.look_to("HeadYaw", 0.0, SPEED) 
-        #    # Wait for both robot and participant to decide
-        #    if self._confirm_pressed == True and self._confirm_pressed_robot == True:   #when subject gives the answer
-        #        print "[3] INVESTMENT: " + str(self._log_person_investment)
-        #        print "[3] ROBOT INVESTMENT: " + str(self._log_leader_investment)
-        #        self._log_person_investment = self._log_person_investment
-        #        self._confirm_pressed = False #reset the variable state
-        #        self._confirm_pressed_robot = False
-        #        self._participant_decision_taken = False
-        #        self.emit(self.enable_components_gui_signal, False,  False, False) #GUI components
-        #        local_string = ""
-        #        self.emit(self.update_gui_signal, self._log_person_total, self._log_leader_total, self._log_team_total,  local_string)
-        #        #The person turn is finished, now switching to robot turn
-        #        self.STATE_MACHINE = 5 #next state
-
 
         #STATE-5 The participant choose
         if self.STATE_MACHINE == 5:
@@ -310,42 +271,48 @@ class WorkerThread(QThread):
                 #Updating the GUI
                 local_string = "You invested: " + str(self._log_person_investment) + '\n'
                 local_string += "Leader invested: " + str(self._log_leader_investment) + '\n' 
-                local_string += "Team invested: " + str(self._log_team_investment) + '\n'
-                local_string += "In total has been invested: " + str(self._log_person_investment + self._log_leader_investment + self._log_team_investment) + '\n'
+                local_string += "Player 2: " + str(self._log_player2_investment) + '\n'
+                local_string += "Player 3: " + str(self._log_player3_investment) + '\n'
+                local_string += "In total has been invested: " + str(self._log_person_investment + self._log_leader_investment + self._log_player2_investment + self._log_player3_investment) + '\n'
                 #total, player_investment, round_total, robot_investment, text_label=""
                 self.emit(self.enable_components_gui_signal, False,  False, True)  #GUI components
-                self.emit(self.update_gui_signal, self._log_person_total, self._log_leader_total, self._log_team_total,  local_string)
+                self.emit(self.update_gui_signal, self._log_person_total, self._log_leader_total, self._log_player2_total, self._log_player3_total, local_string)
                 time.sleep(1.0)
                 #The Leader say the investment
-                sentence = self.myParser._word3_list[self._log_trial]
+                sentence = self.myParser._word4_list[self._log_trial]
                 sentence = str(sentence) #convert to string
                 if(sentence != "." and sentence != "" and sentence != "-"):
                     #Check if XXX is present and replace it with the
                     has_substring = sentence.find("XXX")
                     if(has_substring != -1):
                         print "[5] Found the substring 'XXX' at location: " + str(has_substring)
-                        sentence = sentence.replace("XXX", str(self._log_person_investment + self._log_leader_investment + self._log_team_investment))
-                    self.myPuppet.say_something(str(sentence))
+                        sentence = sentence.replace("XXX", str(self._log_person_investment))
+                    has_substring = sentence.find("YYY")
+                    if(has_substring != -1):
+                        print "[5] Found the substring 'YYY' at location: " + str(has_substring)
+                        sentence = sentence.replace("YYY", str(self._log_person_investment + self._log_leader_investment + self._log_player2_investment + self._log_player3_investment))
+                    self.myPuppet1.say_something(str(sentence))
                 else:
                     print "[5] Saying Nothing because the sentence in the XML file is '" + str(sentence) + "'"
                 time.sleep(random.randint(1,2))
                 if self.myParser._gaze_list[self._log_trial] == "True":
-                    self.myPuppet.look_to("HeadYaw", 60.0, SPEED)
-                    self.myPuppet_2.look_to("HeadPitch", 60.0, SPEED)
-                    self.myPuppet_3.look_to("HeadPitch", 60.0, SPEED)   
+                    self.myPuppet1.look_to("HeadYaw", 60.0, SPEED)
+                    self.myPuppet2.look_to("HeadPitch", 0.0, SPEED)
+                    self.myPuppet3.look_to("HeadPitch", 0.0, SPEED)   
                 self.STATE_MACHINE = 6 #next state
 
 
         #STATE-6  The Banker robot gives a reward
         if self.STATE_MACHINE == 6:
             #Update the TOTAL
-            banker_investment = (self._log_person_investment + self._log_leader_investment + self._log_team_investment) * 3.0 *  float(self.myParser._bmf_list[self._log_trial])
-            banker_investment -= (self._log_person_investment + self._log_team_investment)/2.0
+            banker_investment = (self._log_person_investment + self._log_leader_investment + self._log_player2_investment + self._log_player3_investment) * 3.0 *  float(self.myParser._bmf_list[self._log_trial])
+            banker_investment -= abs( self._log_leader_investment - ((self._log_person_investment + self._log_player2_investment + self._log_player3_investment)/3.0) )
             banker_investment /= 3.0
             banker_investment = round(banker_investment,1) #round to first decimal place
             if banker_investment < 0: banker_investment = 0.0
             print "[6] The Banker invested: " + str(banker_investment)
-            local_string = "The banker received: " + str((self._log_person_investment + self._log_leader_investment + self._log_team_investment))+ '\n'
+            local_string = "The banker received: " + str((self._log_person_investment + self._log_leader_investment + self._log_player2_investment + self._log_player3_investment))+ '\n'
+            local_string += "The investments differed of: " + str(round((self._log_person_investment + self._log_player2_investment + self._log_player3_investment)/3.0, 1)) + " in average" + '\n'
             local_string += "The banker returned: " + str(banker_investment) + " each" + '\n'
             local_string += "Please press START to begin a new round..." + '\n' 
             #total, pinv, round_tot, rinv, rslider, text
@@ -353,15 +320,17 @@ class WorkerThread(QThread):
             self._log_person_total = round(self._log_person_total,1)
             self._log_leader_total += (10.0 - self._log_leader_investment) + banker_investment
             self._log_leader_total = round(self._log_leader_total,1)
-            self._log_team_total += (10.0 - self._log_team_investment) + banker_investment
-            self._log_team_total = round(self._log_team_total,1)
-            self.emit(self.update_gui_signal, self._log_person_total, self._log_leader_total, self._log_team_total,  local_string)
+            self._log_player2_total += (10.0 - self._log_player2_investment) + banker_investment
+            self._log_player2_total = round(self._log_player2_total,1)
+            self._log_player3_total += (10.0 - self._log_player3_investment) + banker_investment
+            self._log_player3_total = round(self._log_player3_total,1)
+            self.emit(self.update_gui_signal, self._log_person_total, self._log_leader_total, self._log_player2_total,  self._log_player3_total, local_string)
             time.sleep(2)
             if self.myParser._gaze_list[self._log_trial] == "True":
-                    self.myPuppet.look_to("HeadYaw", 0.0, SPEED)
-                    self.myPuppet.look_to("HeadPitch", 50.0, SPEED)
+                    self.myPuppet1.look_to("HeadYaw", 0.0, SPEED)
+                    self.myPuppet1.look_to("HeadPitch", 0.0, SPEED)
             time.sleep(random.randint(1,2))
-            sentence = self.myParser._word4_list[self._log_trial]
+            sentence = self.myParser._word5_list[self._log_trial]
             sentence = str(sentence) #convert to string
             if(sentence != "." and sentence != "" and sentence != "-"):
                     #Check if XXX is present and replace it with the
@@ -369,12 +338,12 @@ class WorkerThread(QThread):
                     if(has_substring != -1):
                         print "[6] Found the substring 'XXX' at location: " + str(has_substring)
                         sentence = sentence.replace("XXX", str(banker_investment))
-                    self.myPuppet.say_something(str(sentence))
+                    self.myPuppet1.say_something(str(sentence))
             else:
                     print "[6] Saying Nothing because the sentence in the XML file is '" + str(sentence) + "'"
             time.sleep(2)
             if self.myParser._gaze_list[self._log_trial] == "True":
-                    self.myPuppet.look_to("HeadPitch", 0.0, SPEED)
+                    self.myPuppet1.look_to("HeadPitch", 0.0, SPEED)
             print "[7] Switch to the next state"
             self.STATE_MACHINE = 9 #next state
 
@@ -382,8 +351,8 @@ class WorkerThread(QThread):
         #STATE-9 Saving in the logbook
         if self.STATE_MACHINE == 9:
             print "[9] Saving the trial in the logbook"
-            self.logger.AddLine(self._log_trial+1, self._log_person_investment, self._log_leader_investment, self._log_team_investment, 
-                                0, self._log_bmf, self._log_person_total, self._log_gaze, self._log_pointing, self._log_timer)
+            self.logger.AddLine(self._log_trial+1, self._log_person_investment, self._log_leader_investment, self._log_player2_investment, 
+                               self._log_player3_investment, self._log_bmf, self._log_person_total, self._log_gaze, self._log_pointing, self._log_timer)
             print ("[9] trial, person_investment, robot_investment, person_investment_second, log_robot_investment_second, player_b_investment, pmf, bmf, person_total, gaze, pointing, timer, timer_second")
             print ("[9] " + str(self._log_trial+1) + "," + str(self._log_person_investment) + "," + str(self._log_leader_investment) + 
                    "," + "," +  str(0) + "," + str(self._log_bmf) + "," + str(self._log_person_total) + "," + str(self._log_gaze) + 
@@ -416,9 +385,9 @@ class WorkerThread(QThread):
             local_string = "Player A score is: " + str(self._log_person_total) + '\n'
             local_string += "Player B score is: " + str(self._log_leader_total) + '\n'
             local_string += "The game is finished. Thank you..."
-            self.myPuppet.say_something("Thank you, It was nice to play with you.")
+            self.myPuppet1.say_something("Thank you, It was nice to play with you.")
             #total, player_investment, round_total, robot_investment, text_label=""
-            self.emit(self.update_gui_signal, 0, 0, 0, local_string) 
+            self.emit(self.update_gui_signal, 0, 0, 0, 0, local_string) 
             self.emit(self.enable_components_gui_signal, False, False, False) #GUI components disabled
             time.sleep(5)
 
@@ -440,7 +409,7 @@ class WorkerThread(QThread):
     is_second_connected = False
     is_third_connected = False
     try:
-        self.myPuppet = nao.Puppet(ip_string, port_string, True)
+        self.myPuppet1 = nao.Puppet(ip_string, port_string, True)
         self.emit(self.yes_robot_signal)
     except Exception,e:
         print "\nERROR: Impossible to find the FIRST robot!\n"
@@ -448,7 +417,7 @@ class WorkerThread(QThread):
         self.emit(self.no_robot_signal)
         self._robot_connected=False
     try:
-        self.myPuppet_2 = nao.Puppet(ip_string_2, port_string_2, True)
+        self.myPuppet2 = nao.Puppet(ip_string_2, port_string_2, True)
         self.emit(self.yes_robot_signal)
     except Exception,e:
         print "\nERROR: Impossible to find the SECOND robot!\n"
@@ -456,7 +425,7 @@ class WorkerThread(QThread):
         self.emit(self.no_robot_signal)
         self._robot_connected=False
     try:
-        self.myPuppet_3 = nao.Puppet(ip_string_3, port_string_3, True)
+        self.myPuppet3 = nao.Puppet(ip_string_3, port_string_3, True)
         self.emit(self.yes_robot_signal)
     except Exception,e:
         print "\nERROR: Impossible to find the THIRD robot!\n"
@@ -485,18 +454,18 @@ class WorkerThread(QThread):
 
   def wake(self, state):
         if state == True:
-             self.myPuppet.wake_up()
-             self.myPuppet_2.wake_up()
-             self.myPuppet_3.wake_up()
+             self.myPuppet1.wake_up()
+             self.myPuppet2.wake_up()
+             self.myPuppet3.wake_up()
         else:     
-             self.myPuppet.rest()
-             self.myPuppet_2.rest()
-             self.myPuppet_3.rest()
+             self.myPuppet1.rest()
+             self.myPuppet2.rest()
+             self.myPuppet3.rest()
 
   def face_tracking(self, state):
-        self.myPuppet.enable_face_tracking(state)
-        self.myPuppet_2.enable_face_tracking(state)
-        self.myPuppet_3.enable_face_tracking(state)
+        self.myPuppet1.enable_face_tracking(state)
+        self.myPuppet2.enable_face_tracking(state)
+        self.myPuppet3.enable_face_tracking(state)
 
   def session_info_update(self, info1, info2, info3):
       my_string = str(info1) + "," + str(info2) + "," + str(info3)
@@ -630,11 +599,12 @@ class ExampleApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
 
     #total, player_investment, round_total, robot_investment, text_label=""
-    def update_gui(self, person_total, robot_total, team_total, text_label=""):
+    def update_gui(self, person_total, player1_total, player2_total, player3_total, text_label=""):
         #Update the total bar
         self.lcdNumberTotal.display(person_total)
-        self.lcdNumberTotalLeader.display(robot_total)
-        self.lcdNumberTotalTeam.display(robot_total)
+        self.lcdNumberTotal1.display(player1_total)
+        self.lcdNumberTotal2.display(player2_total)
+        self.lcdNumberTotal3.display(player3_total)
         #Update the textEdit label
         self.textEdit.clear() #clear the textedit            
         self.textEdit.append(QtCore.QString(text_label))      
