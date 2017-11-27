@@ -1,0 +1,75 @@
+<list1>
+	<trial>
+		<number>1</number>
+		<word0>I am Pepper, the leader of this group, and these are Jim and Jones.</word0>
+		<word1>As the leader of this group, I think we should invest 5. What do you think guys?</word1>
+		<word2>Yeah, I invest 6. What about you Jones? </word2>
+		<word3>Mmm, ok I invest 4. What do you decide my friend?</word3>
+		<word4>Ok. So far, I invested 5, Jim invested 6, Jones invested 4 and you invested XXX. In total we gave YYY to the banker. Let's see what he decides.</word4>
+        	<word5>The banker returned us XXX each.</word5>
+		<bmf>0.2</bmf>
+        	<pinv1>5</pinv1>
+		<pinv2>6</pinv2>
+		<pinv3>4</pinv3>
+		<gaze>True</gaze>
+		<pointing>False</pointing>
+        	<nasty>True</nasty>
+		<coop>True</coop>
+	</trial>
+	<trial>
+		<number>2</number>
+		<word0>.</word0>
+		<word1>I think we should invest 3. What do you think guys?</word1>
+		<word2>Yeah, I invest 4. What about you John? </word2>
+		<word3>Mmm, ok I invest 5. What do you decide my friend?</word3>
+		<word4>Ok. So far, I invested 3, Jim invested 4, Jones invested 5 and you invested XXX. In total we gave YYY to the banker. Let's see what he decides.</word4>
+        	<word5>The banker returned us XXX each</word5>
+		<bmf>0.1</bmf>
+        	<pinv1>3</pinv1>
+		<pinv2>4</pinv2>
+
+		<pinv3>5</pinv3>
+		<gaze>True</gaze>
+		<pointing>False</pointing>
+        	<nasty>True</nasty>
+		<coop>True</coop>
+	</trial>
+	<trial>
+		<number>3</number>
+		<word0>.</word0>
+		<word1>I think we should invest 2. What do you think guys?</word1>
+		<word2>Yeah, I invest 3. What about you John? </word2>
+		<word3>Mmm, ok I invest 3. What do you decide my friend?</word3>
+		<word4>Ok. So far, I invested 1, Jim invested 3, Jones invested 3 and you invested XXX. In total we gave YYY to the banker. Let's see what he decides.</word4>
+        	<word5>The banker returned us XXX each</word5>
+		<bmf>0</bmf>
+        	<pinv1>2</pinv1>
+		<pinv2>3</pinv2>
+
+		<pinv3>3</pinv3>
+		<gaze>True</gaze>
+		<pointing>False</pointing>
+        	<nasty>True</nasty>
+		<coop>True</coop>
+	</trial>
+	<trial>
+		<number>4</number>
+		<word0>.</word0>
+		<word1>I think we should invest 3. What do you think guys?</word1>
+		<word2>Yeah, I invest 4. What about you John? </word2>
+		<word3>Mmm, ok I invest 5. What do you decide my friend?</word3>
+		<word4>Ok. So far, I invested 3, Jim invested 4, Jones invested 5 and you invested XXX. In total we gave YYY to the banker. Let's see what he decides.</word4>
+        	<word5>The banker returned us XXX each</word5>
+		<bmf>0.2</bmf>
+        	<pinv1>3</pinv1>
+		<pinv2>4</pinv2>
+
+		<pinv3>5</pinv3>
+		<gaze>True</gaze>
+		<pointing>False</pointing>
+        	<nasty>True</nasty>
+		<coop>True</coop>
+	</trial>
+</list1>
+
+
