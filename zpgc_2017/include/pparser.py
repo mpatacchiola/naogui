@@ -14,6 +14,7 @@ class Parser(object):
         self._number_list = list() #list of the trial number
         self._gaze_list = list() #list for gaze/non_gaze
         self._pointing_list = list() #list for pointing/non_pointing
+        self._gestures_list = list() #list for pointing/non_pointing
 
         self._bmf_list = list() #moltiplication factor for the player B
         self._word0_list = list() #sentece in the first interaction
@@ -22,6 +23,7 @@ class Parser(object):
         self._word3_list = list() #sentece in the second interaction
         self._word4_list = list() #sentece in the second interaction
         self._word5_list = list() #sentece in the second interaction
+        self._word6_list = list() #sentece in the second interaction
         self._pinv1_list = list() #robot investement in 1st interaction
         self._pinv2_list = list() #Option 'a' for robot investement in 2nd interaction
         self._pinv3_list = list() #Option 'a' for robot investement in 2nd interaction
@@ -82,6 +84,10 @@ class Parser(object):
 		self._pointing_list.append(returned.firstChild.data)
                 print("pointing ........ %s" %returned.firstChild.data)
 
+		returned = item.getElementsByTagName("gestures")[0]
+		self._gestures_list.append(returned.firstChild.data)
+                print("gestures ........ %s" %returned.firstChild.data)
+
 		returned = item.getElementsByTagName("bmf")[0]
 		self._bmf_list.append(returned.firstChild.data)
                 print("bmf ........ %s" %returned.firstChild.data)
@@ -121,6 +127,10 @@ class Parser(object):
 		returned = item.getElementsByTagName("word5")[0]
 		self._word5_list.append(returned.firstChild.data)
                 print("word5 ........ %s" %returned.firstChild.data)
+
+		returned = item.getElementsByTagName("word6")[0]
+		self._word6_list.append(returned.firstChild.data)
+                print("word6 ........ %s" %returned.firstChild.data)
 
                 print("")
                 counter = counter + 1

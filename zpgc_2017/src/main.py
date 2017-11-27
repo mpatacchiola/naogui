@@ -145,7 +145,10 @@ class WorkerThread(QThread):
                 self._participant_decision_taken = False
                 print "[1] Hello world!"
                 sentence = self.myParser._word0_list[self._log_trial]
-                self.myPuppet1.say_something(str(sentence))
+                if self.myParser._gestures_list[self._log_trial] == "True":
+                    self.myPuppet1.animated_say_something(str(sentence))
+                else:
+                    self.myPuppet1.say_something(str(sentence))
                 if self.myParser._gaze_list[self._log_trial] == "True":
                     self.myPuppet1.look_to("HeadYaw", -60.0, SPEED)
                     time.sleep(random.randint(0,2))
@@ -179,7 +182,7 @@ class WorkerThread(QThread):
                     self.myPuppet2.look_to("HeadYaw", 60.0, SPEED)
                     self.myPuppet3.look_to("HeadYaw", 60.0, SPEED)
                     time.sleep(random.randint(0,2))
-                    self.myPuppet1.look_to("HeadPitch", 0.0, SPEED)
+                    #self.myPuppet1.look_to("HeadPitch", 5.0, SPEED)
             print "[2] Switching to the next state"
             self.STATE_MACHINE = 3 #next state       
             print "[3] Waiting for the subject and robot answer..." #going to state 3
@@ -196,12 +199,15 @@ class WorkerThread(QThread):
                   print "[3] pointing == False"
                   self.myPuppet1.left_arm_pointing(False, SPEED)
             sentence = str(self.myParser._word1_list[self._log_trial])
-            self.myPuppet1.say_something(sentence)
+            if self.myParser._gestures_list[self._log_trial] == "True":
+                  self.myPuppet1.animated_say_something(str(sentence))
+            else:
+                  self.myPuppet1.say_something(str(sentence))
             if self.myParser._gaze_list[self._log_trial] == "True":
                     self.myPuppet2.look_to("HeadYaw", 60.0, SPEED)
                     self.myPuppet3.look_to("HeadYaw", -60.0, SPEED)
                     time.sleep(random.randint(0,2))
-                    self.myPuppet1.look_to("HeadPitch", 0.0, SPEED)
+                    #self.myPuppet1.look_to("HeadPitch", 5.0, SPEED)
                     self.myPuppet1.look_to("HeadYaw", -60.0, SPEED)
             time.sleep(random.randint(1,2))
             self.STATE_MACHINE = 4 #next state
@@ -213,16 +219,22 @@ class WorkerThread(QThread):
             if self.myParser._gaze_list[self._log_trial] == "True":
                     self.myPuppet2.look_to("HeadYaw", 0.0, SPEED)
                     self.myPuppet3.look_to("HeadYaw", 0.0, SPEED)
-                    self.myPuppet2.look_to("HeadPitch", 0.0, SPEED)
-                    self.myPuppet3.look_to("HeadPitch", 0.0, SPEED)
+                    #self.myPuppet2.look_to("HeadPitch", 5.0, SPEED)
+                    #self.myPuppet3.look_to("HeadPitch", 5.0, SPEED)
             time.sleep(random.randint(2,3))
             sentence = str(self.myParser._word2_list[self._log_trial])
-            self.myPuppet2.say_something(sentence)
+            if self.myParser._gestures_list[self._log_trial] == "True":
+                    self.myPuppet2.animated_say_something(str(sentence))
+            else:
+                    self.myPuppet2.say_something(str(sentence))
             if self.myParser._gaze_list[self._log_trial] == "True":
                     self.myPuppet2.look_to("HeadYaw", 40.0, SPEED)               
             time.sleep(random.randint(1,3))
             sentence = str(self.myParser._word3_list[self._log_trial])
-            self.myPuppet3.say_something(sentence)
+            if self.myParser._gestures_list[self._log_trial] == "True":
+                    self.myPuppet3.animated_say_something(str(sentence))
+            else:
+                    self.myPuppet3.say_something(str(sentence))
             if self.myParser._gaze_list[self._log_trial] == "True":
                     self.myPuppet2.look_to("HeadYaw", 0.0, SPEED)
             #time.sleep(1)
@@ -258,7 +270,7 @@ class WorkerThread(QThread):
                     self.myPuppet1.look_to("HeadYaw", 0.0, SPEED)
                     #self.myPuppet2.look_to("HeadYaw", 0.0, SPEED)
                     #self.myPuppet3.look_to("HeadYaw", 0.0, SPEED)
-                    self.myPuppet1.look_to("HeadPitch", 0.0, SPEED)
+                    #self.myPuppet1.look_to("HeadPitch", 5.0, SPEED)
                     #self.myPuppet2.look_to("HeadPitch", 0.0, SPEED)
                     #self.myPuppet3.look_to("HeadPitch", 0.0, SPEED)      
             self.STATE_MACHINE = 5 #next state
@@ -291,14 +303,17 @@ class WorkerThread(QThread):
                     if(has_substring != -1):
                         print "[5] Found the substring 'YYY' at location: " + str(has_substring)
                         sentence = sentence.replace("YYY", str(self._log_person_investment + self._log_leader_investment + self._log_player2_investment + self._log_player3_investment))
-                    self.myPuppet1.say_something(str(sentence))
+                    if self.myParser._gestures_list[self._log_trial] == "True":
+                        self.myPuppet1.animated_say_something(str(sentence))
+                    else:
+                        self.myPuppet1.say_something(str(sentence))
                 else:
                     print "[5] Saying Nothing because the sentence in the XML file is '" + str(sentence) + "'"
                 time.sleep(random.randint(1,2))
                 if self.myParser._gaze_list[self._log_trial] == "True":
                     self.myPuppet1.look_to("HeadYaw", 60.0, SPEED)
-                    self.myPuppet2.look_to("HeadPitch", 0.0, SPEED)
-                    self.myPuppet3.look_to("HeadPitch", 0.0, SPEED)   
+                    #self.myPuppet2.look_to("HeadPitch", 5.0, SPEED)
+                    #self.myPuppet3.look_to("HeadPitch", 5.0, SPEED)   
                 self.STATE_MACHINE = 6 #next state
 
 
@@ -309,10 +324,11 @@ class WorkerThread(QThread):
             banker_investment -= abs( self._log_leader_investment - ((self._log_person_investment + self._log_player2_investment + self._log_player3_investment)/3.0) )
             banker_investment /= 3.0
             banker_investment = round(banker_investment,1) #round to first decimal place
+            abs_value = round(abs( self._log_leader_investment - ((self._log_person_investment + self._log_player2_investment + self._log_player3_investment)/3.0) ), 1)
             if banker_investment < 0: banker_investment = 0.0
             print "[6] The Banker invested: " + str(banker_investment)
             local_string = "The banker received: " + str((self._log_person_investment + self._log_leader_investment + self._log_player2_investment + self._log_player3_investment))+ '\n'
-            local_string += "The investments differed of: " + str(round((self._log_person_investment + self._log_player2_investment + self._log_player3_investment)/3.0, 1)) + " in average" + '\n'
+            local_string += "The investments differed of: " + str(abs_value) + " in average" + '\n'
             local_string += "The banker returned: " + str(banker_investment) + " each" + '\n'
             local_string += "Please press START to begin a new round..." + '\n' 
             #total, pinv, round_tot, rinv, rslider, text
@@ -328,9 +344,13 @@ class WorkerThread(QThread):
             time.sleep(2)
             if self.myParser._gaze_list[self._log_trial] == "True":
                     self.myPuppet1.look_to("HeadYaw", 0.0, SPEED)
-                    self.myPuppet1.look_to("HeadPitch", 0.0, SPEED)
+                    #self.myPuppet1.look_to("HeadPitch", 5.0, SPEED)
             time.sleep(random.randint(1,2))
-            sentence = self.myParser._word5_list[self._log_trial]
+            #Check the absolute value and decide the sentence to say
+            if abs_value <= 2.0:
+                sentence = self.myParser._word6_list[self._log_trial]
+            else:
+                sentence = self.myParser._word5_list[self._log_trial]
             sentence = str(sentence) #convert to string
             if(sentence != "." and sentence != "" and sentence != "-"):
                     #Check if XXX is present and replace it with the
@@ -338,12 +358,19 @@ class WorkerThread(QThread):
                     if(has_substring != -1):
                         print "[6] Found the substring 'XXX' at location: " + str(has_substring)
                         sentence = sentence.replace("XXX", str(banker_investment))
-                    self.myPuppet1.say_something(str(sentence))
+                    has_substring = sentence.find("YYY")
+                    if(has_substring != -1):
+                        print "[6] Found the substring 'YYY' at location: " + str(has_substring)
+                        sentence = sentence.replace("YYY", str(abs_value))
+                    if self.myParser._gestures_list[self._log_trial] == "True":
+                        self.myPuppet1.animated_say_something(str(sentence))
+                    else:
+                        self.myPuppet1.say_something(str(sentence))
             else:
                     print "[6] Saying Nothing because the sentence in the XML file is '" + str(sentence) + "'"
             time.sleep(2)
-            if self.myParser._gaze_list[self._log_trial] == "True":
-                    self.myPuppet1.look_to("HeadPitch", 0.0, SPEED)
+            #if self.myParser._gaze_list[self._log_trial] == "True":
+            #        self.myPuppet1.look_to("HeadPitch", 5.0, SPEED)
             print "[7] Switch to the next state"
             self.STATE_MACHINE = 9 #next state
 

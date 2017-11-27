@@ -19,6 +19,7 @@ import time
 import subprocess
 import os
 import math
+import random
 
 from naoqi import ALProxy
 
@@ -53,6 +54,13 @@ class Puppet(object):
         except Exception, e:
            print "INIT: Error when creating ALTextToSpeech proxy:"
            print str(e)
+
+        try:
+           self._as_proxy = ALProxy("ALAnimatedSpeech", NAO_IP, int(NAO_PORT))
+        except Exception, e:
+           print "INIT: Error when creating ALAnimatedSpeech proxy:"
+           print str(e)
+
 
         try:
            self._audio_proxy = ALProxy("ALAudioPlayer", NAO_IP, int(NAO_PORT))
@@ -139,6 +147,28 @@ class Puppet(object):
     #
     def say_something(self, sentence):
         self._tts_proxy.say(sentence)
+
+    def animated_say_something(self, sentence):
+        configuration = {"bodyLanguageMode":"contextual"}
+        gesture_list = list()
+        #gesture_list.append("^start(animations/Stand/Emotions/Neutral/Lonely_1) ")
+        #gesture_list.append("^start(animations/Stand/Emotions/Neutral/Mischievous_1) ")
+        #gesture_list.append("^start(animations/Stand/Emotions/Neutral/Determined_1) ")
+        gesture_list.append("^wait(animations/Stand/Gestures/Choice_1) ")
+        gesture_list.append("^wait(animations/Stand/Gestures/Choice_2) ")
+        gesture_list.append("^wait(animations/Stand/Gestures/Explain_1) ")
+        gesture_list.append("^wait(animations/Stand/Gestures/Explain_2) ")
+        gesture_list.append("^wait(animations/Stand/Gestures/Explain_4) ")
+        gesture_list.append("^wait(animations/Stand/Gestures/Explain_6) ")
+        gesture_list.append("^wait(animations/Stand/Gestures/Explain_7) ")
+        gesture_list.append("^wait(animations/Stand/Gestures/Explain_8) ")
+        gesture_list.append("^wait(animations/Stand/Gestures/Explain_9) ")
+        sampled_gesture = gesture_list[random.randint(0,len(gesture_list)-1)]
+        self._as_proxy.say(sampled_gesture + str(sentence), configuration)               
+        #self._posture_proxy.goToPosture("Stand", 1)
+        self._as_proxy.say("^run(animations/Stand/BodyTalk/Speaking/BodyTalk_7)", configuration)
+        #self._as_proxy.say("^start(animations/Stand/Gestures/Choice_1) " + str(sentence) + " ^stop(animations/Stand/Gestures/Choice_1)", configuration)
+
 
     ##
     # The robot plays an internal stored audio file
