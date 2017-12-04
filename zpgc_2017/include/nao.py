@@ -146,9 +146,11 @@ class Puppet(object):
     # @param sentence the string containing the sentence to say
     #
     def say_something(self, sentence):
+        if(sentence == "." or sentence == "" or sentence == "-"): return
         self._tts_proxy.say(sentence)
 
     def animated_say_something(self, sentence):
+        if(sentence == "." or sentence == "" or sentence == "-"): return
         configuration = {"bodyLanguageMode":"contextual"}
         gesture_list = list()
         #gesture_list.append("^start(animations/Stand/Emotions/Neutral/Lonely_1) ")

@@ -151,8 +151,7 @@ class WorkerThread(QThread):
                     self.myPuppet1.say_something(str(sentence))
                 if self.myParser._gaze_list[self._log_trial] == "True":
                     self.myPuppet1.look_to("HeadYaw", -60.0, SPEED)
-                    time.sleep(random.randint(0,2))
-                time.sleep(1)
+                    time.sleep(random.randint(1,2))
                 print "[1] Reset the head pose!"                 
                 self.myPuppet1.look_to("HeadYaw", 0.0, SPEED)
                 self.myPuppet2.look_to("HeadYaw", 0.0, SPEED)
@@ -212,7 +211,7 @@ class WorkerThread(QThread):
             #Update with the leader score
             local_string = "Pepper invested: " + str(self._log_leader_investment) + '\n' 
             self.emit(self.update_gui_signal, self._log_person_total, self._log_leader_total, self._log_player2_total, self._log_player3_total, local_string)
-            time.sleep(random.randint(1,2))
+            #time.sleep(random.randint(1,2))
             self.STATE_MACHINE = 4 #next state
 
         #STATE-4 The two NAOs invest
@@ -246,17 +245,17 @@ class WorkerThread(QThread):
                     self.myPuppet3.say_something(str(sentence))
             if self.myParser._gaze_list[self._log_trial] == "True":
                     self.myPuppet2.look_to("HeadYaw", 0.0, SPEED)
-            local_string = "Pepper invested: " + str(self._log_leader_investment) + '\n' 
-            local_string += "Tommy invested: " + str(self._log_player2_investment) + '\n'
-            local_string += "Jones invested: " + str(self._log_player3_investment) + '\n'
-            self.emit(self.update_gui_signal, self._log_person_total, self._log_leader_total, self._log_player2_total, self._log_player3_total, local_string)
 
             print "[4] First interaction"                         
             print("[4] Leader: " + str(self._log_leader_investment))
             print("[4] Player 2: " + str(self._log_player2_investment))
             print("[4] Player 3: " + str(self._log_player3_investment)) 
+            local_string = "Pepper invested: " + str(self._log_leader_investment) + '\n' 
+            local_string += "Tommy invested: " + str(self._log_player2_investment) + '\n'
+            local_string += "Jones invested: " + str(self._log_player3_investment) + '\n'
+            local_string += "Please select a value to invest..." + '\n'
             self.emit(self.enable_components_gui_signal, False,  True, True)  #GUI components   
-            self.emit(self.update_gui_signal, self._log_person_total, self._log_leader_total, self._log_player2_total, self._log_player3_total, "Please select a value to invest...")
+            self.emit(self.update_gui_signal, self._log_person_total, self._log_leader_total, self._log_player2_total, self._log_player3_total, local_string)
             #time.sleep(random.randint(1,2))
             if self.myParser._gaze_list[self._log_trial] == "True":
                     self.myPuppet1.look_to("HeadYaw", 0.0, SPEED)
@@ -301,9 +300,10 @@ class WorkerThread(QThread):
                         self.myPuppet1.say_something(str(sentence))
                 else:
                     print "[5] Saying Nothing because the sentence in the XML file is '" + str(sentence) + "'"
-                time.sleep(random.randint(1,2))
+                #time.sleep(random.randint(1,2))
                 if self.myParser._gaze_list[self._log_trial] == "True":
                     self.myPuppet1.look_to("HeadYaw", 60.0, SPEED)
+                    time.sleep(random.randint(1,2))
                     self.myPuppet2.look_to("HeadYaw", 60.0, SPEED)
                     self.myPuppet3.look_to("HeadYaw", 60.0, SPEED)   
                 self.STATE_MACHINE = 6 #next state
