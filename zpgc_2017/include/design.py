@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '../include/mainwindow.ui'
 #
-# Created: Sat Nov 25 14:26:48 2017
+# Created: Mon Dec  4 10:43:21 2017
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -170,7 +170,7 @@ class Ui_MainWindow(object):
         self.label_4.setFont(font)
         self.label_4.setObjectName(_fromUtf8("label_4"))
         self.label_5 = QtGui.QLabel(self.tab)
-        self.label_5.setGeometry(QtCore.QRect(1000, 20, 131, 16))
+        self.label_5.setGeometry(QtCore.QRect(1000, 20, 131, 21))
         font = QtGui.QFont()
         font.setPointSize(14)
         font.setBold(True)
@@ -210,7 +210,7 @@ class Ui_MainWindow(object):
         self.lcdNumberTotal2.setProperty("intValue", 0)
         self.lcdNumberTotal2.setObjectName(_fromUtf8("lcdNumberTotal2"))
         self.label_13 = QtGui.QLabel(self.tab)
-        self.label_13.setGeometry(QtCore.QRect(1160, 20, 141, 16))
+        self.label_13.setGeometry(QtCore.QRect(1160, 20, 141, 21))
         font = QtGui.QFont()
         font.setPointSize(14)
         font.setBold(True)
@@ -230,7 +230,7 @@ class Ui_MainWindow(object):
         self.lcdNumberTotal3.setProperty("intValue", 0)
         self.lcdNumberTotal3.setObjectName(_fromUtf8("lcdNumberTotal3"))
         self.label_14 = QtGui.QLabel(self.tab)
-        self.label_14.setGeometry(QtCore.QRect(1320, 20, 141, 16))
+        self.label_14.setGeometry(QtCore.QRect(1320, 20, 141, 21))
         font = QtGui.QFont()
         font.setPointSize(14)
         font.setBold(True)
@@ -358,7 +358,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusBar)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -380,10 +380,10 @@ class Ui_MainWindow(object):
 "</style></head><body style=\" font-family:\'Times New Roman\'; font-size:18pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Welcome, please press START to play the first round...</p></body></html>", None))
         self.label_4.setText(_translate("MainWindow", "Your Bank:", None))
-        self.label_5.setText(_translate("MainWindow", "Leader bank:", None))
+        self.label_5.setText(_translate("MainWindow", "Pepper bank:", None))
         self.btnStartExperiment.setText(_translate("MainWindow", "START", None))
-        self.label_13.setText(_translate("MainWindow", "Player 2 bank:", None))
-        self.label_14.setText(_translate("MainWindow", "Player 3 bank:", None))
+        self.label_13.setText(_translate("MainWindow", "Tommy bank:", None))
+        self.label_14.setText(_translate("MainWindow", "Jones bank:", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Exp", None))
         self.groupBox.setTitle(_translate("MainWindow", "1- Connection Box", None))
         self.lineEditNaoIP.setInputMask(_translate("MainWindow", "000.000.000.000", None))
@@ -395,11 +395,11 @@ class Ui_MainWindow(object):
         self.label_8.setText(_translate("MainWindow", "Port-2:", None))
         self.lineEditNaoPort_2.setText(_translate("MainWindow", "9559", None))
         self.lineEditNaoIP_2.setInputMask(_translate("MainWindow", "000.000.000.000", None))
-        self.lineEditNaoIP_2.setText(_translate("MainWindow", "192.168.0.100", None))
-        self.label_7.setText(_translate("MainWindow", "NAO-2 IP Address:", None))
+        self.lineEditNaoIP_2.setText(_translate("MainWindow", "192.168.0.102", None))
+        self.label_7.setText(_translate("MainWindow", "Robot-2 IP Address:", None))
         self.lineEditNaoIP_3.setInputMask(_translate("MainWindow", "000.000.000.000", None))
-        self.lineEditNaoIP_3.setText(_translate("MainWindow", "192.168.0.104", None))
-        self.label_11.setText(_translate("MainWindow", "NAO-3 IP Address:", None))
+        self.lineEditNaoIP_3.setText(_translate("MainWindow", "192.168.0.100", None))
+        self.label_11.setText(_translate("MainWindow", "Robot-3 IP Address:", None))
         self.lineEditNaoPort_3.setText(_translate("MainWindow", "9559", None))
         self.label_12.setText(_translate("MainWindow", "Port-3:", None))
         self.groupBox_2.setTitle(_translate("MainWindow", "3- XML file", None))

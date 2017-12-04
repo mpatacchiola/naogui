@@ -20,7 +20,7 @@
       <item>
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="title">
@@ -376,7 +376,7 @@ p, li { white-space: pre-wrap; }
             <x>1000</x>
             <y>20</y>
             <width>131</width>
-            <height>16</height>
+            <height>21</height>
            </rect>
           </property>
           <property name="font">
@@ -387,7 +387,7 @@ p, li { white-space: pre-wrap; }
            </font>
           </property>
           <property name="text">
-           <string>Leader bank:</string>
+           <string>Pepper bank:</string>
           </property>
          </widget>
          <widget class="QLCDNumber" name="lcdNumberTotal1">
@@ -474,7 +474,7 @@ p, li { white-space: pre-wrap; }
             <x>1160</x>
             <y>20</y>
             <width>141</width>
-            <height>16</height>
+            <height>21</height>
            </rect>
           </property>
           <property name="font">
@@ -485,7 +485,7 @@ p, li { white-space: pre-wrap; }
            </font>
           </property>
           <property name="text">
-           <string>Player 2 bank:</string>
+           <string>Tommy bank:</string>
           </property>
          </widget>
          <widget class="QLCDNumber" name="lcdNumberTotal3">
@@ -523,7 +523,7 @@ p, li { white-space: pre-wrap; }
             <x>1320</x>
             <y>20</y>
             <width>141</width>
-            <height>16</height>
+            <height>21</height>
            </rect>
           </property>
           <property name="font">
@@ -534,7 +534,7 @@ p, li { white-space: pre-wrap; }
            </font>
           </property>
           <property name="text">
-           <string>Player 3 bank:</string>
+           <string>Jones bank:</string>
           </property>
          </widget>
         </widget>
@@ -667,7 +667,7 @@ p, li { white-space: pre-wrap; }
             <string>000.000.000.000</string>
            </property>
            <property name="text">
-            <string>192.168.0.100</string>
+            <string>192.168.0.102</string>
            </property>
           </widget>
           <widget class="QLabel" name="label_7">
@@ -680,7 +680,7 @@ p, li { white-space: pre-wrap; }
             </rect>
            </property>
            <property name="text">
-            <string>NAO-2 IP Address:</string>
+            <string>Robot-2 IP Address:</string>
            </property>
           </widget>
           <widget class="QLineEdit" name="lineEditNaoIP_3">
@@ -696,7 +696,7 @@ p, li { white-space: pre-wrap; }
             <string>000.000.000.000</string>
            </property>
            <property name="text">
-            <string>192.168.0.104</string>
+            <string>192.168.0.100</string>
            </property>
           </widget>
           <widget class="QLabel" name="label_11">
@@ -709,7 +709,7 @@ p, li { white-space: pre-wrap; }
             </rect>
            </property>
            <property name="text">
-            <string>NAO-3 IP Address:</string>
+            <string>Robot-3 IP Address:</string>
            </property>
           </widget>
           <widget class="QLineEdit" name="lineEditNaoPort_3">

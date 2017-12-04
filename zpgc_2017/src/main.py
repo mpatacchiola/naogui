@@ -206,9 +206,12 @@ class WorkerThread(QThread):
             if self.myParser._gaze_list[self._log_trial] == "True":
                     self.myPuppet2.look_to("HeadYaw", 60.0, SPEED)
                     self.myPuppet3.look_to("HeadYaw", -60.0, SPEED)
-                    time.sleep(random.randint(0,2))
+                    #time.sleep(random.randint(0,2))
                     #self.myPuppet1.look_to("HeadPitch", 5.0, SPEED)
                     self.myPuppet1.look_to("HeadYaw", -60.0, SPEED)
+            #Update with the leader score
+            local_string = "Pepper invested: " + str(self._log_leader_investment) + '\n' 
+            self.emit(self.update_gui_signal, self._log_person_total, self._log_leader_total, self._log_player2_total, self._log_player3_total, local_string)
             time.sleep(random.randint(1,2))
             self.STATE_MACHINE = 4 #next state
 
@@ -218,18 +221,24 @@ class WorkerThread(QThread):
             self._log_player3_investment = int(self.myParser._pinv3_list[self._log_trial])
             if self.myParser._gaze_list[self._log_trial] == "True":
                     self.myPuppet2.look_to("HeadYaw", 0.0, SPEED)
-                    self.myPuppet3.look_to("HeadYaw", 0.0, SPEED)
+                    self.myPuppet3.look_to("HeadYaw", -60.0, SPEED)
                     #self.myPuppet2.look_to("HeadPitch", 5.0, SPEED)
                     #self.myPuppet3.look_to("HeadPitch", 5.0, SPEED)
-            time.sleep(random.randint(2,3))
+            #time.sleep(random.randint(2,3))
+            #Player 2 investment
             sentence = str(self.myParser._word2_list[self._log_trial])
             if self.myParser._gestures_list[self._log_trial] == "True":
                     self.myPuppet2.animated_say_something(str(sentence))
             else:
                     self.myPuppet2.say_something(str(sentence))
+            local_string = "Pepper invested: " + str(self._log_leader_investment) + '\n' 
+            local_string += "Tommy invested: " + str(self._log_player2_investment) + '\n'
+            self.emit(self.update_gui_signal, self._log_person_total, self._log_leader_total, self._log_player2_total, self._log_player3_total, local_string)                        
             if self.myParser._gaze_list[self._log_trial] == "True":
-                    self.myPuppet2.look_to("HeadYaw", 40.0, SPEED)               
-            time.sleep(random.randint(1,3))
+                    self.myPuppet2.look_to("HeadYaw", 40.0, SPEED)
+                    self.myPuppet3.look_to("HeadYaw", 0.0, SPEED)             
+            #time.sleep(random.randint(1,3))
+            #Player 3 investment
             sentence = str(self.myParser._word3_list[self._log_trial])
             if self.myParser._gestures_list[self._log_trial] == "True":
                     self.myPuppet3.animated_say_something(str(sentence))
@@ -237,28 +246,11 @@ class WorkerThread(QThread):
                     self.myPuppet3.say_something(str(sentence))
             if self.myParser._gaze_list[self._log_trial] == "True":
                     self.myPuppet2.look_to("HeadYaw", 0.0, SPEED)
-            #time.sleep(1)
-            #die = random.randint(0,1)
-            #if die == 0:
-            #if self.myParser._pointing_list[self._log_trial] == "True":
-            #        print "[4] pointing == True"
-            #        self.myPuppet2.left_arm_pointing(True, SPEED)
-            #time.sleep(1)
-            #if self.myParser._pointing_list[self._log_trial] == "True":
-            #        print "[4] pointing == False"
-            #        self.myPuppet2.left_arm_pointing(False, SPEED)
+            local_string = "Pepper invested: " + str(self._log_leader_investment) + '\n' 
+            local_string += "Tommy invested: " + str(self._log_player2_investment) + '\n'
+            local_string += "Jones invested: " + str(self._log_player3_investment) + '\n'
+            self.emit(self.update_gui_signal, self._log_person_total, self._log_leader_total, self._log_player2_total, self._log_player3_total, local_string)
 
-            #elif die == 1:
-            #    if self.myParser._pointing_list[self._log_trial] == "True":
-            #        print "[4] pointing == True"
-            #        self.myPuppet3.left_arm_pointing(True, SPEED)
-            #    time.sleep(1)
-            #    if self.myParser._pointing_list[self._log_trial] == "True":
-            #        print "[4] pointing == False"
-            #        self.myPuppet3.left_arm_pointing(False, SPEED)
-            #    self.myPuppet3.say_something(sentence)
-            #else:
-            #    print "[4][ERROR] The random integer returned for selecting the now is out of range..." #going to state 3
             print "[4] First interaction"                         
             print("[4] Leader: " + str(self._log_leader_investment))
             print("[4] Player 2: " + str(self._log_player2_investment))
@@ -282,9 +274,9 @@ class WorkerThread(QThread):
                 print "[5] The participant pressed: " + str(self._log_person_investment)
                 #Updating the GUI
                 local_string = "You invested: " + str(self._log_person_investment) + '\n'
-                local_string += "Leader invested: " + str(self._log_leader_investment) + '\n' 
-                local_string += "Player 2: " + str(self._log_player2_investment) + '\n'
-                local_string += "Player 3: " + str(self._log_player3_investment) + '\n'
+                local_string += "Pepper invested: " + str(self._log_leader_investment) + '\n' 
+                local_string += "Tommy invested: " + str(self._log_player2_investment) + '\n'
+                local_string += "Jones invested: " + str(self._log_player3_investment) + '\n'
                 local_string += "In total has been invested: " + str(self._log_person_investment + self._log_leader_investment + self._log_player2_investment + self._log_player3_investment) + '\n'
                 #total, player_investment, round_total, robot_investment, text_label=""
                 self.emit(self.enable_components_gui_signal, False,  False, True)  #GUI components
@@ -312,8 +304,8 @@ class WorkerThread(QThread):
                 time.sleep(random.randint(1,2))
                 if self.myParser._gaze_list[self._log_trial] == "True":
                     self.myPuppet1.look_to("HeadYaw", 60.0, SPEED)
-                    #self.myPuppet2.look_to("HeadPitch", 5.0, SPEED)
-                    #self.myPuppet3.look_to("HeadPitch", 5.0, SPEED)   
+                    self.myPuppet2.look_to("HeadYaw", 60.0, SPEED)
+                    self.myPuppet3.look_to("HeadYaw", 60.0, SPEED)   
                 self.STATE_MACHINE = 6 #next state
 
 
@@ -344,7 +336,8 @@ class WorkerThread(QThread):
             time.sleep(2)
             if self.myParser._gaze_list[self._log_trial] == "True":
                     self.myPuppet1.look_to("HeadYaw", 0.0, SPEED)
-                    #self.myPuppet1.look_to("HeadPitch", 5.0, SPEED)
+                    self.myPuppet2.look_to("HeadYaw", 0.0, SPEED)
+                    self.myPuppet3.look_to("HeadYaw", 0.0, SPEED)
             time.sleep(random.randint(1,2))
             #Check the absolute value and decide the sentence to say
             if abs_value <= 2.0:
@@ -409,8 +402,7 @@ class WorkerThread(QThread):
             self._log_trial = 0
             self.STATE_MACHINE = 0 #cycling to state 0
             #total, player_investment, round_total, your_investment, robot_investment 
-            local_string = "Player A score is: " + str(self._log_person_total) + '\n'
-            local_string += "Player B score is: " + str(self._log_leader_total) + '\n'
+            local_string = "Your score is: " + str(self._log_person_total) + '\n'
             local_string += "The game is finished. Thank you..."
             self.myPuppet1.say_something("Thank you, It was nice to play with you.")
             #total, player_investment, round_total, robot_investment, text_label=""
