@@ -203,8 +203,8 @@ class WorkerThread(QThread):
             else:
                   self.myPuppet1.say_something(str(sentence))
             if self.myParser._gaze_list[self._log_trial] == "True":
-                    self.myPuppet2.look_to("HeadYaw", 60.0, SPEED)
-                    self.myPuppet3.look_to("HeadYaw", -60.0, SPEED)
+                    self.myPuppet2.look_to("HeadYaw", -60.0, SPEED) #TODO they have been inverted
+                    self.myPuppet3.look_to("HeadYaw", +60.0, SPEED)
                     #time.sleep(random.randint(0,2))
                     #self.myPuppet1.look_to("HeadPitch", 5.0, SPEED)
                     self.myPuppet1.look_to("HeadYaw", -60.0, SPEED)
@@ -220,7 +220,7 @@ class WorkerThread(QThread):
             self._log_player3_investment = int(self.myParser._pinv3_list[self._log_trial])
             if self.myParser._gaze_list[self._log_trial] == "True":
                     self.myPuppet2.look_to("HeadYaw", 0.0, SPEED)
-                    self.myPuppet3.look_to("HeadYaw", -60.0, SPEED)
+                    self.myPuppet3.look_to("HeadYaw", +60.0, SPEED) #TODO have been inverted
                     #self.myPuppet2.look_to("HeadPitch", 5.0, SPEED)
                     #self.myPuppet3.look_to("HeadPitch", 5.0, SPEED)
             #time.sleep(random.randint(2,3))
@@ -234,7 +234,7 @@ class WorkerThread(QThread):
             local_string += "Tommy invested: " + str(self._log_player2_investment) + '\n'
             self.emit(self.update_gui_signal, self._log_person_total, self._log_leader_total, self._log_player2_total, self._log_player3_total, local_string)                        
             if self.myParser._gaze_list[self._log_trial] == "True":
-                    self.myPuppet2.look_to("HeadYaw", 40.0, SPEED)
+                    self.myPuppet2.look_to("HeadYaw", -40.0, SPEED) #TODO sign inverted
                     self.myPuppet3.look_to("HeadYaw", 0.0, SPEED)             
             #time.sleep(random.randint(1,3))
             #Player 3 investment
@@ -305,8 +305,12 @@ class WorkerThread(QThread):
                     self.myPuppet1.look_to("HeadYaw", 60.0, SPEED)
                     time.sleep(random.randint(1,2))
                     self.myPuppet2.look_to("HeadYaw", 60.0, SPEED)
-                    self.myPuppet3.look_to("HeadYaw", 60.0, SPEED)   
-                self.STATE_MACHINE = 6 #next state
+                    self.myPuppet3.look_to("HeadYaw", 60.0, SPEED)
+
+                if (self._log_person_investment + self._log_leader_investment + self._log_player2_investment + self._log_player3_investment) == 0:
+                    self.STATE_MACHINE = 9 #nothing have been invested, jumping to logbook
+                else:
+                    self.STATE_MACHINE = 6 #investment done, jumping to next state
 
 
         #STATE-6  The Banker robot gives a reward
